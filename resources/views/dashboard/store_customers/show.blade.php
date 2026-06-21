@@ -154,9 +154,9 @@
                             @endcan
                         </div>
                         <div class="card-body p-0">
-                            <div class="table-responsive" style="max-height: 450px; overflow-y: auto;">
+                            <div class="table-responsive" style="max-height: 350px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch;">
                                 <table class="table table-hover mb-0 text-center" style="min-width: 600px;">
-                                    <thead style="position: sticky; top: 0; z-index: 10; background: #f8fafc;">
+                                    <thead style="position: sticky; top: 0; z-index: 10; background: #f8fafc; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                         <tr>
                                             <th>#</th>
                                             <th>{!! __('store_transactions.date') !!}</th>
