@@ -1,0 +1,94 @@
+/* === Global Flasher Premium Design (RTL & LTR) === */
+
+/* Forces notifications to the top in both LTR/RTL */
+.fl-wrapper[data-position^="top-"] {
+    top: 5px !important;
+}
+
+.fl-main-container,
+.fl-container,
+.fl-wrapper,
+.fl-flasher {
+    z-index: 2147483647 !important;
+    /* animation: none !important; */
+    /* transition: none !important; */
+}
+
+/* Hide Flasher Titles for minimalist look */
+.fl-flasher .fl-title {
+    display: none !important;
+}
+
+/* Compact Message Font Size & Spacing - Fine-tuned (+1px) */
+.fl-flasher .fl-message {
+    font-size: 0.92rem !important; /* Slightly increased for better readability */
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    padding: 4px 44px 4px 12px !important; /* Extra padding-right for LTR close button */
+}
+
+/* RTL Padding Adjustment for .fl-message */
+[data-textdirection="rtl"] .fl-flasher .fl-message {
+    padding: 4px 12px 4px 44px !important; /* Extra padding-left for RTL close button */
+}
+
+/* Standardize Icon Size via Scale (Increased for +2px effect) */
+.fl-flasher .fl-icon {
+    transform: scale(0.85) !important; /* Increased from 0.65 for visibility */
+    transform-origin: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Fix Close Button (X) - Premium Modal Style & Animation Parity */
+.fl-flasher .fl-close {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    width: 32px !important; /* Slightly larger to accommodate +2px icon */
+    height: 32px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0.9 !important;
+    
+    /* Matching Modal Animation Speed (0.15s) */
+    transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease, transform 0.15s ease !important;
+    
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    right: 12px !important;
+    padding: 0 !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+    z-index: 100 !important;
+    font-size: 15px !important; /* Reduced by 5px to match message scale */
+    font-weight: 300 !important;
+}
+
+.fl-flasher .fl-close:hover {
+    background: #e2e8f0 !important;
+    color: #ff4d4d !important;
+    opacity: 1 !important;
+    transform: translateY(-50%) rotate(90deg) !important;
+}
+
+/* RTL Adjustment */
+[data-textdirection="rtl"] .fl-flasher .fl-close {
+    right: auto !important;
+    left: 12px !important;
+}
+
+/* RTL Specific Overrides for parity */
+[data-textdirection="rtl"] .fl-flasher .fl-content {
+    flex-direction: row !important;
+    gap: 8px !important;
+}
+
+[data-textdirection="rtl"] .fl-flasher .fl-icon {
+    transform: scale(0.65) !important;
+    transform-origin: center !important;
+}

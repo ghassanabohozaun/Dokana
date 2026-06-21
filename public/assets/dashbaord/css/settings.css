@@ -1,0 +1,137 @@
+/* 
+    System Settings Dashboard Styles
+    Refactored from index.blade.php
+*/
+
+/* Premium Solid Cards Layout */
+.card-settings {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+    background-color: #ffffff;
+}
+
+.settings-section-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 15px !important;
+    border-bottom: 1px solid #f1f4f9 !important;
+    padding-bottom: 15px !important;
+    width: 100% !important;
+}
+
+.settings-section-title {
+    margin: 0 !important;
+    color: #2b3445 !important;
+    font-weight: bold !important;
+    font-size: 1.35rem !important; /* Increased from 1.25rem (+2px approx) */
+}
+
+.icon-wrapper {
+    width: 47px !important; /* Adjusted to match new header flow */
+    height: 47px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+}
+
+/* Icon Color Variants */
+.icon-wrapper-primary {
+    background: rgba(30, 159, 242, 0.1) !important;
+    color: #1E9FF2 !important;
+}
+
+.icon-wrapper-success {
+    background: rgba(40, 208, 148, 0.1) !important;
+    color: #28D094 !important;
+}
+
+.icon-wrapper-cyan {
+    background: rgba(0, 165, 168, 0.1) !important;
+    color: #00A5A8 !important;
+}
+
+.icon-wrapper-warning {
+    background: rgba(255, 145, 73, 0.1) !important;
+    color: #FF9149 !important;
+}
+
+/* Input Fields Header (Icon + Text) */
+.field-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.field-header i {
+    font-size: 1.3rem !important; /* Increased by ~2px */
+    width: 25px;
+    text-align: center;
+    color: #1E9FF2;
+}
+
+.field-header label {
+    margin: 0 !important;
+    cursor: pointer;
+    font-size: 1.15rem !important; /* Increased by ~2px */
+}
+
+.form-control-custom {
+    border-radius: 8px !important;
+    height: 47px !important; /* Increased from 45px */
+    background-color: #f8f9fa !important;
+    border: 1px solid #e1e5eb !important;
+    padding: 10px 15px !important;
+    font-size: 1.1rem !important; /* Increased font size */
+    transition: all 0.2s;
+}
+
+.form-control-custom:focus {
+    background-color: #fff !important;
+    border-color: #007bff !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.08) !important;
+}
+
+/* Social Media Colors */
+.text-fb { color: #1877F2; }
+.text-tw { color: #1DA1F2; }
+.text-ig { color: #E4405F; }
+.text-yt { color: #FF0000; }
+.text-wa { color: #25D366; }
+
+/* Breadcrumb Styling */
+.breadcrumb-new .breadcrumb {
+    background: transparent !important;
+    padding: 0 !important;
+    margin-top: 5px !important;
+}
+
+.content-header-title {
+    font-weight: bold !important;
+}
+
+/* Arabic (RTL) Font Size Adjustments (-2px approx) */
+[data-textdirection="rtl"] .settings-section-title {
+    font-size: 1.225rem !important;
+}
+
+[data-textdirection="rtl"] .field-header i {
+    font-size: 1.175rem !important;
+}
+
+[data-textdirection="rtl"] .field-header label {
+    font-size: 1.025rem !important;
+}
+
+[data-textdirection="rtl"] .form-control-custom {
+    font-size: 0.975rem !important;
+}
+
+[data-textdirection="rtl"] .content-header-title {
+    font-size: 1.5rem !important; /* Slightly smaller for RTL */
+}

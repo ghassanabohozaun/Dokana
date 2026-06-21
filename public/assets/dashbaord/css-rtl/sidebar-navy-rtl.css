@@ -1,0 +1,291 @@
+/* Deep Navy Sidebar Customization - RTL */
+
+/* --- Full Height Sidebar Layout (Desktop Only) --- */
+@media (min-width: 768px) {
+    body.vertical-layout.vertical-menu-modern .main-menu.menu-fixed {
+        top: 0 !important;
+        height: 100vh !important;
+        padding-top: 5.125rem !important; /* Unified header height (~82px) */
+        z-index: 1030 !important;
+    }
+    
+    body.vertical-layout.vertical-menu-modern .header-navbar.fixed-top {
+        background: transparent !important;
+        box-shadow: none !important;
+        z-index: 1040 !important; 
+    }
+    
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-wrapper .navbar-header {
+        background: #ffffff !important; 
+        height: 5.125rem !important; /* Unified header height (~82px) */
+        border-bottom: 1px solid #f1f5f9; /* Subtle separator from the sidebar below */
+    }
+
+    /* Vertically align inside the taller header without breaking Bootstrap framework */
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-header .navbar-nav {
+        height: 100%;
+        align-items: center;
+    }
+    
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-wrapper .navbar-container {
+        background: #ffffff !important;
+        box-shadow: 4px 4px 16px rgba(0,0,0,0.05) !important;
+        height: 5.125rem !important; /* Unified header height (~82px) */
+    }
+
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-header .nav-link i,
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-header .navbar-brand .brand-text {
+        color: #475569 !important; /* Dark slate text for white background */
+    }
+
+    /* Clean up the navbar-brand wrapper */
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-header .site_name_logo_section .navbar-brand {
+        background: transparent !important;
+        padding: 0 !important; 
+        box-shadow: none !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%; /* Take full height of parent */
+    }
+
+    /* Make the actual image large and clear without internal padding squashing it */
+    body.vertical-layout.vertical-menu-modern .header-navbar .navbar-header .navbar-brand .brand-logo {
+        max-height: 45px !important; 
+        height: auto !important;
+        max-width: 150px !important; 
+        width: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        object-fit: contain;
+        transform: scale(1); 
+        transition: all 0.3s ease;
+    }
+
+    /* ---- COLLAPSED MENU FIXES ---- */
+    body.vertical-layout.vertical-menu-modern.menu-collapsed .header-navbar .navbar-header .site_name_logo_section .navbar-brand {
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    body.vertical-layout.vertical-menu-modern.menu-collapsed .header-navbar .navbar-header .navbar-brand .brand-logo {
+        background: transparent !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        max-height: 40px !important; 
+        max-width: 40px !important;
+        transform: scale(1) !important;
+    }
+
+    /* Fix RTL icons being cut off horizontally in collapsed sidebar */
+    body.vertical-layout.vertical-menu-modern.menu-collapsed .main-menu.menu-dark .navigation-main > li > a {
+        margin: 8px 10px !important; /* Reduce margins to fit in narrow sidebar */
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    body.vertical-layout.vertical-menu-modern.menu-collapsed .main-menu.menu-dark .navigation-main > li > a i {
+        margin: 0 !important; /* Center the icon completely */
+    }
+}
+
+/* Sidebar Default Backgrounds */
+.main-menu.menu-dark,
+.main-menu.menu-dark .navigation-background,
+.main-menu.menu-dark .navigation-main {
+    background: #0f172a !important; /* Deep Navy */
+}
+
+body.vertical-layout.vertical-menu-modern.menu-expanded .main-menu.menu-dark {
+    background: #0f172a !important;
+}
+
+/* Submenu background */
+.main-menu.menu-dark .navigation-main ul.menu-content {
+    background: rgba(11, 17, 33, 0.6) !important; /* Soft Darker Navy */
+    margin: 0 15px 5px 15px !important; /* Indent submenu */
+    border-radius: 8px;
+    padding: 5px 0;
+}
+
+/* --- Expanded State: Pill Layout & Flex Alignment --- */
+body .main-menu.expanded .navigation-main > li,
+.main-menu.expanded .navigation-main > li {
+    display: block !important;
+    width: 100% !important; /* Ensure li occupies full sidebar width */
+    text-align: right !important;
+}
+
+body .main-menu.expanded .navigation-main > li > a,
+.main-menu.expanded .navigation-main > li > a {
+    color: #cbd5e1 !important;
+    transition: all 0.3s ease;
+    margin: 4px 15px !important; /* Pill layout gap */
+    border-radius: 8px;
+    padding: 12px 15px !important; 
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important; /* Force Right Alignment (in RTL) */
+    flex-direction: row !important;
+    text-align: right !important;
+    gap: 12px !important;
+    line-height: 1 !important;
+    width: auto !important;
+    box-sizing: border-box !important;
+}
+
+body .main-menu.expanded .navigation-main > li > a > i,
+.main-menu.expanded .navigation-main > li > a > i {
+    font-size: 1.4rem !important;
+    width: 30px !important; 
+    min-width: 30px !important;
+    display: block !important;
+    text-align: right !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+}
+
+body .main-menu.expanded .navigation-main .menu-title,
+.main-menu.expanded .navigation-main .menu-title {
+    position: relative !important;
+    flex: 1 1 auto !important; /* Take remaining space */
+    display: block !important;
+    text-align: right !important; /* STRICTLY RIGHT */
+    margin: 0 !important;
+    line-height: 1 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* --- Collapsed State: Restore Original Icon Centering --- */
+.main-menu:not(.expanded) .navigation-main > li > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 0 !important;
+    margin: 4px 10px !important;
+    border-radius: 8px;
+}
+
+.main-menu:not(.expanded) .navigation-main > li > a i {
+    font-size: 1.6rem !important;
+    margin: 0 !important;
+}
+
+.main-menu:not(.expanded) .navigation-main .menu-title {
+    display: none !important; /* Force hide text in collapse */
+}
+
+.main-menu.menu-dark .navigation-main a i, 
+.main-menu.menu-dark .navigation-main a:after {
+    color: #94a3b8 !important;
+    transition: all 0.3s ease;
+}
+
+/* Ensure sub-menu items also align correctly in expanded state */
+.main-menu.expanded .navigation-main ul.menu-content > li > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 12px !important;
+    padding: 10px 10px 10px 18px !important;
+    margin: 2px 12px;
+    border-radius: 6px;
+    line-height: 1 !important;
+    color: #cbd5e1 !important;
+}
+
+.main-menu.expanded .navigation-main ul.menu-content > li > a i {
+    margin: 0 !important;
+    width: 20px;
+    display: flex !important;
+    align-items: center !important; 
+    justify-content: center !important;
+}
+
+/* Hover and Focus States */
+.main-menu.menu-dark .navigation-main li > a:hover,
+.main-menu.menu-dark .navigation-main li.open > a,
+.main-menu.menu-dark .navigation-main ul.menu-content li > a:hover {
+    background: rgba(30, 159, 242, 0.1) !important;
+    color: #ffffff !important;
+}
+
+.main-menu.menu-dark .navigation-main li > a:hover i,
+.main-menu.menu-dark .navigation-main li.open > a i,
+.main-menu.menu-dark .navigation-main li > a:hover:after,
+.main-menu.menu-dark .navigation-main li.open > a:after {
+    color: #00d4ff !important;
+}
+
+/* Active State (Main Menu Item/Legendary Glow) */
+.main-menu.menu-dark .navigation-main > li.active > a {
+    /* Gradient flipped for RTL to flow correctly */
+    background: linear-gradient(118deg, #00d4ff, #1E9FF2) !important; 
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(30, 159, 242, 0.45) !important;
+}
+
+.main-menu.menu-dark .navigation-main > li.active > a i,
+.main-menu.menu-dark .navigation-main > li.active > a:after {
+    color: #ffffff !important;
+}
+
+/* Active State (Submenu Item) */
+.main-menu.menu-dark .navigation-main ul.menu-content li.active > a {
+    background: rgba(0, 212, 255, 0.1) !important;
+    color: #00d4ff !important;
+    font-weight: bold !important;
+}
+
+.main-menu.menu-dark .navigation-main ul.menu-content li.active > a i {
+    color: #00d4ff !important;
+}
+
+/* Fix for consistency: Active item uses same pill layout as hover */
+.main-menu.menu-dark .navigation-main ul.menu-content li.active {
+    border-right: none;
+    background: transparent !important;
+}
+
+/* Fix exact centering for active item in collapsed state */
+body.menu-collapsed .main-menu .navigation-main > li.active > a,
+.main-menu:not(.expanded) .navigation-main > li.active > a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 12px 0 !important;
+}
+
+body.menu-collapsed .main-menu .navigation-main > li.active > a i,
+.main-menu:not(.expanded) .navigation-main > li.active > a i {
+    float: none !important; /* Kill theme float */
+    margin: 0 !important;   /* Kill theme margin */
+    display: inline-block !important;
+}
+
+body.menu-collapsed .main-menu .navigation-main > li.active > a .menu-title,
+.main-menu:not(.expanded) .navigation-main > li.active > a .menu-title {
+    display: none !important; /* Ensure title doesn't push the icon */
+}
+
+/* Ensure Logo/Brand area matches the flow naturally */
+.main-menu.menu-dark .navbar-header {
+    background: #ffffff !important;
+}
+
+/* Custom Scrollbar for Sidebar */
+.main-menu.menu-dark .main-menu-content::-webkit-scrollbar {
+    width: 6px;
+    background-color: #0f172a;
+}
+.main-menu.menu-dark .main-menu-content::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #1e293b;
+}

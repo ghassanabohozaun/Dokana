@@ -1,0 +1,243 @@
+/*
+    Premium Select2 Component - Final Unified Design
+    All Select2 styles consolidated here for absolute pixel-perfect alignment.
+*/
+
+.select2-container {
+    width: 100% !important;
+    min-width: 100% !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Global Premium Input Height Standardization (48px) */
+.premium-input:not(textarea) {
+    height: 3rem !important;
+    line-height: 3rem !important;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) & Browser Default Arrow */
+select.select2:not(.select2-hidden-accessible) {
+    visibility: hidden !important;
+    height: 3rem !important;
+    padding: 0 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 2px !important;
+    position: relative !important;
+    width: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    background: #fff !important;
+}
+
+[wire\:ignore] {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    position: relative !important;
+}
+
+/* Error State - Extreme Specificity to override defaults */
+.is-invalid-premium .select2-container--default .select2-selection--single,
+.is-invalid-premium + .select2-container--default .select2-selection--single,
+.select2-container--default.is-invalid-premium .select2-selection--single {
+    border: 1.5px solid #ef4444 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25) !important;
+    background-color: #fff5f5 !important;
+}
+
+div.is-invalid-premium .select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--single.is-invalid-premium {
+    box-shadow: 0 0 0 4px rgba(255, 77, 79, 0.3) !important;
+}
+
+/* Global Selection Styling */
+.select2-container--default .select2-selection--single {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important; /* Standard gray border */
+    border-radius: 4px !important;
+    height: 3rem !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #cbd5e1 !important; /* Slightly darker gray on focus, no indigo */
+    box-shadow: none !important; /* Remove the glow to keep it minimal */
+    outline: none !important;
+}
+
+/* RTL Specific Selection & Text Alignment */
+[dir="rtl"] .select2-container--default .select2-selection--single,
+[data-textdirection="rtl"] .select2-container--default .select2-selection--single,
+.rtl .select2-container--default .select2-selection--single {
+    direction: rtl !important;
+    padding-right: 1rem !important;
+    padding-left: 2.5rem !important; /* Space for arrow on the left */
+}
+
+/* LTR Specific Selection & Text Alignment */
+[dir="ltr"] .select2-container--default .select2-selection--single,
+[data-textdirection="ltr"] .select2-container--default .select2-selection--single,
+.ltr .select2-container--default .select2-selection--single {
+    direction: ltr !important;
+    padding-left: 1rem !important;
+    padding-right: 2.5rem !important; /* Space for arrow on the right */
+}
+
+/* Rendered Text & Placeholder Positioning */
+.select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #1e293b !important;
+    font-weight: 500 !important;
+    font-size: inherit !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: normal !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
+/* Force Right Alignment in RTL */
+[dir="rtl"] .select2-selection__rendered,
+[data-textdirection="rtl"] .select2-selection__rendered,
+.rtl .select2-selection__rendered,
+[dir="rtl"] .select2-selection__placeholder,
+[data-textdirection="rtl"] .select2-selection__placeholder,
+.rtl .select2-selection__placeholder {
+    text-align: right !important;
+}
+
+/* Force Left Alignment in LTR */
+[dir="ltr"] .select2-selection__rendered,
+[data-textdirection="ltr"] .select2-selection__rendered,
+.ltr .select2-selection__rendered,
+[dir="ltr"] .select2-selection__placeholder,
+[data-textdirection="ltr"] .select2-selection__placeholder,
+.ltr .select2-selection__placeholder {
+    text-align: left !important;
+}
+
+/* Dropdown Arrow Positioning - RTL (Arrow on Left) */
+[dir="rtl"] .select2-container--default .select2-selection--single .select2-selection__arrow,
+[data-textdirection="rtl"] .select2-container--default .select2-selection--single .select2-selection__arrow,
+.rtl .select2-container--default .select2-selection--single .select2-selection__arrow {
+    right: auto !important;
+    left: 0 !important; /* Absolute far left as requested */
+    height: 100% !important;
+    top: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 25px !important;
+}
+
+/* Dropdown Arrow Positioning - LTR (Arrow on Right) */
+[dir="ltr"] .select2-container--default .select2-selection--single .select2-selection__arrow,
+[data-textdirection="ltr"] .select2-container--default .select2-selection--single .select2-selection__arrow,
+.ltr .select2-container--default .select2-selection--single .select2-selection__arrow {
+    left: auto !important;
+    right: 0.75rem !important;
+    height: 100% !important;
+    top: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Fix the arrow icon itself to not have offset */
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    margin-top: 0 !important;
+    top: auto !important;
+    position: relative !important;
+    display: block !important;
+}
+
+/* Error State */
+.is-invalid-premium.select2-container--default .select2-selection--single,
+.is-invalid-premium .select2-selection--single {
+    border-color: #ef4444 !important;
+    background-color: #fff5f5 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
+}
+
+/* Dropdown Menu Styling */
+.select2-dropdown {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden;
+    z-index: 9999;
+    background-color: #ffffff !important;
+}
+
+/* RTL Dropdown Content */
+[dir="rtl"] .select2-results__option,
+[data-textdirection="rtl"] .select2-results__option,
+.rtl .select2-results__option {
+    text-align: right !important;
+    direction: rtl !important;
+    padding: 8px 0.75rem !important;
+}
+
+/* Search Field Styling (Global) */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #d1d5db !important; /* Slightly darker gray for better visibility */
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    outline: none !important;
+    font-size: 0.9rem !important;
+    background-color: #f8fafc !important; /* Light gray background like RTL */
+    transition: all 0.2s ease !important;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+    border-color: #cbd5e1 !important; /* Muted gray focus */
+    box-shadow: none !important;
+}
+
+/* RTL Search Field Alignment */
+[dir="rtl"] .select2-search__field,
+[data-textdirection="rtl"] .select2-search__field,
+.rtl .select2-search__field {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+/* Hover/Active states */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #f1f5f9 !important;
+    color: #4f46e5 !important;
+}
+
+/* 
+   Final Stacking & Clipping Fixes 
+   Elevate the active card and form group above others when interacting with inputs
+*/
+.premium-form-group:focus-within {
+    z-index: 10 !important;
+    position: relative !important;
+}
+
+.select2-container--open {
+    z-index: 10000 !important;
+}
+
+/* Definitive Error Glow Fix for all Premium Inputs */
+.premium-form-group.is-invalid-premium .select2-container--default .select2-selection--single,
+.is-invalid-premium .premium-input,
+.premium-input.is-invalid-premium,
+.premium-form-group.is-invalid-premium .premium-file-box {
+    border: 1.5px solid #ef4444 !important;
+    background-color: #fff5f5 !important;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25) !important;
+}
+

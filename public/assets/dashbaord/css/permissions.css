@@ -1,0 +1,70 @@
+/* Modern Permissions Badges Styles */
+.permissions-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.badge-permission {
+    padding: 6px 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 50px;
+    background-color: rgba(30, 159, 242, 0.08);
+    color: #1a73e8;
+    border: 1px solid rgba(30, 159, 242, 0.15);
+    transition: all 0.2s ease;
+    cursor: default;
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.badge-permission:hover {
+    transform: translateY(-1px);
+    background-color: rgba(30, 159, 242, 0.12);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Category Overrides */
+.badge-permission.badge-critical {
+    background-color: rgba(255, 73, 97, 0.08);
+    color: #ff4961;
+    border-color: rgba(255, 73, 97, 0.15);
+}
+
+.badge-permission.badge-success {
+    background-color: rgba(40, 208, 148, 0.08);
+    color: #28d094;
+    border-color: rgba(40, 208, 148, 0.15);
+}
+
+.badge-permission.badge-warning {
+    background-color: rgba(255, 145, 73, 0.08);
+    color: #ff9149;
+    border-color: rgba(255, 145, 73, 0.15);
+}
+
+.badge-permission.badge-info {
+    background-color: rgba(0, 165, 168, 0.08);
+    color: #00a5a8;
+    border-color: rgba(0, 165, 168, 0.15);
+}
+
+.badge-more {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    padding: 4px 8px;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.badge-more:hover {
+    color: #1a73e8;
+}
+
+[data-textdirection="rtl"] .badge-permission {
+    font-size: 1rem; /* Slightly larger for Arabic font readability */
+}

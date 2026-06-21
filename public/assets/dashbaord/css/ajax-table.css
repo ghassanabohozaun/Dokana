@@ -1,0 +1,507 @@
+/* 1. Table Loader Overlay */
+.table-loader-container { position: relative; }
+.table-loader-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10; opacity: 0; visibility: hidden;
+    transition: all 0.3s ease; border-radius: 8px;
+}
+.table-loader-overlay.active { opacity: 1; visibility: visible; }
+
+/* 2. Premium Rotating Loader */
+.premium-loader {
+    width: 45px; height: 45px; border: 3px solid #1F3BB3;
+    border-radius: 50%; display: inline-block; position: relative;
+    animation: rotation 1s linear infinite;
+}
+.premium-loader::after {
+    content: ''; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); width: 38px; height: 38px;
+    border-radius: 50%; border: 3px solid transparent; border-bottom-color: #FF3D00;
+}
+@keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* 3. Modern Premium Pagination */
+.pagination {
+    gap: 5px;
+    margin-top: 20px;
+}
+.pagination .page-item .page-link {
+    border-radius: 12px !important;
+    border: 1px solid #edf2f7;
+    color: #64748b;
+    padding: 6px 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 700;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+}
+.pagination .page-item .page-link:hover {
+    background-color: #f1f5f9;
+    border-color: #1F3BB3;
+    color: #1F3BB3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 59, 179, 0.15);
+}
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #1F3BB3 0%, #3e59cc 100%) !important;
+    border-color: #1F3BB3 !important;
+    color: #fff !important;
+    box-shadow: 0 6px 20px rgba(31, 59, 179, 0.4);
+    transform: translateY(-1px);
+}
+.pagination .page-item.disabled .page-link {
+    color: #e2e8f0;
+    background-color: #f8fafc;
+    border-color: #f1f5f9;
+    box-shadow: none;
+    transform: none;
+}
+
+/* 4. Details Control Icon */
+.details-control { cursor: pointer; color: #1F3BB3; font-size: 1.5rem; transition: transform 0.2s; display: inline-block; }
+.details-control i { vertical-align: middle; }
+.details-control:hover { transform: scale(1.2); color: #FF3D00; }
+
+/* 5. Premium Modal Styling */
+.modal-details-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.modal-profile-wrapper {
+    margin-top: 20px;
+    position: relative;
+    z-index: 5;
+    margin-bottom: 20px;
+}
+.modal-profile-img {
+    width: 100px !important;
+    height: 100px !important;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: #fff;
+}
+.modal-profile-initials {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 35px !important;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: #fff;
+    color: #fff; /* text-white usually sets this, but let's be explicit */
+}
+.modal-name-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1F3BB3;
+    margin-bottom: 5px;
+}
+.modal-role-badge {
+    padding: 6px 15px;
+    border-radius: 20px;
+    background: rgba(31, 59, 179, 0.1);
+    color: #1F3BB3;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+.modal-info-list {
+    padding: 20px;
+}
+.detail-item-modern {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: #fcfdfe;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid #f1f3f9;
+}
+.detail-item-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    background: #fff;
+}
+.icon-circle {
+    width: 45px;
+    height: 45px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    margin-right: 15px;
+    font-size: 1.2rem;
+    color: #1F3BB3;
+}
+.detail-info-box {
+    flex: 1;
+}
+.detail-info-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+.detail-info-value {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+}
+.modal-member-since-box {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    background: #f8f9fa;
+    color: #777;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 15px;
+}
+/* Avatar Sizing & Styling */
+.avatar-size-40 {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 14px !important;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    font-weight: 600;
+}
+.avatar-size-100 {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 35px !important;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    font-weight: 600;
+}
+/* Avatar Base */
+.avatar-circle {
+    border-radius: 50% !important;
+}
+
+/* Avatar icon: reset inherited float from RTL themes */
+div.avatar-circle i {
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+/* Icon sizes inside avatar */
+.avatar-icon-40  { font-size: 17px !important; }
+.avatar-icon-100 { font-size: 40px !important; }
+
+/* 6. Premium Table Cell Enhancements */
+.user-info-cell {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+.user-name-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1F3BB3;
+    line-height: 1.2;
+    transition: all 0.2s;
+}
+[data-textdirection="rtl"] .user-name-text,
+html[dir="rtl"] .user-name-text {
+    font-size: 13px !important;
+}
+.user-info-cell:hover .user-name-text {
+    color: #FF3D00;
+}
+.user-email-text {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Company Chip */
+.company-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background: rgba(31, 59, 179, 0.06);
+    border-radius: 10px;
+    color: #1F3BB3;
+    font-weight: 700;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(31, 59, 179, 0.1);
+}
+[data-textdirection="rtl"] .company-chip,
+html[dir="rtl"] .company-chip {
+    font-size: 11px !important;
+}
+.company-chip i {
+    font-size: 16px;
+    opacity: 0.8;
+}
+[data-textdirection="rtl"] .company-chip i { margin-left: 8px; }
+[data-textdirection="ltr"] .company-chip i { margin-right: 8px; }
+
+.company-chip:hover {
+    background: #1F3BB3;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(31, 59, 179, 0.2);
+    border-color: #1F3BB3;
+}
+.company-chip:hover i { opacity: 1; }
+
+
+/* 7. Premium Badges & Statuses */
+.premium-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50px;
+    min-width: 85px;
+    border: none;
+    transition: all 0.3s ease;
+    gap: 6px;
+    line-height: 1;
+}
+
+.badge-indigo-premium {
+    background-color: #6610f2 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(102, 16, 242, 0.3);
+}
+
+.badge-success-premium {
+    background-color: #28a745 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+}
+
+.badge-warning-premium {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+    box-shadow: 0 4px 10px rgba(255, 193, 7, 0.3);
+}
+
+.badge-danger-premium {
+    background-color: #dc3545 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+}
+
+.badge-info-premium {
+    background-color: #17a2b8 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+}
+
+.badge-secondary-premium {
+    background-color: #6c757d !important;
+    color: #fff !important;
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+}
+
+.premium-badge i {
+    font-size: 14px;
+    line-height: 0;
+}
+
+/* RTL Spacing for Badges */
+[data-textdirection="rtl"] .premium-badge i {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* General Layout Fixes for Table Badges */
+.table td .badge {
+    vertical-align: middle;
+}
+
+/* 8. Universal Premium Utilities (No more inline styles) */
+.property-type-badge {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    border: 1px solid #e2e8f0;
+}
+[data-textdirection="rtl"] .property-type-badge, html[dir="rtl"] .property-type-badge { font-size: 11px !important; }
+
+.area-badge {
+    background: #fff7ed !important;
+    color: #9a3412 !important;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    border: 1px solid #ffedd5;
+}
+[data-textdirection="rtl"] .area-badge, html[dir="rtl"] .area-badge { font-size: 11px !important; }
+
+.file-number-badge {
+    background: #f0f9ff !important;
+    color: #0369a1 !important;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    border: 1px solid #e0f2fe;
+}
+[data-textdirection="rtl"] .file-number-badge, html[dir="rtl"] .file-number-badge { font-size: 11px !important; }
+
+.property-info-td {
+    text-align: left !important;
+}
+html[dir="rtl"] .property-info-td, [data-textdirection="rtl"] .property-info-td {
+    text-align: right !important;
+}
+
+.font-11 { font-size: 11px !important; }
+.font-12 { font-size: 12px !important; }
+.font-13 { font-size: 13px !important; }
+.font-14 { font-size: 14px !important; }
+.font-15 { font-size: 15px !important; }
+.font-22 { font-size: 22px !important; }
+.font-24 { font-size: 24px !important; }
+.font-40 { font-size: 40px !important; }
+
+[data-textdirection="rtl"] .table td,
+html[dir="rtl"] .table td {
+    font-size: 14px !important;
+}
+
+.table thead th,
+[data-textdirection="rtl"] .table th,
+html[dir="rtl"] .table th {
+    font-size: 12px !important;
+}
+[data-textdirection="rtl"] .font-11, html[dir="rtl"] .font-11 { font-size: 11px !important; }
+[data-textdirection="rtl"] .font-12, html[dir="rtl"] .font-12 { font-size: 12px !important; }
+[data-textdirection="rtl"] .font-13, html[dir="rtl"] .font-13 { font-size: 13px !important; }
+[data-textdirection="rtl"] .font-14, html[dir="rtl"] .font-14 { font-size: 14px !important; }
+[data-textdirection="rtl"] .font-15, html[dir="rtl"] .font-15 { font-size: 15px !important; }
+
+.min-w-140 { min-width: 140px !important; }
+.min-w-150 { min-width: 150px !important; }
+.min-w-200 { min-width: 200px !important; }
+.min-w-250 { min-width: 250px !important; }
+.min-w-280 { min-width: 280px !important; }
+.min-w-320 { min-width: 320px !important; }
+
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.gap-5 { gap: 5px !important; }
+
+.opacity-5 { opacity: 0.5 !important; }
+
+.w-45 { width: 45px !important; }
+.h-45 { height: 45px !important; }
+
+.radius-15 { border-radius: 15px !important; }
+.radius-16 { border-radius: 16px !important; }
+.radius-10 { border-radius: 10px !important; }
+
+/* Flexible Spacing (RTL/LTR Friendly) */
+.ms-25 { margin-inline-start: 0.25rem !important; }
+.me-25 { margin-inline-end: 0.25rem !important; }
+.mt-25 { margin-top: 0.25rem !important; }
+
+/* Legacy support replacement */
+.mr-25 { margin-right: 0.25rem !important; }
+[data-textdirection="rtl"] .mr-25 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+
+/* Extra Helpers */
+.flex-column-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 9. Premium Balance Card Utilities */
+.premium-balance-card { border-radius: 15px !important; }
+.balance-icon-box {
+    width: 45px !important;
+    height: 45px !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+.balance-label-text {
+    font-size: 0.7rem !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase;
+}
+.balance-name-text {
+    font-size: 0.95rem !important;
+}
+
+/* RTL Helpers for Balance Card */
+[data-textdirection="rtl"] .balance-icon-box { margin-left: 0.5rem !important; margin-right: 0 !important; }
+[data-textdirection="ltr"] .balance-icon-box { margin-right: 0.5rem !important; margin-left: 0 !important; }
+
+/* 10. Premium Segmented Control Tabs */
+.premium-segmented-control {
+    background: #f8fafc;
+    padding: 6px;
+    border-radius: 16px;
+    display: inline-flex;
+    gap: 5px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    border: none;
+}
+.premium-tab-btn {
+    border: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 9px 20px;
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    outline: none !important;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.premium-tab-btn:hover:not(.active) {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.08);
+}
+.premium-tab-btn.active {
+    color: #ffffff !important;
+    background: #3b82f6 !important;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    font-weight: 700;
+}
+.premium-tab-btn i {
+    font-size: 15px;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}

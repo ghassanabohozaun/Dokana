@@ -1,0 +1,245 @@
+﻿/*
+ * Typography Base
+ * Loaded early to prevent FOUT (Flash of Unstyled Text) and text flicker
+ */
+
+:root {
+    --global-base-font-size: 13px;
+    --bs-font-sans-serif-ltr: "Poppins", sans-serif;
+    --bs-font-sans-serif-rtl: "Tajawal", sans-serif;
+}
+
+html[data-textdirection="ltr"] {
+    --bs-body-font-family: var(--bs-font-sans-serif-ltr);
+}
+
+html[data-textdirection="rtl"] {
+    --bs-body-font-family: var(--bs-font-sans-serif-rtl);
+}
+
+html, body {
+    font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+p,
+.card-title,
+.modal-title,
+.welcome-text-premium,
+.welcome-title,
+.welcome-section,
+.company-name-subtitle,
+label,
+input,
+button,
+select,
+textarea,
+.btn,
+.form-control,
+.nav-link,
+.nav-link-label,
+.greeting-text,
+.dropdown-item,
+.menu-title,
+.menu-item,
+.select2-selection__rendered,
+.select2-results__option,
+.breadcrumb,
+.breadcrumb-item,
+.breadcrumb-item a,
+th, td {
+    font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important;
+}
+
+/* Fix: Prevent global font-family from breaking icons */
+i, [class^="ft-"], [class*=" ft-"], [class^="fa-"], [class*=" fa-"], .ficon, .fas, .far, .fab, .la, .line-awesome {
+    font-family: inherit; /* Fallback */
+}
+/* Re-enforce library fonts for known icon sets */
+.fas, .fa { font-family: "Font Awesome 5 Free" !important; font-weight: 900 !important; }
+.far { font-family: "Font Awesome 5 Free" !important; font-weight: 400 !important; }
+.fab { font-family: "Font Awesome 5 Brands" !important; font-weight: 400 !important; }
+.ft, .ficon, [class^="ft-"], [class*=" ft-"] { font-family: "feather" !important; }
+.la, [class^="la-"], [class*=" la-"] { font-family: "LineAwesome" !important; }
+
+/* Force Placeholders to use primary font to prevent RTL FOUT */
+::-webkit-input-placeholder { font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important; }
+::-moz-placeholder { font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important; }
+:-ms-input-placeholder { font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important; }
+::-ms-input-placeholder { font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important; }
+::placeholder { font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important; }
+
+.select2-container .select2-search__field::placeholder,
+.select2-container--default .select2-selection--single .select2-selection__placeholder,
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+    font-family: var(--bs-body-font-family, "Poppins", "Tajawal", sans-serif) !important;
+}
+
+.welcome-text-premium {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.welcome-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff !important;
+}
+
+.welcome-text-premium span.text-primary {
+    color: #38bdf8 !important;
+}
+
+b, strong {
+    font-weight: 700;
+}
+
+.company-name-subtitle {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7) !important;
+    letter-spacing: 0.5px;
+}
+
+/* Fix Tab Flicker */
+.premium-nav-tabs .nav-link {
+    border: none !important;
+    background: transparent !important;
+    color: #828d99 !important;
+    font-weight: 500;
+    padding: 12px 20px !important;
+    font-size: 1.2rem !important;
+}
+.premium-nav-tabs .nav-link.active {
+    color: #5A8DEE !important;
+    font-weight: 700 !important;
+}
+
+/* User Profile Header Fix - LTR & RTL Support */
+.user-info-text {
+    display: flex !important;
+    flex-direction: column !important;
+    line-height: 1.1 !important;
+}
+
+/* LTR Specifics */
+html[data-textdirection="ltr"] .user-info-text {
+    align-items: flex-end !important;
+    margin-right: 15px !important;
+}
+
+/* RTL Specifics */
+html[data-textdirection="rtl"] .user-info-text {
+    align-items: flex-start !important;
+    margin-left: 15px !important;
+}
+
+.greeting-text {
+    font-size: 0.7rem !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    margin-bottom: 2px !important;
+    font-family: var(--bs-body-font-family) !important;
+}
+
+.user-name-text {
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    letter-spacing: -0.3px !important;
+    font-family: var(--bs-body-font-family) !important;
+}
+
+
+/* LTR Specific Refinements - Clean and Elegant */
+html[data-textdirection="ltr"],
+html[data-textdirection="ltr"] body {
+    font-size: var(--global-base-font-size) !important;
+}
+
+html[data-textdirection="ltr"] .welcome-text-premium {
+    font-size: 1.25rem; /* Reduced from 1.35rem */
+    font-weight: 700;
+}
+
+html[data-textdirection="ltr"] .welcome-title {
+    font-size: 1.6rem; /* Reduced from 1.8rem */
+    font-weight: 700;
+}
+
+html[data-textdirection="ltr"] .user-name-text {
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+}
+
+html[data-textdirection="ltr"] th {
+    font-weight: 600 !important;
+    font-size: 0.8rem !important; /* Reduced from 0.85rem */
+    letter-spacing: 0.2px;
+}
+
+html[data-textdirection="ltr"] .card-title {
+    font-weight: 700 !important;
+    font-size: 1.0rem !important; /* Reduced from 1.1rem */
+}
+
+html[data-textdirection="ltr"] .btn {
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+}
+
+html[data-textdirection="ltr"] .breadcrumb {
+    font-size: 1.05rem !important;
+}
+
+html[data-textdirection="ltr"] .form-control,
+html[data-textdirection="ltr"] .premium-input {
+    font-size: 1.05rem !important; /* Increased by 2px from 0.85rem (~11px to ~13px relative to 13px base, but 15px is target) */
+}
+
+/* Explicit Forms & Labels Overrides */
+label {
+    font-size: 1.15rem !important;
+    font-weight: 600;
+}
+
+.form-control,
+.premium-input,
+.select2-selection__rendered,
+.select2-results__option {
+    font-size: 1.15rem !important;
+}
+
+/* RTL Specific Refinements - Balanced and Compact */
+html[data-textdirection="rtl"],
+html[data-textdirection="rtl"] body {
+    font-size: var(--global-base-font-size) !important;
+}
+
+html[data-textdirection="rtl"] th {
+    font-weight: 700 !important;
+    font-size: 0.92rem !important; /* ~12px */
+}
+
+html[data-textdirection="rtl"] .card-title {
+    font-weight: 800 !important;
+    font-size: 1.1rem !important;
+}
+
+html[data-textdirection="rtl"] .btn {
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+}
+
+html[data-textdirection="rtl"] .form-control,
+html[data-textdirection="rtl"] .premium-input {
+    font-size: 1.05rem !important; /* Increased by 2px from 0.9rem */
+}
+

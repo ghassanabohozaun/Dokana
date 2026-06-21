@@ -1,0 +1,82 @@
+/* Tajawal Local */
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('Tajawal-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('Tajawal-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('Tajawal-700.ttf') format('truetype');
+}
+
+/* Open Sans Local */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url('OpenSans-300.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('OpenSans-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('OpenSans-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('OpenSans-700.ttf') format('truetype');
+}
+
+/* Quicksand Local */
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url('Quicksand-300.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('Quicksand-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url('Quicksand-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('Quicksand-700.ttf') format('truetype');
+}

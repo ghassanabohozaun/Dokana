@@ -1,0 +1,257 @@
+.contract-master-wrapper {
+    padding: 20px 0;
+}
+
+.contract-header-premium {
+    border-radius: 15px; /* Unified radius */
+    color: white;
+    padding: 25px 30px !important; /* Unified height/padding from properties masterpiece */
+    margin-bottom: 25px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15) !important;
+}
+
+/* Module Specific Gradients */
+.header-contract-navy {
+    background: linear-gradient(135deg, #0a1969 0%, #1e3a8a 100%) !important;
+}
+
+.header-property-black {
+    background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
+}
+
+.header-customer-royal {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%) !important;
+}
+
+.contract-header-premium .row {
+    justify-content: flex-start !important;
+    text-align: left !important;
+}
+
+.contract-header-premium .col-lg-7,
+.contract-header-premium .col-lg-7 div,
+.contract-header-premium .col-lg-7 h1,
+.contract-header-premium .col-lg-7 p {
+    text-align: left !important;
+    justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .contract-header-premium .row,
+html[dir="rtl"] .contract-header-premium .col-lg-7,
+html[dir="rtl"] .contract-header-premium .col-lg-7 div,
+html[dir="rtl"] .contract-header-premium .col-lg-7 h1,
+html[dir="rtl"] .contract-header-premium .col-lg-7 p,
+body.rtl .contract-header-premium .row,
+body.rtl .contract-header-premium .col-lg-7,
+body.rtl .contract-header-premium .col-lg-7 div,
+body.rtl .contract-header-premium .col-lg-7 h1,
+body.rtl .contract-header-premium .col-lg-7 p {
+    text-align: right !important;
+    justify-content: flex-end !important;
+}
+
+.header-bg-shape {
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+/* Segmented Control Spacing Fix for this page */
+.premium-segmented-control {
+    margin-bottom: 25px;
+}
+
+.detail-card-master {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    overflow: visible;
+}
+
+.detail-card-master .card-header {
+    background: #fff;
+    border-bottom: 1px solid #f8fafc;
+    padding: 18px 24px;
+}
+
+.detail-card-master .card-header h5 {
+    margin: 0;
+    font-weight: 800;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    letter-spacing: -0.2px;
+}
+
+.detail-card-master .card-header h5 i {
+    margin-right: 12px;
+    color: #3b82f6;
+    font-size: 20px;
+    background: rgba(59, 130, 246, 0.1);
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+[data-textdirection="rtl"] .detail-card-master .card-header h5 i {
+    margin-right: 0;
+    margin-left: 12px;
+}
+
+.data-grid-item {
+    padding: 16px;
+    border-radius: 12px;
+    background: #fff;
+    height: 100%;
+    border: 1px solid #f1f5f9;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.data-grid-item:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+.data-grid-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.data-grid-content {
+    flex: 1;
+}
+
+.data-grid-label {
+    display: block;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #94a3b8;
+    margin-bottom: 2px;
+    font-weight: 700;
+}
+
+.data-grid-value {
+    display: block;
+    font-size: 1.15rem;
+    color: #1e293b;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* RTL Alignment Fixes */
+[data-textdirection="rtl"] .data-grid-label,
+[data-textdirection="rtl"] .data-grid-value {
+    text-align: right;
+    width: 100%;
+}
+
+[data-textdirection="rtl"] .data-grid-content {
+    text-align: right;
+}
+
+.data-grid-value.text-primary { color: #3b82f6 !important; }
+.data-grid-value.text-success { color: #10b981 !important; }
+.data-grid-value.text-warning { color: #f59e0b !important; }
+.data-grid-value.text-danger { color: #ef4444 !important; }
+
+.price-hero-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-pill-premium {
+    padding: 8px 22px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge-glass-primary {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #1e40af !important;
+}
+
+.badge-glass-warning {
+    background: #fff7ed !important;
+    color: #c2410c !important;
+}
+
+.badge-glass-danger {
+    background: #fef2f2 !important;
+    color: #b91c1c !important;
+}
+
+.notes-area {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 15px;
+    padding: 20px;
+    color: #92400e;
+}
+
+.contract-text-viewer {
+    background: white;
+    border: 2px solid #f1f5f9;
+    border-radius: 15px;
+    padding: 30px;
+    line-height: 1.8;
+    font-size: 18px;
+    color: #334155;
+    white-space: pre-wrap;
+}
+
+
+.border-dashed-premium {
+    border: 1px dashed rgba(10, 25, 105, 0.2) !important;
+}
+
+.bg-light-primary-opacity { background: rgba(10, 25, 105, 0.08) !important; }
+.bg-light-success-opacity { background: rgba(40, 167, 69, 0.1) !important; }
+.bg-light-warning-opacity { background: rgba(255, 159, 67, 0.1) !important; }
+.bg-light-danger-opacity { background: rgba(234, 84, 85, 0.1) !important; }
+.bg-light-info-opacity { background: rgba(0, 207, 221, 0.1) !important; }
+
+.radius-15 { border-radius: 15px !important; }
+
+@media print {
+    .app-content, .header-navbar, .main-menu, .content-header, .nav-pills, .breadcrumb-wrapper, .btn-premium-back, .btn-premium-edit {
+        display: none !important;
+    }
+    .content-body {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}

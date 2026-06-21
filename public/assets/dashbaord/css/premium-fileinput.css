@@ -1,0 +1,90 @@
+/* === Premium FileInput Custom Styling === */
+
+/* Main Container Border */
+.file-input .file-drop-zone {
+    border: 2px dashed #e4e6ef !important;
+    border-radius: 8px !important;
+    background-color: #fbfbfb !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.file-preview {
+    transition: opacity 0.2s ease-in-out !important;
+    border: none !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+}
+
+/* Buttons Container */
+.file-input .input-group-btn {
+    display: flex !important;
+    gap: 10px !important;
+}
+
+[data-textdirection="ltr"] .file-input .input-group-btn {
+    flex-direction: row-reverse !important; /* Move Choose File to the left */
+}
+
+/* General Button Reset for FileInput */
+.file-input .btn {
+    border-radius: 10px !important; /* Unified with system identity */
+    font-weight: 600 !important;
+    text-transform: none !important;
+    padding: 8px 18px !important;
+    transition: all 0.2s ease-in-out !important;
+    border: 1px solid transparent !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-size: 13px !important;
+}
+
+/* Choose File Button - Simple & Clean */
+.file-input .btn-primary.btn-file {
+    background: #f0f4ff !important;
+    color: #5A8DEE !important;
+    border: 1px solid #d2deff !important;
+}
+
+.file-input .btn-primary.btn-file:hover {
+    background: #e6ecff !important;
+    color: #5A8DEE !important;
+    border-color: #5A8DEE !important;
+    box-shadow: 0 2px 8px rgba(90, 141, 238, 0.1) !important;
+}
+
+/* Delete/Remove Button - Simple & Clean */
+.file-input .fileinput-remove-button,
+.file-input .fileinput-remove,
+.file-input .btn-danger.fileinput-remove {
+    background: #fff5f8 !important;
+    color: #f1416c !important;
+    border: 1px solid #ffd3df !important;
+    display: inline-flex;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.file-input .fileinput-remove-button:hover,
+.file-input .fileinput-remove:hover,
+.file-input .btn-danger.fileinput-remove:hover {
+    background: #ffeef2 !important;
+    color: #f1416c !important;
+    border-color: #f1416c !important;
+    box-shadow: 0 2px 8px rgba(241, 65, 108, 0.1) !important;
+}
+
+/* Preview Thumbnails */
+.file-preview-frame {
+    border: 1px solid #eff2f5 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03) !important;
+}
+
+/* Fix for RTL direction gap */
+[data-textdirection="rtl"] .file-input .input-group-btn {
+    flex-direction: row-reverse !important;
+}

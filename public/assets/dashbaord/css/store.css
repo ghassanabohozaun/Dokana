@@ -1,0 +1,185 @@
+/* Ultra Premium Store UI Elements */
+
+.premium-store-badge {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    transition: all 0.2s ease-in-out;
+    border: 1.5px solid transparent;
+    letter-spacing: 0.5px;
+}
+
+.premium-store-badge:hover {
+    transform: translateY(-2px);
+}
+
+.store-badge-debt {
+    background-color: #ffffff;
+    color: #e53935;
+    border-color: #e53935;
+}
+
+.store-badge-payment {
+    background-color: #ffffff;
+    color: #43a047;
+    border-color: #43a047;
+}
+
+.store-badge-balance-debt {
+    background-color: #e53935;
+    color: #ffffff;
+    border-color: #e53935;
+    box-shadow: 0 4px 6px rgba(229, 57, 53, 0.2);
+}
+
+.store-badge-balance-payment {
+    background-color: #43a047;
+    color: #ffffff;
+    border-color: #43a047;
+    box-shadow: 0 4px 6px rgba(67, 160, 71, 0.2);
+}
+
+.store-badge-balance-zero {
+    background-color: #757575;
+    color: #ffffff;
+    border-color: #757575;
+}
+
+/* Icons inside badges */
+.premium-store-badge i {
+    margin-right: 6px;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+html[data-textdirection="rtl"] .premium-store-badge i {
+    margin-right: 0;
+    margin-left: 6px;
+}
+
+/* Custom Premium Emerald Theme for Datepicker */
+.datepicker {
+    padding: 1rem !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(229, 231, 235, 0.5) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    font-family: 'Tajawal', sans-serif !important;
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+    z-index: 999999 !important;
+}
+
+/* Dark Mode support for datepicker */
+html.dark .datepicker {
+    background-color: #1e293b !important;
+    border-color: rgba(75, 85, 99, 0.3) !important;
+    color: #f3f4f6 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.datepicker table {
+    width: 100% !important;
+}
+
+.datepicker table tr td, 
+.datepicker table tr th {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 0.5rem !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+    font-weight: 500 !important;
+}
+
+.datepicker table tr td.day:hover,
+.datepicker table tr td.focused {
+    background-color: #ecfdf5 !important;
+    color: #059669 !important;
+    cursor: pointer;
+}
+
+html.dark .datepicker table tr td.day:hover,
+html.dark .datepicker table tr td.focused {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    color: #34d399 !important;
+}
+
+/* Active/Selected Day */
+.datepicker table tr td.active,
+.datepicker table tr td.active:hover,
+.datepicker table tr td.active.active {
+    background-color: #10b981 !important;
+    background-image: none !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3) !important;
+}
+
+html.dark .datepicker table tr td.active,
+html.dark .datepicker table tr td.active:hover,
+html.dark .datepicker table tr td.active.active {
+    background-color: #10b981 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.5) !important;
+}
+
+/* Today Highlight */
+.datepicker table tr td.today {
+    background-color: #f3f4f6 !important;
+    color: #1f2937 !important;
+    border: 1px solid #10b981 !important;
+}
+
+html.dark .datepicker table tr td.today {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+    border: 1px solid #10b981 !important;
+}
+
+.datepicker .datepicker-switch {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #111827 !important;
+}
+
+html.dark .datepicker .datepicker-switch {
+    color: #ffffff !important;
+}
+
+.datepicker .datepicker-switch:hover,
+.datepicker .prev:hover,
+.datepicker .next:hover {
+    background-color: #f3f4f6 !important;
+    color: #10b981 !important;
+}
+
+html.dark .datepicker .datepicker-switch:hover,
+html.dark .datepicker .prev:hover,
+html.dark .datepicker .next:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #34d399 !important;
+}
+
+.datepicker th.prev, 
+.datepicker th.next {
+    color: #6b7280 !important;
+}
+
+html.dark .datepicker th.prev, 
+html.dark .datepicker th.next {
+    color: #9ca3af !important;
+}
+
+/* Hide standard bootstrap-datepicker dropdown arrows and make it look clean */
+.datepicker-dropdown:after,
+.datepicker-dropdown:before {
+    display: none !important;
+}
+.datepicker-dropdown {
+    margin-top: 8px !important;
+}

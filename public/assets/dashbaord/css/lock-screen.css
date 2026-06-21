@@ -1,0 +1,73 @@
+/*
+ * MJK-ALTHANI - PREMIUM LOCK SCREEN
+ * Specific styles for the lock screen avatar and user status
+ */
+
+.lock-avatar-premium {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    padding: 5px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin: 0 auto 1.5rem;
+    position: relative;
+    border: 2px solid #f1f5f9;
+}
+
+.lock-avatar-premium img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.lock-avatar-initials {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.2rem;
+    font-weight: 800;
+}
+
+.lock-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: #f0fdf4;
+    color: #166534;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.different-account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 2rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.different-account:hover {
+    color: var(--primary);
+}

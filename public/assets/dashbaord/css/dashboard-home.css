@@ -1,0 +1,221 @@
+/* Dokana Premium Glassmorphism Theme */
+
+:root {
+    --dokana-primary: #4f46e5;
+    --dokana-success: #10b981;
+    --dokana-warning: #f59e0b;
+    --dokana-danger: #ef4444;
+    --dokana-info: #06b6d4;
+    --dokana-bg: #f8fafc;
+    --dokana-card-bg: #ffffff;
+    --dokana-text-main: #0f172a;
+    --dokana-text-muted: #64748b;
+}
+
+/* 1. Header Banner */
+.dokana-welcome-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%) !important;
+    border-radius: 16px !important;
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(49, 46, 129, 0.15) !important;
+    overflow: hidden;
+    position: relative;
+    padding: 1.5rem 2rem !important;
+}
+
+/* Subtle background grid pattern */
+.dokana-welcome-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0);
+    background-size: 24px 24px;
+    opacity: 0.8;
+}
+
+/* Interactive floating glowing circle inside banner */
+.dokana-welcome-banner::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%);
+    top: -50px;
+    left: -50px;
+    border-radius: 50%;
+}
+html[data-textdirection="rtl"] .dokana-welcome-banner::after {
+    left: auto;
+    right: -50px;
+}
+
+.dokana-welcome-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #ffffff !important;
+}
+
+.dokana-welcome-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 500;
+}
+
+.dokana-welcome-date {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 0.6rem 1.2rem !important;
+    font-weight: 600;
+    color: #ffffff !important;
+    backdrop-filter: blur(8px);
+}
+
+/* 2. Glassmorphic Stat Cards */
+.dokana-glass-card {
+    background: #ffffff !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.02), 0 2px 8px -1px rgba(15, 23, 42, 0.02) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem 1.25rem !important;
+}
+
+.dokana-glass-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px -5px rgba(15, 23, 42, 0.06), 0 8px 16px -6px rgba(15, 23, 42, 0.06) !important;
+    border-color: rgba(79, 70, 229, 0.2) !important;
+}
+
+/* Glowing left border indicator */
+.dokana-glass-card.card-stores { border-inline-start: 5px solid var(--dokana-primary) !important; }
+.dokana-glass-card.card-users { border-inline-start: 5px solid var(--dokana-info) !important; }
+.dokana-glass-card.card-customers { border-inline-start: 5px solid var(--dokana-warning) !important; }
+.dokana-glass-card.card-debts { border-inline-start: 5px solid var(--dokana-danger) !important; }
+.dokana-glass-card.card-collections { border-inline-start: 5px solid var(--dokana-success) !important; }
+
+.dokana-stat-value {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    line-height: 1.1 !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.dokana-stat-title {
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    margin: 0 !important;
+}
+
+/* Custom circular icon wrappers with shadow glow */
+.dokana-avatar-wrapper {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s ease;
+}
+
+.card-stores .dokana-avatar-wrapper {
+    background: rgba(79, 70, 229, 0.1) !important;
+    color: var(--dokana-primary) !important;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.1) !important;
+}
+.card-users .dokana-avatar-wrapper {
+    background: rgba(6, 182, 212, 0.1) !important;
+    color: var(--dokana-info) !important;
+    box-shadow: 0 4px 10px rgba(6, 182, 212, 0.1) !important;
+}
+.card-customers .dokana-avatar-wrapper {
+    background: rgba(245, 158, 11, 0.1) !important;
+    color: var(--dokana-warning) !important;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.1) !important;
+}
+.card-debts .dokana-avatar-wrapper {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: var(--dokana-danger) !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.1) !important;
+}
+.card-collections .dokana-avatar-wrapper {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: var(--dokana-success) !important;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1) !important;
+}
+
+.dokana-glass-card:hover .dokana-avatar-wrapper {
+    transform: scale(1.1);
+}
+
+.dokana-avatar-wrapper i {
+    font-size: 1.3rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* 3. Table Cards */
+.dokana-table-card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.02) !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+}
+
+.dokana-table-card .card-header {
+    background-color: #fafbfc !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+.dokana-table-card .card-header h5 {
+    font-weight: 700;
+    color: #1e1b4b;
+    font-size: 1.05rem;
+}
+
+/* Scrollable container with sticky headers and clean styling */
+.dokana-scroll-container {
+    max-height: 285px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.dokana-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+.dokana-scroll-container::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+.dokana-scroll-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.dokana-scroll-container table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #fafbfc !important;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+    font-weight: 700;
+    color: #475569;
+}
+
+/* Utilities */
+.dokana-icon-spacing {
+    margin-inline-end: 8px !important;
+}
+
+.bg-rgba-white-20 {
+    background: rgba(255, 255, 255, 0.15) !important;
+}

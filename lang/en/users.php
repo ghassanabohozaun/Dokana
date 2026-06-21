@@ -1,0 +1,46 @@
+<?php
+return [
+    'create_new_user' => 'Create New User',
+    'update_user' => 'Update User',
+    'users' => 'Users',
+    'show_all_users' => 'Show All Users',
+    'orders_count' => 'Orders Count',
+    'no_orders' => 'No Orders',
+    'select' => 'Select',
+
+    'name' => 'User Name',
+    'name_ar' => 'Arabic User Name',
+    'name_en' => 'English User Name',
+    'mobile' => 'User Mobile',
+    'email' => 'User Email',
+    'password' => 'User Password',
+    'password_confirm' => 'Password Confirm ',
+    'photo' => 'User Photo',
+    'role_id' => 'User Role',
+    'status' => 'Status',
+    'created_by' => 'Created By',
+    'email_verified_at' => 'Email Verified At',
+    'manage_status' => 'Manage Status',
+
+    'enter_name' => 'Enter User Name',
+    'enter_name_ar' => 'Enter Arabic User Name',
+    'enter_name_en' => 'Enter English User Name',
+    'enter_mobile' => 'Enter User Mobile',
+    'enter_email' => 'Enter User Email',
+    'enter_password' => 'Enter User Password',
+    'enter_password_confirm' => 'Enter Password Confirm',
+    'enter_status' => 'Enter Status',
+
+    'no_users_found' => 'No Users Found !',
+    'login_success' => 'Users Login Successfully',
+    'active_users' => 'Active Users',
+    'managers' => 'Managers',
+    'super_users' => 'Super Users',
+
+    // SaaS Admin Fields
+    'admin_details' => 'Default Store Admin Details',
+    'admin_name' => 'Name',
+    'admin_email' => 'Email',
+    'enter_admin_name' => 'Enter Admin Name',
+    'enter_admin_email' => 'Enter Admin Email',
+];

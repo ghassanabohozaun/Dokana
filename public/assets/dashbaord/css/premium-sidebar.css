@@ -1,0 +1,361 @@
+/* ========================================================================
+   ULTRA PREMIUM SIDEBAR STYLING
+   Dual-Directional (Supports both LTR & RTL seamlessly)
+======================================================================== */
+
+/* Base Sidebar Background */
+.main-menu.menu-dark {
+    background: #0f172a !important; /* Midnight Navy Slate */
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark {
+    border-right: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* --- SIDEBAR SEARCH --- */
+.sidebar-search-wrapper {
+    padding: 20px 14px 10px 14px;
+    animation: fadeIn 0.8s ease-out;
+}
+
+.sidebar-search-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    padding: 2px;
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.sidebar-search-container:hover,
+.sidebar-search-container:focus-within {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #38bdf8;
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+}
+
+.sidebar-search-icon {
+    position: absolute;
+    top: 50%;
+    inset-inline-start: 12px;
+    transform: translateY(-50%);
+    color: #64748b;
+    font-size: 1.2rem;
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+.sidebar-search-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 10px 10px 10px 38px;
+    color: #f8fafc;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.sidebar-search-input::placeholder {
+    color: #cbd5e1;
+    opacity: 0.9;
+}
+
+html[data-textdirection="rtl"] .sidebar-search-input {
+    padding: 10px 38px 10px 10px;
+}
+
+.sidebar-search-container:focus-within .sidebar-search-icon {
+    color: #38bdf8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header & Text Base */
+.main-menu.menu-dark .navigation-header {
+    padding: 18px 24px 8px 24px !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.8rem; /* Restored original */
+    font-weight: 800;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation-header {
+    font-family: 'Tajawal', sans-serif !important;
+    font-size: 1.05rem !important; /* Restored original */
+    letter-spacing: 0;
+}
+
+.main-menu.menu-dark .navigation {
+    background: transparent !important;
+}
+
+/* --- MAIN MENU ITEMS --- */
+.main-menu.menu-dark .navigation > li {
+    margin-bottom: 2px !important; /* Spacing between all items */
+}
+
+.main-menu.menu-dark .navigation > li:first-child {
+    margin-bottom: 5px !important; /* Extra spacing below Dashboard */
+}
+
+.main-menu.menu-dark .navigation > li > a {
+    padding: 12px 18px !important;
+    margin: 4px 14px !important;
+    border-radius: 2px !important;
+    color: #94a3b8 !important;
+    border-left: 4px solid transparent;
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > a {
+    border-left: none;
+    border-right: 4px solid transparent;
+}
+
+/* Icons */
+.main-menu.menu-dark .navigation > li > a > i {
+    font-size: 1.4rem !important;
+    margin-right: 14px !important;
+    color: #64748b !important;
+    vertical-align: middle !important;
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > a > i {
+    margin-right: 0 !important;
+    margin-left: 14px !important;
+}
+
+/* Menu Text */
+.main-menu.menu-dark .navigation > li > a > span.menu-title {
+    vertical-align: middle !important;
+    display: inline-block !important;
+    padding-top: 2px !important;
+    font-size: 0.95rem !important; /* Restored original */
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* Hover State */
+.main-menu.menu-dark .navigation > li:hover > a {
+    background: rgba(56, 189, 248, 0.08) !important;
+    color: #f8fafc !important;
+    box-shadow: none !important; /* Truly Flat */
+}
+
+.main-menu.menu-dark .navigation > li:hover > a > i {
+    color: #38bdf8 !important; /* Neon Blue */
+    transform: translateX(4px) !important;
+}
+
+.main-menu.menu-dark .navigation > li:hover > a > span.menu-title {
+    transform: translateX(4px) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li:hover > a > i {
+    transform: translateX(-4px) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li:hover > a > span.menu-title {
+    transform: translateX(-4px) !important;
+}
+
+/* Active State */
+.main-menu.menu-dark .navigation > li.active > a {
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.0) 100%) !important;
+    color: #ffffff !important;
+    border-left: 4px solid #38bdf8 !important;
+    font-weight: 600;
+    box-shadow: none !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li.active > a {
+    background: linear-gradient(-90deg, rgba(56, 189, 248, 0.15) 0%, rgba(56, 189, 248, 0.0) 100%) !important;
+    border-left: none !important;
+    border-right: 4px solid #38bdf8 !important;
+}
+
+.main-menu.menu-dark .navigation > li.active > a > i {
+    color: #38bdf8 !important;
+}
+
+/* Open State (When submenu is visible) */
+.main-menu.menu-dark .navigation > li.open > a {
+    background: rgba(0, 0, 0, 0.25) !important;
+    color: #ffffff !important;
+}
+
+.main-menu.menu-dark .navigation > li.open > a > i {
+    color: #38bdf8 !important;
+}
+
+/* --- CHEVRON / ARROWS --- */
+.main-menu.menu-dark .navigation > li.has-sub > a::after {
+    transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    opacity: 0.6;
+    right: 14px;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li.has-sub > a::after {
+    right: auto;
+    left: 14px;
+}
+
+/* Smooth Chevron Rotation */
+.main-menu.menu-dark .navigation > li.has-sub.open > a::after {
+    transform: rotate(90deg) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li.has-sub.open > a::after {
+    transform: rotate(-90deg) !important;
+}
+
+
+/* --- SUBMENUS (Tree Structure) --- */
+.main-menu.menu-dark .navigation > li > ul {
+    background: transparent;
+    margin-left: 34px;
+    margin-right: 14px;
+    border-left: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > ul {
+    margin-left: 14px;
+    margin-right: 34px;
+    border-left: none;
+    border-right: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Submenu Links */
+.main-menu.menu-dark .navigation > li > ul > li > a {
+    padding: 10px 18px 10px 24px !important;
+    color: #64748b !important;
+    position: relative;
+    font-size: 0.9rem; /* Restored original */
+    transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > ul > li > a {
+    padding-right: 40px !important; /* Increased further as requested */
+    padding-left: 18px !important;
+}
+
+/* Submenu Hover & Active */
+.main-menu.menu-dark .navigation > li > ul > li:hover > a,
+.main-menu.menu-dark .navigation > li > ul > li.active > a {
+    background: rgba(56, 189, 248, 0.08) !important;
+    color: #38bdf8 !important;
+    border-radius: 2px !important;
+    margin-right: 10px !important;
+}
+
+.main-menu.menu-dark .navigation > li > ul > li:hover > a {
+    transform: translateX(4px) !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > ul > li:hover > a {
+    transform: translateX(-4px) !important;
+}
+
+.main-menu.menu-dark .navigation > li > ul > li.active > a {
+    font-weight: 700 !important;
+}
+
+/* Tree Connectors (Bullet Lines) */
+.main-menu.menu-dark .navigation > li > ul > li > a::before {
+    content: '';
+    position: absolute;
+    left: -1px; /* Overlaps dashed border */
+    top: 50%;
+    margin-top: -0.5px;
+    width: 12px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li > ul > li > a::before {
+    left: auto;
+    right: -1px;
+}
+
+/* Highlight tree branch on hover/active */
+.main-menu.menu-dark .navigation > li > ul > li.active > a::before,
+.main-menu.menu-dark .navigation > li > ul > li:hover > a::before {
+    background: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+}
+
+/* Table Disaster Fix */
+.card-content .table-responsive,
+.table-responsive {
+    border-radius: 2px !important;
+    border: none !important;
+}
+
+@media (max-width: 1200px) {
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        display: block;
+        width: 100%;
+        padding-bottom: 10px;
+    }
+}
+
+@media (min-width: 1201px) {
+    .table-responsive {
+        overflow-x: hidden !important;
+        padding-bottom: 0 !important;
+    }
+    /* Force hide the horizontal scrollbar track on desktop */
+    .table-responsive::-webkit-scrollbar {
+        height: 0px !important;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: transparent !important;
+    }
+}
+
+.table-premium,
+.table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important;
+    margin-bottom: 0 !important;
+    table-layout: auto !important;
+}
+
+@media (max-width: 767px) {
+    .table thead th {
+        font-size: 0.8rem !important;
+        padding: 10px 8px !important;
+    }
+    
+    .table tbody td {
+        font-size: 0.85rem !important;
+        padding: 12px 8px !important;
+        vertical-align: middle !important;
+    }
+
+    /* Force certain buttons to be smaller on mobile */
+    .btn-sm, .btn-group-sm > .btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.75rem !important;
+    }
+}
+
+/* ── Guarantors: shift text 10px from right edge in RTL only ── */
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li.nav-item-guarantors > a {
+    padding-right: 28px !important;
+}
+
+html[data-textdirection="rtl"] .main-menu.menu-dark .navigation > li.nav-item-guarantors > ul > li > a {
+    padding-right: 34px !important;
+}

@@ -1,0 +1,122 @@
+/* Toast Notifications Container */
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+/* RTL adjustment */
+[dir="rtl"] #toast-container {
+    right: auto;
+    left: 24px;
+}
+
+/* Toast Item */
+.toast-item {
+    min-width: 280px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    pointer-events: auto;
+    transform: translateY(50px) scale(0.95);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dark .toast-item {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+}
+
+.toast-item.show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+.toast-item.hide {
+    transform: translateY(-20px) scale(0.9);
+    opacity: 0;
+}
+
+/* Types */
+.toast-success .toast-icon {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.15);
+}
+.toast-error .toast-icon {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+}
+.toast-info .toast-icon {
+    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.toast-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 2px;
+}
+
+.dark .toast-title {
+    color: #f3f4f6;
+}
+
+.toast-message {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.dark .toast-message {
+    color: #9ca3af;
+}
+
+/* Close btn */
+.toast-close {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 50%;
+    transition: 0.2s;
+    outline: none;
+}
+
+.toast-close:hover {
+    background: rgba(0,0,0,0.05);
+    color: #374151;
+}
+
+.dark .toast-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: #f3f4f6;
+}
