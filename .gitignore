@@ -7,9 +7,8 @@
 /public/uploads/users/*
 /public/uploads/companies/*
 /public/uploads/properties/*
-/public/uploads/properties/certificates/*
-/public/uploads/properties/contracts/*
-/public/uploads/properties/docs/*
+/public/uploads//contracts/*
+/public/uploads/properties/docs/
 
 
 /storage/*.key

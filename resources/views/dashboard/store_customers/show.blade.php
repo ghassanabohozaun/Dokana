@@ -74,7 +74,7 @@
             <!-- Main Grid -->
             <div class="row">
                 <!-- Left Sidebar: Financial Summary -->
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column" id="left-profile-column">
                     <div class="profile-card">
                         <div class="profile-card-header">
                             <i class="fas fa-wallet"></i> {!! __('store_customers.financial_summary') !!}
@@ -109,11 +109,11 @@
                         </div>
                     </div>
 
-                    <div class="profile-card">
+                    <div class="profile-card flex-grow-1 mb-0 d-flex flex-column">
                         <div class="profile-card-header">
                             <i class="fas fa-info-circle"></i> {!! __('store_customers.customer_details') !!}
                         </div>
-                        <div class="profile-card-body">
+                        <div class="profile-card-body flex-grow-1">
                             <div class="details-grid">
                                 <div class="detail-box">
                                     <div class="detail-box-label"><i class="fas fa-calendar-alt text-primary mr-1"></i> {!! __('general.created_at') !!}</div>
@@ -129,8 +129,8 @@
                 </div>
 
                 <!-- Right Content: Transactions -->
-                <div class="col-md-8">
-                    <div class="profile-card">
+                <div class="col-md-8 mb-4 d-flex flex-column">
+                    <div class="profile-card flex-grow-1 mb-0 d-flex flex-column" id="right-transactions-card">
                         <div class="profile-card-header d-flex justify-content-between align-items-center">
                             <div>
                                 <i class="fas fa-list-alt"></i> {!! __('store_transactions.store_transactions') !!}
@@ -143,74 +143,25 @@
                                         data-customer-name="{!! $store_customer->name !!}" 
                                         data-store-id="{!! $store_customer->store_id !!}" 
                                         data-store-name="{!! optional($store_customer->store)->name !!}">
-                                        <i class="fas fa-plus"></i> إضافة حركة
+                                        <i class="fas fa-plus"></i> {!! __('general.add') !!} {!! __('store_transactions.store_transaction') !!}
                                     </button>
                                 @else
                                     <button type="button" class="btn btn-sm" style="background-color: #f1f5f9; color: #94a3b8; border: 1px dashed #cbd5e1; cursor: not-allowed; font-weight: 600; border-radius: 8px; padding: 6px 16px;" disabled
                                         title="{!! __('store_transactions.customer_is_disabled') !!}">
-                                        <i class="fas fa-lock mr-1"></i> إضافة حركة
+                                        <i class="fas fa-lock mr-1"></i> {!! __('general.add') !!} {!! __('store_transactions.store_transaction') !!}
                                     </button>
                                 @endif
                             @endcan
                         </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive" style="max-height: 350px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                                <table class="table table-hover mb-0 text-center" style="min-width: 600px;">
-                                    <thead style="position: sticky; top: 0; z-index: 10; background: #f8fafc; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{!! __('store_transactions.date') !!}</th>
-                                            <th>{!! __('store_transactions.type') !!}</th>
-                                            <th>{!! __('store_transactions.amount') !!}</th>
-                                            <th>{!! __('store_transactions.description') !!}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($transactions as $index => $transaction)
-                                            <tr>
-                                                <td class="align-middle">{!! $index + 1 !!}</td>
-                                                <td class="align-middle">
-                                                    <span class="font-weight-bold text-dark">{!! $transaction->transaction_date !!}</span>
-                                                </td>
-                                                <td class="align-middle">
-                                                    @if($transaction->type === 'debt')
-                                                        <span class="premium-store-badge store-badge-debt">
-                                                            <i class="fas fa-arrow-down"></i> {!! __('store_transactions.debt') !!}
-                                                        </span>
-                                                    @else
-                                                        <span class="premium-store-badge store-badge-payment">
-                                                            <i class="fas fa-arrow-up"></i> {!! __('store_transactions.payment') !!}
-                                                        </span>
-                                                    @endif
-                                                </td>
-                                                <td class="align-middle">
-                                                    <span class="font-weight-bold {{ $transaction->type === 'debt' ? 'text-danger' : 'text-success' }}" style="font-size: 15px;">
-                                                        {!! number_format($transaction->amount, 2) !!}
-                                                    </span>
-                                                </td>
-                                                <td class="align-middle text-muted">
-                                                    {!! $transaction->description ?: '-' !!}
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="5" class="text-center py-4">
-                                                    <div class="text-muted">
-                                                        <i class="fas fa-folder-open fa-3x mb-2 opacity-50"></i>
-                                                        <p class="mb-0">{!! __('general.no_data') !!}</p>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                        <div class="card-body pt-0">
+                            <div class="table-loader-container">
+                                <div class="table-loader-overlay" id="tableLoader">
+                                    <span class="premium-loader"></span>
+                                </div>
+                                <div id="table_data">
+                                    @include('dashboard.store_customers.partials._transactions_table')
+                                </div>
                             </div>
-                            
-                            @if($transactions->hasPages())
-                            <div class="d-flex justify-content-center p-3 border-top">
-                                {!! $transactions->links() !!}
-                            </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -227,6 +178,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('assets/dashbaord/js/ajax-table.js') }}"></script>
 <script>
     // Include the same add_transaction logic here to allow adding from profile page
     $(document).on('click', '.add_transaction_button', function() {
@@ -256,6 +208,12 @@
         setTimeout(function() {
             window.location.reload();
         }, 1000);
+    });
+
+    $(document).ready(function() {
+        if (typeof initIndexTable === "function") {
+            initIndexTable();
+        }
     });
 </script>
 @endpush
