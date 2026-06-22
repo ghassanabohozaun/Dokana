@@ -5,6 +5,16 @@
             {{ auth('casher')->user() && auth('casher')->user()->store ? auth('casher')->user()->store->name : __('notebook.store_notebook') }}
         </h1>
         <div class="flex items-center gap-2">
+            <!-- User Widget -->
+            <div class="hidden sm:flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-full px-2.5 py-1 border border-gray-200 dark:border-gray-700 shadow-sm me-1 transition-all hover:shadow-md">
+                <div class="bg-primary/10 text-primary rounded-full p-1 flex items-center justify-center h-6 w-6">
+                    <i class="ph-fill ph-user text-sm"></i>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <span class="text-[9px] text-gray-500 dark:text-gray-400 font-medium leading-none mb-0.5">{{ __('dashboard.welcome') ?? 'مرحباً' }}</span>
+                    <span class="text-xs font-bold text-gray-800 dark:text-gray-200 leading-none">{{ auth('casher')->user() ? auth('casher')->user()->name : 'Cashier' }}</span>
+                </div>
+            </div>
             @php
                 $currentLocale = app()->getLocale();
                 $targetLocale = $currentLocale == 'ar' ? 'en' : 'ar';

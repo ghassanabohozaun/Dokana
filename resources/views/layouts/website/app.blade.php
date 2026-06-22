@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ Lang() }}" dir="{{ Lang() == 'ar' ? 'rtl' : 'ltr' }}" class="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'دفتر البقالة')</title>
+    <title>@yield('title', 'الكاشير')</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,13 +24,27 @@
                     },
                     keyframes: {
                         warningPop: {
-                            '0%': { transform: 'scale(0.8)', opacity: '0' },
-                            '60%': { transform: 'scale(1.05)', opacity: '1' },
-                            '100%': { transform: 'scale(1)' },
+                            '0%': {
+                                transform: 'scale(0.8)',
+                                opacity: '0'
+                            },
+                            '60%': {
+                                transform: 'scale(1.05)',
+                                opacity: '1'
+                            },
+                            '100%': {
+                                transform: 'scale(1)'
+                            },
                         },
                         swalHide: {
-                            '0%': { transform: 'scale(1) translateY(0)', opacity: '1' },
-                            '100%': { transform: 'scale(0.85) translateY(20px)', opacity: '0' },
+                            '0%': {
+                                transform: 'scale(1) translateY(0)',
+                                opacity: '1'
+                            },
+                            '100%': {
+                                transform: 'scale(0.85) translateY(20px)',
+                                opacity: '0'
+                            },
                         }
                     },
                     animation: {
@@ -47,12 +62,15 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/website/style.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('assets/website/toast.css') }}?v={{ time() }}">
-    <link rel="shortcut icon" href="{!! setting()->favicon ? asset('uploads/settings/' . setting()->favicon) : asset('assets/dashboard/images/dokkana-logo.png') !!}" />
+    <link rel="shortcut icon" href="{!! setting()->favicon
+        ? asset('uploads/settings/' . setting()->favicon)
+        : asset('assets/dashboard/images/dokkana-logo.png') !!}" />
     @stack('css')
     @livewireStyles
 </head>
+
 <body class="bg-gray-50 text-gray-800 dark:bg-dark dark:text-gray-100 transition-colors duration-300 antialiased">
-    
+
     @isset($slot)
         {{ $slot }}
     @else
@@ -65,4 +83,5 @@
     <script src="{{ asset('assets/website/toast.js') }}?v={{ time() }}"></script>
     @stack('scripts')
 </body>
+
 </html>
