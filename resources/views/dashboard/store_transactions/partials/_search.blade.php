@@ -65,6 +65,70 @@
                 </div>
             @endif
 
+            @if (isset($customers) && $customers->count() > 0)
+                <!-- Customer Filter -->
+                <div class="filter-item">
+                    <div class="filter-chip js-filter-chip" data-filter-target="customer_search_popover">
+                        <i class="fas fa-users text-primary"></i>
+                        <span class="chip-text">{!! __('store_customers.store_customer') ?? 'العميل' !!}</span>
+                    </div>
+
+                    <div class="ptc-query-panel shadow-lg border-0 radius-16" id="customer_search_popover" style="min-width: 280px;">
+                        <div class="mb-3">
+                            <label class="premium-label mb-2">{!! __('store_customers.store_customer') ?? 'العميل' !!}</label>
+                            <div class="premium-input-wrapper">
+                                <select name="store_customer_id"
+                                    class="form-control premium-input shadow-none js-select2"
+                                    data-placeholder="{!! __('general.all') !!}" data-parent="#customer_search_popover">
+                                    <option value="">{!! __('general.all') !!}</option>
+                                    @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                    @endforeach
+                                </select>
+                                <i class="fas fa-users text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="popover-actions mt-4 text-right">
+                            <button type="button" class="btn btn-premium-blue btn-sm js-apply-filter px-4">
+                                <i class="fas fa-check-circle mr-1"></i> {!! __('general.apply') !!}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            @if (isset($bankAccounts))
+                <!-- Bank Account Filter -->
+                <div class="filter-item">
+                    <div class="filter-chip js-filter-chip" data-filter-target="bank_account_search_popover">
+                        <i class="fas fa-wallet text-primary"></i>
+                        <span class="chip-text">{!! __('bank_accounts.bank_account') ?? 'الحساب' !!}</span>
+                    </div>
+
+                    <div class="ptc-query-panel shadow-lg border-0 radius-16" id="bank_account_search_popover" style="min-width: 280px;">
+                        <div class="mb-3">
+                            <label class="premium-label mb-2">{!! __('bank_accounts.bank_account') ?? 'الحساب' !!}</label>
+                            <div class="premium-input-wrapper">
+                                <select name="store_bank_account_id"
+                                    class="form-control premium-input shadow-none js-select2"
+                                    data-placeholder="{!! __('general.all') !!}" data-parent="#bank_account_search_popover">
+                                    <option value="">{!! __('general.all') !!}</option>
+                                    @foreach ($bankAccounts as $account)
+                                        <option value="{{ $account->id }}">{{ $account->paymentEntity->name ?? 'حساب' }} ({{ $account->account_number }})</option>
+                                    @endforeach
+                                </select>
+                                <i class="fas fa-wallet text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="popover-actions mt-4 text-right">
+                            <button type="button" class="btn btn-premium-blue btn-sm js-apply-filter px-4">
+                                <i class="fas fa-check-circle mr-1"></i> {!! __('general.apply') !!}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Type Filter -->
             <div class="filter-item">
                 <div class="filter-chip js-filter-chip" data-filter-target="type_search_popover">

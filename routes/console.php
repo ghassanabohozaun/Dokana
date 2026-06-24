@@ -10,3 +10,7 @@ Artisan::command('inspire', function () {
 
 // Schedule the daily digest to run every day at 08:00 AM
 Schedule::command('system:daily-digest')->dailyAt('08:00');
+
+// Schedule the daily audit for overdue debts to run every day at 08:00 AM
+Schedule::command('app:check-overdue-debts')->dailyAt('08:00');
+

@@ -5,16 +5,6 @@
             {{ auth('casher')->user() && auth('casher')->user()->store ? auth('casher')->user()->store->name : __('notebook.store_notebook') }}
         </h1>
         <div class="flex items-center gap-2">
-            <!-- User Widget -->
-            <div class="hidden sm:flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 rounded-full px-2.5 py-1 border border-gray-200 dark:border-gray-700 shadow-sm me-1 transition-all hover:shadow-md">
-                <div class="bg-primary/10 text-primary rounded-full p-1 flex items-center justify-center h-6 w-6">
-                    <i class="ph-fill ph-user text-sm"></i>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <span class="text-[9px] text-gray-500 dark:text-gray-400 font-medium leading-none mb-0.5">{{ __('dashboard.welcome') ?? 'مرحباً' }}</span>
-                    <span class="text-xs font-bold text-gray-800 dark:text-gray-200 leading-none">{{ auth('casher')->user() ? auth('casher')->user()->name : 'Cashier' }}</span>
-                </div>
-            </div>
             @php
                 $currentLocale = app()->getLocale();
                 $targetLocale = $currentLocale == 'ar' ? 'en' : 'ar';
@@ -24,17 +14,24 @@
                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95 text-gray-600 dark:text-gray-300 font-bold text-sm flex items-center gap-1">
                 <span>{{ $targetNative }}</span>
             </a>
+            <button @click="showAccountsSheet = true" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
+                <i class="ph-fill ph-wallet text-xl text-primary"></i>
+            </button>
             <button id="themeToggleBtn" onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
                 <i class="ph-fill ph-moon text-xl dark:hidden text-gray-600"></i>
                 <i class="ph-fill ph-sun text-xl hidden dark:block text-yellow-400"></i>
             </button>
-            <a href="{{ route('website.casher.logout') }}" 
-               class="p-2 rounded-full hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30 dark:hover:text-red-400 text-gray-600 dark:text-gray-300 transition-colors active:scale-95" 
-               title="{{ __('notebook.logout') ?? 'تسجيل الخروج' }}">
-                <i class="ph-bold ph-sign-out text-xl"></i>
-            </a>
-            <!-- Loading Indicator -->
-            <div x-show="isLoading" class="mx-2 flex items-center" x-cloak x-transition.opacity>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div x-show="isLoading" class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center z-20 pointer-events-none" x-cloak 
+            x-transition:enter="transition-opacity duration-150"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
+            <div class="bg-white/80 dark:bg-black/50 p-2 rounded-full backdrop-blur-sm shadow-sm border border-gray-100 dark:border-gray-800">
                 <i class="ph-bold ph-spinner animate-spin text-xl text-primary drop-shadow-md"></i>
             </div>
         </div>

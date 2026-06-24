@@ -30,23 +30,6 @@ class UserSeeder extends Seeder
             ],
         );
 
-        // 2. Demo Store Admin (Store Manager)
-        $demoStore = Store::where('name->en', 'Demo Store')->first();
-        if ($demoStore) {
-            User::firstOrCreate(
-                ['email' => 'demo@admin.com'],
-                [
-                    'name' => [
-                        'en' => 'Store Admin',
-                        'ar' => 'مدير المتجر',
-                    ],
-                    'password' => bcrypt('123456'),
-                    'store_id' => $demoStore->id,
-                    'role_id' => $adminRole->id,
-                    'status' => true,
-                    'mobile' => '0599624222',
-                ],
-            );
-        }
+
     }
 }

@@ -34,6 +34,7 @@ return [
     'cannot_delete_has_roles' => 'لا يمكن حذف هذه الدكانة لوجود أدوار (Roles) مرتبطة بها حالياً.',
     'cannot_delete_has_customers' => 'لا يمكن حذف هذه الدكانة لوجود عملاء مرتبطين بها حالياً.',
     'cannot_delete_has_transactions' => 'لا يمكن حذف هذه الدكانة لوجود حركات مالية مرتبطة بها حالياً.',
+    'cannot_delete_has_withdrawals' => 'لا يمكن حذف هذه الدكانة لوجود سحوبات مالية مرتبطة بها حالياً.',
     'choose_store' => 'اختر الدكانة',
     'iban_unique_error' => 'رقم الآيبان (IBAN) مسجل مسبقاً في النظام.',
 ];

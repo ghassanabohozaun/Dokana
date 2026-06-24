@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->foreignId('store_customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('store_bank_account_id')->nullable()->constrained('store_bank_accounts')->nullOnDelete();
             $table->enum('type', ['debt', 'payment']);
             $table->decimal('amount', 10, 2);
-            $table->date('transaction_date');
+            $table->dateTime('transaction_date');
             $table->string('description')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
     }

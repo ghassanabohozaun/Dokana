@@ -23,10 +23,10 @@ class StoreTransactionRepository
     }
 
     // get all
-    public function getAll($keyword = null, $store_id = null, $type = null, $specific_date = null, $start_date = null, $end_date = null)
+    public function getAll($keyword = null, $store_id = null, $type = null, $specific_date = null, $start_date = null, $end_date = null, $store_customer_id = null, $store_bank_account_id = null)
     {
         $query = $this->model->with(['store', 'customer'])
-            ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'type' => $type], [], ['store_id', 'type'])
+            ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'type' => $type, 'store_customer_id' => $store_customer_id, 'store_bank_account_id' => $store_bank_account_id], [], ['store_id', 'type', 'store_customer_id', 'store_bank_account_id'])
             ->orderByDesc('id');
 
         // Apply general text search across customer name if needed
@@ -73,6 +73,6 @@ class StoreTransactionRepository
     // destroy
     public function destroy($storeTransaction)
     {
-        return $storeTransaction->delete();
+        return $storeTransaction->forceDelete();
     }
 }

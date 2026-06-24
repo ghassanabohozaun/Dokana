@@ -38,6 +38,7 @@ class StoreService
 
         if ($store) {
             $this->syncStoreSettings($store);
+            $this->createDefaultCashBox($store);
         }
 
         return $store;
@@ -106,6 +107,31 @@ class StoreService
         return Setting::updateOrCreate(
             ['store_id' => $store->id],
             $settingData
+        );
+    }
+
+    /**
+     * Create the default Cash Box for the store.
+     */
+    public function createDefaultCashBox($store)
+    {
+        // 1. Get Cash PaymentEntity (already seeded)
+        $cashEntity = \App\Models\PaymentEntity::where('type', 'cash')->first();
+        
+        if (!$cashEntity) return;
+
+        // 2. Ensure StoreBankAccount for Cash Box exists
+        \App\Models\StoreBankAccount::firstOrCreate(
+            [
+                'store_id' => $store->id,
+                'account_type' => 'cash',
+            ],
+            [
+                'payment_entity_id' => $cashEntity->id,
+                'account_number' => 'CASH-' . $store->id,
+                'account_holder_name' => ['ar' => 'صندوق المتجر', 'en' => 'Store Cash Box'],
+                'is_default' => 1,
+            ]
         );
     }
 

@@ -257,5 +257,9 @@ return [
     'increase_font' => 'Increase Font',
     'default_font' => 'Default Font',
     'decrease_font' => 'Decrease Font',
+    'balance' => 'Current Balance',
+    'remaining_balance' => 'Remaining Balance',
+    'no_description' => 'No Description',
+    'default' => 'Default',
 ];
 

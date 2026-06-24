@@ -98,6 +98,7 @@
                                 <div class="premium-input-wrapper">
                                     <input type="text" id="phone_create" name="phone"
                                         class="form-control premium-input shadow-none" autocomplete="off"
+                                        maxlength="10" inputmode="numeric"
                                         placeholder="{!! __('stores.enter_phone') !!}">
                                     <i class="fas fa-phone text-primary"></i>
                                 </div>
@@ -178,6 +179,21 @@
                 browseLabel: "{!! __('general.choose_file') !!}",
                 removeClass: "btn btn-danger",
                 removeLabel: "{!! __('general.delete') !!}"
+            });
+
+            // Restrict phone field input on create store form
+            $('#phone_create').on('keypress', function(e) {
+                // Allow only numbers 0-9
+                if (e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
+            }).on('input', function() {
+                // Remove non-digit characters and limit to 10 digits
+                let val = $(this).val().replace(/\D/g, '');
+                if (val.length > 10) {
+                    val = val.substring(0, 10);
+                }
+                $(this).val(val);
             });
         });
     </script>

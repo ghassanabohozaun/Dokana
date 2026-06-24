@@ -42,6 +42,16 @@ window.PremiumFileInput = {
         if (window.PTC_I18N && window.PTC_I18N.fileinput) {
             options.browseLabel = window.PTC_I18N.fileinput.browseLabel;
             options.removeLabel = window.PTC_I18N.fileinput.removeLabel;
+        } else {
+            let currentLang = $('html').attr('lang') || 'en';
+            if (currentLang === 'ar') {
+                if (!customOptions.browseLabel) {
+                    options.browseLabel = "اختار الملف ..";
+                }
+                if (!customOptions.removeLabel) {
+                    options.removeLabel = "حذف";
+                }
+            }
         }
 
         // Initialize

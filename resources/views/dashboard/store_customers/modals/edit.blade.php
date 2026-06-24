@@ -59,9 +59,33 @@
                                 <label class="premium-label" for="phone_edit">{!! __('store_customers.phone') !!}</label>
                                 <input type="text" id="phone_edit" name="phone"
                                     class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('store_customers.enter_phone') !!}">
+                                    placeholder="{!! __('store_customers.enter_phone') !!}"
+                                    maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').substring(0, 10)">
                                 <span class="text-danger error-text phone_error"></span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mt-2 mb-2">
+                            <label for="bypass_debt_limit_edit" class="premium-switch-container"
+                                style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; width: 100% !important;">
+                                <div class="premium-switch-content"
+                                    style="display: flex !important; align-items: center !important; gap: 1rem !important;">
+                                    <div class="premium-switch-icon-circle text-success shadow-sm">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div class="premium-switch-texts">
+                                        <h6 class="premium-switch-title mb-1">{!! __('store_customers.bypass_debt_limit') !!}</h6>
+                                        <span class="premium-switch-subtitle">{!! __('store_customers.bypass_debt_limit_desc') !!}</span>
+                                    </div>
+                                </div>
+                                <label class="modern-switch" style="flex-shrink: 0 !important;">
+                                    <input type="checkbox" id="bypass_debt_limit_edit" name="bypass_debt_limit" value="1">
+                                    <span class="modern-slider"></span>
+                                </label>
+                            </label>
+                            <span class="text-danger error-text bypass_debt_limit_error"></span>
                         </div>
                     </div>
                 </div>
@@ -98,11 +122,13 @@
                 let store_customer_phone = $(this).attr('store_customer-phone');
                 let store_customer_store_id = $(this).attr('store_customer-store-id');
                 let store_customer_store_name = $(this).attr('store_customer-store-name');
+                let store_customer_bypass_debt_limit = $(this).attr('store_customer-bypass-debt-limit') == '1';
 
                 // Populate form fields
                 $('#id_edit').val(store_customer_id);
                 $('#name_edit').val(store_customer_name);
                 $('#phone_edit').val(store_customer_phone);
+                $('#bypass_debt_limit_edit').prop('checked', store_customer_bypass_debt_limit);
 
                 // Populate Select2 for Store
                 if ($('#store_id_dept_edit').length) {

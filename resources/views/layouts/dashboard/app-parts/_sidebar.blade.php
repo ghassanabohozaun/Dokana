@@ -31,11 +31,10 @@
                 <!-- end: Notifications -->
 
                 {{-- Group 1: System Management --}}
-                @if(auth()->user()->can('stores_read') || auth()->user()->can('bank_accounts_read') || auth()->user()->can('departments_read') || auth()->user()->can('settings_read'))
+                @if(auth()->user()->can('stores_read') || auth()->user()->can('departments_read') || auth()->user()->can('settings_read'))
                 @php
                     $isSystemActive =
                         Request::routeIs('dashboard.stores.*') ||
-                        Request::routeIs('dashboard.bank-accounts.*') ||
                         Request::routeIs('dashboard.departments.*') ||
                         Request::routeIs('dashboard.settings.*');
                 @endphp
@@ -52,13 +51,6 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('bank_accounts_read')
-                            <li class="@if (Request::routeIs('dashboard.bank-accounts.*')) active @endif">
-                                <a class="menu-item" href="{!! route('dashboard.bank-accounts.index') !!}">
-                                    {!! __('bank_accounts.bank_accounts') !!}
-                                </a>
-                            </li>
-                        @endcan
                         @can('departments_read')
                             <li class="@if (Request::routeIs('dashboard.departments.*')) active @endif">
                                 <a class="menu-item" href="{!! route('dashboard.departments.index') !!}">
@@ -66,11 +58,49 @@
                                 </a>
                             </li>
                         @endcan
-
                         @can('settings_read')
                             <li class="@if (Request::routeIs('dashboard.settings.*')) active @endif">
                                 <a class="menu-item" href="{!! route('dashboard.settings.index') !!}">
                                     {!! __('settings.settings') !!}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endif
+
+                {{-- Group 2: Financial Management --}}
+                @if(auth()->user()->can('payment_entities_read') || auth()->user()->can('bank_accounts_read') || auth()->user()->can('store_withdrawals_read'))
+                @php
+                    $isFinancialActive =
+                        Request::routeIs('dashboard.bank-accounts.*') ||
+                        Request::routeIs('dashboard.payment-entities.*') ||
+                        Request::routeIs('dashboard.store-withdrawals.*');
+                @endphp
+                <li class="nav-item has-sub @if ($isFinancialActive) open @endif">
+                    <a href="javascript:void(0)">
+                        <i class="fas fa-wallet"></i>
+                        <span class="menu-title">{!! __('dashboard.financial_management') !!}</span>
+                    </a>
+                    <ul class="menu-content">
+                        @can('payment_entities_read')
+                            <li class="@if (Request::routeIs('dashboard.payment-entities.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.payment-entities.index') !!}">
+                                    {!! __('payment_entities.payment_entities') !!}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('bank_accounts_read')
+                            <li class="@if (Request::routeIs('dashboard.bank-accounts.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.bank-accounts.index') !!}">
+                                    {!! __('bank_accounts.bank_accounts') !!}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('store_withdrawals_read')
+                            <li class="@if (Request::routeIs('dashboard.store-withdrawals.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.store-withdrawals.index') !!}">
+                                    {!! __('store_withdrawals.store_withdrawals') !!}
                                 </a>
                             </li>
                         @endcan

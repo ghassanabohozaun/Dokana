@@ -5,18 +5,19 @@
             <tr>
                 <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
                 <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">#</th>
-                @if(isset($stores))
-                <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                @if (isset($stores))
+                    <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.bank_name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.account_number') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-xl-table-cell">{!! __('bank_accounts.account_holder_name') !!}
-                </th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.account_details') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.account_info') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.total_deposits') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.total_withdrawals') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('general.balance') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.is_default') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('departments.created_by') !!}
-                </th>
+                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('departments.created_by') !!}</th>
                 @if (auth()->user()->can('bank_accounts_update') || auth()->user()->can('bank_accounts_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">{!! __('general.actions') !!}</th>
+                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
+                        {!! __('general.actions') !!}</th>
                 @endif
             </tr>
         </thead>
@@ -42,7 +43,14 @@
                                             <i class="fas fa-university font-40"></i>
                                         </div>
                                     </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $account->bank_name !!}</h4>
+                                    <h4 class="modal-name-title font-weight-bold">
+                                        @if ($account->account_type == 'wallet')
+                                            <i class="fas fa-wallet text-info mr-1"></i>
+                                        @else
+                                            <i class="fas fa-university text-primary mr-1"></i>
+                                        @endif
+                                        {!! $account->paymentEntity->name ?? '' !!}
+                                    </h4>
                                     <span class="modal-role-badge">{!! $account->account_number !!}</span>
                                 </div>
 
@@ -75,18 +83,41 @@
                                         </div>
                                     @endif
 
-                                    @if(isset($stores))
+                                    @if (isset($stores))
+                                        <div class="detail-item-modern">
+                                            <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
+                                            <div class="detail-info-box text-left">
+                                                <span class="detail-info-label">{!! __('stores.store') !!}</span>
+                                                <span class="detail-info-value text-muted small">
+                                                    <span
+                                                        class="badge badge-light-primary border-0">{!! $account->store->name ?? '---' !!}</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+
                                     <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
+                                        <div class="icon-circle"><i class="fas fa-coins text-success"></i></div>
                                         <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                            <span class="detail-info-value text-muted small">
-                                                <span
-                                                    class="badge badge-light-primary border-0">{!! $account->store->name ?? '---' !!}</span>
-                                            </span>
+                                            <span class="detail-info-label">{!! __('general.balance') !!}</span>
+                                            <div class="mt-1">
+                                                @if ($account->current_balance > 0)
+                                                    <span class="premium-store-badge store-badge-balance-payment">
+                                                        <i class="fas fa-coins mr-1"></i> {!! number_format($account->current_balance, 2) !!}
+                                                    </span>
+                                                @elseif($account->current_balance < 0)
+                                                    <span class="premium-store-badge store-badge-balance-debt">
+                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
+                                                        {!! number_format(abs($account->current_balance), 2) !!}
+                                                    </span>
+                                                @else
+                                                    <span class="premium-store-badge store-badge-balance-zero">
+                                                        <i class="fas fa-minus mr-1"></i> 0.00
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
-                                    @endif
 
                                     <div class="detail-item-modern">
                                         <div class="icon-circle"><i class="fas fa-star"></i></div>
@@ -123,23 +154,53 @@
                     </td>
 
                     <!-- Store -->
-                    @if(isset($stores))
-                    <td class="text-center align-middle">
-                        <a href="javascript:void(0)" class="store-chip">
-                            <i class="fas fa-briefcase mr-1"></i>
-                            {!! $account->store->name ?? '---' !!}
-                        </a>
-                    </td>
+                    @if (isset($stores))
+                        <td class="text-center align-middle">
+                            <a href="javascript:void(0)" class="store-chip">
+                                <i class="fas fa-briefcase mr-1"></i>
+                                {!! $account->store->name ?? '---' !!}
+                            </a>
+                        </td>
                     @endif
 
-                    <!-- Bank Name -->
-                    <td class="text-center align-middle font-weight-bold text-primary">{!! $account->bank_name !!}</td>
+                    <!-- Account Details -->
+                    <td class="text-center align-middle">
+                        <div class="d-flex flex-column align-items-center">
+                            @if ($account->account_type == 'wallet')
+                                <span class="badge badge-light-info badge-pill font-weight-bold px-2 py-1 mb-1"><i class="fas fa-wallet mr-1"></i> {!! __('bank_accounts.type_wallet') !!}</span>
+                            @else
+                                <span class="badge badge-light-primary badge-pill font-weight-bold px-2 py-1 mb-1"><i class="fas fa-university mr-1"></i> {!! __('bank_accounts.type_bank') !!}</span>
+                            @endif
+                            <span class="font-weight-bold text-primary">{!! $account->paymentEntity->name ?? '' !!}</span>
+                        </div>
+                    </td>
 
-                    <!-- Account Number -->
-                    <td class="text-center align-middle font-weight-bold" dir="ltr">{!! $account->account_number !!}</td>
+                    <!-- Account Info -->
+                    <td class="text-center align-middle">
+                        <div class="font-weight-bold" dir="ltr">{!! $account->account_number !!}</div>
+                        <div class="text-muted small mt-1">{!! $account->account_holder_name !!}</div>
+                    </td>
 
-                    <!-- Account Holder -->
-                    <td class="text-center align-middle d-none d-xl-table-cell">{!! $account->account_holder_name !!}</td>
+                    <!-- Total Deposits -->
+                    <td class="text-center align-middle">
+                        <div class="font-weight-bold text-success" title="{!! __('bank_accounts.total_deposits') !!}">
+                            <i class="fas fa-arrow-down mr-1"></i> {!! number_format($account->total_deposits, 2) !!}
+                        </div>
+                    </td>
+
+                    <!-- Total Withdrawals -->
+                    <td class="text-center align-middle">
+                        <div class="font-weight-bold text-danger" title="{!! __('bank_accounts.total_withdrawals') !!}">
+                            <i class="fas fa-arrow-up mr-1"></i> {!! number_format($account->total_withdrawals, 2) !!}
+                        </div>
+                    </td>
+
+                    <!-- Balance -->
+                    <td class="text-center align-middle" dir="ltr">
+                        <div class="font-weight-bold {{ $account->current_balance > 0 ? 'text-success' : ($account->current_balance < 0 ? 'text-danger' : 'text-muted') }}" title="{!! __('general.balance') !!}">
+                            <i class="fas fa-coins mr-1"></i> {!! number_format($account->current_balance, 2) !!}
+                        </div>
+                    </td>
 
                     <!-- Is Default -->
                     <td class="text-center align-middle">
@@ -150,6 +211,7 @@
                         @endif
                     </td>
 
+                    <!-- Created By -->
                     <td class="text-center align-middle d-none d-lg-table-cell">
                         <span class="text-muted small">{!! $account->creator->name ?? '---' !!}</span>
                     </td>
@@ -175,4 +237,3 @@
         {!! $bankAccounts->links() !!}
     </div>
 </div>
-

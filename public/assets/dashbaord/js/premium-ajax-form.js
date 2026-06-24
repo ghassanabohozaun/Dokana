@@ -263,10 +263,11 @@ $(document).ready(function () {
                         Swal.fire({ icon: "error", title: accessDeniedMsg });
                     }
                 } else {
+                    let serverMsg = (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : errorMsg;
                     if (typeof flasher !== "undefined") {
-                        flasher.error(errorMsg);
+                        flasher.error(serverMsg);
                     } else if (typeof Swal !== "undefined") {
-                        Swal.fire({ icon: "error", title: errorMsg });
+                        Swal.fire({ icon: "error", title: serverMsg });
                     }
                 }
             },

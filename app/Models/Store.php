@@ -23,6 +23,7 @@ class Store extends Model
         'roles'             => 'stores.cannot_delete_has_roles',
         'customers'         => 'stores.cannot_delete_has_customers',
         'transactions'      => 'stores.cannot_delete_has_transactions',
+        'withdrawals'       => 'stores.cannot_delete_has_withdrawals',
     ];
 
     protected $fillable = [

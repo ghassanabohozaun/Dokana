@@ -34,6 +34,7 @@ class StoreTransactionRequest extends FormRequest
                 }
             ],
             'type' => 'required|in:debt,payment',
+            'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
             'amount' => 'required|numeric|min:0.01',
             'transaction_date' => 'required|date',
             'description' => 'nullable|string|max:255',
@@ -54,6 +55,7 @@ class StoreTransactionRequest extends FormRequest
             'store_customer_id.exists' => __('store_transactions.customer_exists'),
             'type.required' => __('store_transactions.type_required'),
             'type.in' => __('store_transactions.type_in'),
+            'store_bank_account_id.required_if' => __('bank_accounts.bank_account_required'),
             'amount.required' => __('store_transactions.amount_required'),
             'amount.numeric' => __('store_transactions.amount_numeric'),
             'amount.min' => __('store_transactions.amount_min'),

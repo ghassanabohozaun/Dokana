@@ -12,6 +12,8 @@ return [
         'notebook' => 'notebook.store_notebook',
         'store_customers' => 'store_customers.store_customers',
         'store_transactions' => 'store_transactions.store_transactions',
+        'payment_entities' => 'payment_entities.payment_entities',
+        'store_withdrawals' => 'store_withdrawals.store_withdrawals',
     ],
 
     // Define custom operations for specific modules that don't follow standard CRUD
@@ -36,6 +38,7 @@ return [
         'notebook' => 'fas fa-book fa-fw',
         'store_customers' => 'fas fa-users fa-fw',
         'store_transactions' => 'fas fa-exchange-alt fa-fw',
+        'payment_entities' => 'fas fa-landmark fa-fw',
     ],
 
     // Define the CRUD operations available for these modules

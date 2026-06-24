@@ -68,6 +68,27 @@
                             </div>
                         </div>
 
+                        <!-- Bank Account (Conditional) -->
+                        <div class="col-md-12 mb-1 d-none" id="bank_account_container_create">
+                            <div class="premium-form-group">
+                                <label class="premium-label" for="store_bank_account_id_create">{!! __('bank_accounts.bank_account') !!} <span class="text-danger">*</span></label>
+                                <select class="form-control premium-input select2 shadow-none" id='store_bank_account_id_create' name="store_bank_account_id" style="width: 100%;">
+                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
+                                    @if(isset($bankAccounts) && !isset($stores))
+                                        @foreach($bankAccounts as $account)
+                                            @php
+                                                $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
+                                                $isDefault = $account->is_default ? "(" . __('general.default') . ")" : "";
+                                                $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
+                                            @endphp
+                                            <option value="{{ $account->id }}" @if($account->is_default) selected @endif>{{ $accountName }} {{ $isDefault }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                <span class="text-danger error-text store_bank_account_id_error"></span>
+                            </div>
+                        </div>
+
                         <!-- Amount -->
                         <div class="col-md-6 mb-1">
                             <div class="premium-form-group">
@@ -141,12 +162,22 @@
                 });
             }
 
-            // Fetch customers by store on change
+            if ($('#store_bank_account_id_create').length) {
+                $('#store_bank_account_id_create').select2({
+                    dropdownParent: $('#createStoreTransactionModal'),
+                    width: '100%',
+                    dir: $('html').attr('data-textdirection') || 'ltr'
+                });
+            }
+
+            // Fetch customers and bank accounts by store on change
             $('#store_id_dept_create').on('change', function() {
                 let store_id = $(this).val();
                 let customerSelect = $('#store_customer_id_create');
+                let bankAccountSelect = $('#store_bank_account_id_create');
                 
                 customerSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
+                bankAccountSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
                 
                 if (store_id) {
                     $.ajax({
@@ -159,6 +190,32 @@
                             });
                         }
                     });
+
+                    $.ajax({
+                        url: "{!! route('dashboard.bank-accounts.by-store') !!}",
+                        type: 'GET',
+                        data: { store_id: store_id },
+                        success: function(data) {
+                            $.each(data, function(key, account) {
+                                let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
+                                let isDefault = account.is_default ? "({!! __('general.default') !!})" : "";
+                                let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
+                                
+                                let newOption = new Option(accountName + ' ' + isDefault, account.id, account.is_default, account.is_default);
+                                bankAccountSelect.append(newOption).trigger('change');
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Toggle Bank Account visibility based on Type
+            $('#type_create').on('change', function() {
+                if ($(this).val() === 'payment') {
+                    $('#bank_account_container_create').removeClass('d-none');
+                } else {
+                    $('#bank_account_container_create').addClass('d-none');
+                    $('#store_bank_account_id_create').val('').trigger('change');
                 }
             });
         });

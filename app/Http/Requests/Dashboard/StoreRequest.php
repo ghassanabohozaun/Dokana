@@ -21,6 +21,7 @@ class StoreRequest extends FormRequest
             'subscription_plan' => 'required|string',
             'status' => 'required|in:active,inactive',
             'email' => 'nullable|email|max:255',
+            'phone' => 'nullable|digits:10',
             'logo' => $this->isMethod('POST') ? 'nullable|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'delete_logo' => 'nullable',
         ];

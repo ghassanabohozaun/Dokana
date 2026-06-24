@@ -157,26 +157,76 @@
                     @endif
                 </div>
 
-                <!-- 3. Chart Section -->
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card dokana-table-card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 font-weight-bolder text-dark">
-                                    <i class="fas fa-chart-line text-info dokana-icon-spacing"></i>{{ __('dashboard.financial_trend') }}
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="dashboard-trend-chart" style="min-height: 350px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Tables Section -->
+                <!-- 3. Tables Section -->
                 <div class="row mt-2">
                     @if($isSuperAdmin)
                         <!-- Super Admin Tables (3-column layout) -->
+                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                            <div class="card dokana-table-card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0 font-weight-bolder text-dark">
+                                        <i class="fas fa-users-slash text-danger dokana-icon-spacing"></i>{{ __('dashboard.late_debts_customers') }}
+                                    </h5>
+                                    <div class="badge badge-light-danger badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $topDebtors->count() }}</div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="dokana-scroll-container">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>{{ __('store_customers.name') }}</th>
+                                                        <th>{{ __('store_customers.balance') }}</th>
+                                                        <th>{{ __('store_customers.debt_age') }}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @forelse($topDebtors as $customer)
+                                                        <tr>
+                                                            <td>
+                                                                <h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6>
+                                                                @if($customer->store)
+                                                                    <span class="badge badge-light-primary border-0 small mt-1" style="font-size: 0.75rem;">
+                                                                        <i class="fas fa-store"></i> {{ $customer->store->name }}
+                                                                    </span>
+                                                                @endif
+                                                            </td>
+                                                            <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
+                                                            <td>
+                                                                @if($customer->debt_age !== null)
+                                                                    @if($customer->debt_age == 0)
+                                                                        <span class="badge badge-light-success border-0">
+                                                                            {{ __('store_customers.today') }}
+                                                                        </span>
+                                                                    @elseif($customer->debt_age <= 30)
+                                                                        <span class="badge badge-light-info border-0">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @elseif($customer->debt_age <= 60)
+                                                                        <span class="badge badge-light-warning border-0">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge badge-light-danger border-0 font-weight-bold">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="text-muted">---</span>
+                                                                @endif
+                                                            </td>
+                                                        </tr>
+                                                    @empty
+                                                        <tr><td colspan="3" class="text-center text-muted p-4">{{ __('dashboard.no_debts') }}</td></tr>
+                                                    @endforelse
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-lg-4 col-md-6 col-12 mb-4">
                             <div class="card dokana-table-card h-100">
                                 <div class="card-header d-flex justify-content-between align-items-center">
@@ -250,47 +300,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-user-tag text-warning dokana-icon-spacing"></i>{{ __('dashboard.recent_customers') }}
-                                    </h5>
-                                    <div class="badge badge-light-warning badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $recentCustomers->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('store_customers.name') }}</th>
-                                                        <th>{{ __('store_customers.balance') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($recentCustomers as $customer)
-                                                        <tr>
-                                                            <td><h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6></td>
-                                                            <td>
-                                                                @if($customer->balance > 0)
-                                                                    <span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span>
-                                                                @else
-                                                                    <span class="text-success font-weight-bold">{{ number_format($customer->balance) }}</span>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('store_customers.no_store_customers_found') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     @else
                         <!-- Store Admin Tables (3-column layout) -->
                         <div class="col-lg-4 col-md-6 col-12 mb-4">
@@ -309,6 +318,7 @@
                                                     <tr>
                                                         <th>{{ __('store_customers.name') }}</th>
                                                         <th>{{ __('store_customers.balance') }}</th>
+                                                        <th>{{ __('store_customers.debt_age') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -316,9 +326,32 @@
                                                         <tr>
                                                             <td><h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6></td>
                                                             <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
+                                                            <td>
+                                                                @if($customer->debt_age !== null)
+                                                                    @if($customer->debt_age == 0)
+                                                                        <span class="badge badge-light-success border-0">
+                                                                            {{ __('store_customers.today') }}
+                                                                        </span>
+                                                                    @elseif($customer->debt_age <= 30)
+                                                                        <span class="badge badge-light-info border-0">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @elseif($customer->debt_age <= 60)
+                                                                        <span class="badge badge-light-warning border-0">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge badge-light-danger border-0 font-weight-bold">
+                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
+                                                                        </span>
+                                                                    @endif
+                                                                @else
+                                                                    <span class="text-muted">---</span>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('dashboard.no_debts') }}</td></tr>
+                                                        <tr><td colspan="3" class="text-center text-muted p-4">{{ __('dashboard.no_debts') }}</td></tr>
                                                     @endforelse
                                                 </tbody>
                                             </table>
@@ -351,7 +384,7 @@
                                                         <tr>
                                                             <td>
                                                                 <h6 class="mb-0 font-weight-bold">{{ $tx->customer->name ?? 'غير معروف' }}</h6>
-                                                                <small class="text-muted">#{{ $tx->id }}</small>
+                                                                 <small class="text-muted">#{{ $tx->id }}</small>
                                                             </td>
                                                             <td>
                                                                 @if($tx->type == 'payment')
@@ -407,6 +440,22 @@
                             </div>
                         </div>
                     @endif
+                </div>
+
+                <!-- 4. Chart Section -->
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card dokana-table-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 font-weight-bolder text-dark">
+                                    <i class="fas fa-chart-line text-info dokana-icon-spacing"></i>{{ __('dashboard.financial_trend') }}
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="dashboard-trend-chart" style="min-height: 350px;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

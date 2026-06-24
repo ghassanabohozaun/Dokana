@@ -103,6 +103,7 @@
                                 <div class="premium-input-wrapper">
                                     <input type="text" id="phone_edit" name="phone"
                                         class="form-control premium-input shadow-none" autocomplete="off"
+                                        maxlength="10" inputmode="numeric"
                                         placeholder="{!! __('stores.enter_phone') !!}">
                                     <i class="fas fa-phone text-primary"></i>
                                 </div>
@@ -191,6 +192,21 @@
                     $('#delete_logo_edit').val(0);
                 }
             });
+
+            // Restrict phone field input on edit store form
+            $('#phone_edit').on('keypress', function(e) {
+                // Allow only numbers 0-9
+                if (e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
+            }).on('input', function() {
+                // Remove non-digit characters and limit to 10 digits
+                let val = $(this).val().replace(/\D/g, '');
+                if (val.length > 10) {
+                    val = val.substring(0, 10);
+                }
+                $(this).val(val);
+            });
         });
 
         // Custom function to open edit modal and fill data
@@ -209,12 +225,13 @@
             $('#status_edit').val(data.status).trigger('change');
 
             // Reset and update fileinput preview using the Global Initializer
-            let fileInputOptions = {};
+            let fileInputOptions = {
+                browseLabel: "{!! __('general.choose_file') !!}",
+                removeLabel: "{!! __('general.delete') !!}"
+            };
             if (data.logo_url) {
-                fileInputOptions = {
-                    initialPreview: [data.logo_url],
-                    initialPreviewAsData: true
-                };
+                fileInputOptions.initialPreview = [data.logo_url];
+                fileInputOptions.initialPreviewAsData = true;
             }
             window.PremiumFileInput.init("#logo_edit", fileInputOptions);
 

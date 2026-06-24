@@ -266,5 +266,8 @@ return [
     'increase_font' => 'تكبير الخط',
     'default_font' => 'الخط الافتراضي',
     'decrease_font' => 'تصغير الخط',
+    'balance' => 'الرصيد الحالي',
+    'remaining_balance' => 'الرصيد المتبقي',
+    'no_description' => 'بدون وصف',
+    'default' => 'الافتراضي',
 ];
-

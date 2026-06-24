@@ -46,7 +46,11 @@ class DashboardController extends Controller
             
             $recentStores = Store::latest()->take(10)->get();
             $recentUsers = User::latest()->take(10)->get();
-            $recentCustomers = StoreCustomer::latest()->take(10)->get();
+            $topDebtors = StoreCustomer::with(['transactions', 'store'])
+                ->where('balance', '>', 0)
+                ->get()
+                ->sortByDesc('debt_age')
+                ->take(10);
         } else {
             $stats['users_count'] = User::where('store_id', $storeId)->count();
             $stats['customers_count'] = StoreCustomer::count();
@@ -60,10 +64,11 @@ class DashboardController extends Controller
                 ->take(10)
                 ->get();
                 
-            $topDebtors = StoreCustomer::where('balance', '>', 0)
-                ->orderBy('balance', 'desc')
-                ->take(10)
-                ->get();
+            $topDebtors = StoreCustomer::with('transactions')
+                ->where('balance', '>', 0)
+                ->get()
+                ->sortByDesc('debt_age')
+                ->take(10);
 
             $recentCustomers = StoreCustomer::latest()->take(10)->get();
         }

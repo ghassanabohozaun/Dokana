@@ -58,9 +58,33 @@
                                 <label class="premium-label" for="phone_create">{!! __('store_customers.phone') !!}</label>
                                 <input type="text" id="phone_create" name="phone"
                                     class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('store_customers.enter_phone') !!}">
+                                    placeholder="{!! __('store_customers.enter_phone') !!}"
+                                    maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').substring(0, 10)">
                                 <span class="text-danger error-text phone_error"></span>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mt-2 mb-2">
+                            <label for="bypass_debt_limit_create" class="premium-switch-container"
+                                style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; width: 100% !important;">
+                                <div class="premium-switch-content"
+                                    style="display: flex !important; align-items: center !important; gap: 1rem !important;">
+                                    <div class="premium-switch-icon-circle text-success shadow-sm">
+                                        <i class="fas fa-user-shield"></i>
+                                    </div>
+                                    <div class="premium-switch-texts">
+                                        <h6 class="premium-switch-title mb-1">{!! __('store_customers.bypass_debt_limit') !!}</h6>
+                                        <span class="premium-switch-subtitle">{!! __('store_customers.bypass_debt_limit_desc') !!}</span>
+                                    </div>
+                                </div>
+                                <label class="modern-switch" style="flex-shrink: 0 !important;">
+                                    <input type="checkbox" id="bypass_debt_limit_create" name="bypass_debt_limit" value="1">
+                                    <span class="modern-slider"></span>
+                                </label>
+                            </label>
+                            <span class="text-danger error-text bypass_debt_limit_error"></span>
                         </div>
                     </div>
                 </div>

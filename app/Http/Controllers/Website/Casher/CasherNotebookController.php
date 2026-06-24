@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Website\Casher;
 use App\Http\Controllers\Controller;
 use App\Models\StoreCustomer;
 use App\Models\StoreTransaction;
+use App\Models\StoreWithdrawal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,7 +37,11 @@ class CasherNotebookController extends Controller
             abort(403, 'Unauthorized access to the notebook.');
         }
 
-        return view('website.casher.notebook.index');
+        $storeBankAccounts = \App\Models\StoreBankAccount::with('paymentEntity')
+            ->where('store_id', $this->getStoreId())
+            ->get();
+
+        return view('website.casher.notebook.index', compact('storeBankAccounts'));
     }
 
     /**
@@ -61,7 +66,11 @@ class CasherNotebookController extends Controller
         if ($filter === 'debt') {
             $query->where('balance', '>', 0);
         } elseif ($filter === 'paid') {
-            $query->where('balance', '<=', 0);
+            $query->where('balance', '=', 0);
+        } elseif ($filter === 'credit') {
+            $query->where('balance', '<', 0);
+        } elseif ($filter === 'disabled') {
+            $query->where('status', 0);
         }
 
         $totalCustomers = $query->count();
@@ -117,14 +126,22 @@ class CasherNotebookController extends Controller
         $perPage = (int) $request->query('per_page', 5);
 
         $transactions = $customer->transactions()
-            ->with('createdBy')
+            ->with(['createdBy', 'bankAccount.paymentEntity'])
             ->latest()
             ->take($perPage)
             ->get();
             
-        // Map createdBy to a user_name property for easier access
+        // Map createdBy and bank_account_name properties for easier access
         $transactions->transform(function ($tx) {
             $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
+            
+            if ($tx->type === 'payment' && $tx->store_bank_account_id && $tx->bankAccount) {
+                $entityName = optional($tx->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($tx->bankAccount->paymentEntity)->getTranslation('name', 'ar');
+                $tx->bank_account_name = $tx->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $tx->bankAccount->account_number;
+            } else {
+                $tx->bank_account_name = null;
+            }
+            
             return $tx;
         });
 
@@ -148,18 +165,30 @@ class CasherNotebookController extends Controller
 
         $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($customerId);
 
+        if ($customer->status == 0) {
+            return response()->json(['message' => __('notebook.customer_disabled_cannot_add_transaction') ?? 'العميل معطل، لا يمكن إضافة حركات مالية له.'], 403);
+        }
+
         $request->validate([
             'amount' => 'required|numeric|min:0.1',
             'type' => 'required|in:debt,payment',
+            'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
         ]);
+
+        if ($request->type === 'debt' && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 10) {
+            return response()->json([
+                'message' => __('notebook.debt_age_exceeded_limit', ['days' => $customer->debt_age]) ?? "لا يمكن تسجيل دين جديد لهذا العميل لوجود دين مستحق منذ أكثر من 10 أيام (عمر الدين الحالي: {$customer->debt_age} يوماً)."
+            ], 422);
+        }
 
         $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
 
         $tx = StoreTransaction::create([
             'store_id' => $this->getStoreId(),
             'store_customer_id' => $customer->id,
+            'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
             'type' => $request->type,
             'amount' => $request->amount,
             'transaction_date' => $request->transaction_date,
@@ -190,6 +219,7 @@ class CasherNotebookController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:0.1',
             'type' => 'required|in:debt,payment',
+            'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
         ]);
@@ -198,6 +228,7 @@ class CasherNotebookController extends Controller
 
         $tx->update([
             'type' => $request->type,
+            'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
             'amount' => $request->amount,
             'transaction_date' => $request->transaction_date,
             'description' => $description,
@@ -226,7 +257,7 @@ class CasherNotebookController extends Controller
         $tx = StoreTransaction::where('store_id', $this->getStoreId())->findOrFail($id);
         $customer = $tx->customer()->first();
         
-        $tx->delete();
+        $tx->forceDelete();
         $customer->refresh();
 
         return response()->json([

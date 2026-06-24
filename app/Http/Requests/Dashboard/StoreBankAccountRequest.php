@@ -26,24 +26,20 @@ class StoreBankAccountRequest extends FormRequest
         $storeId = user()->store_id == 1 ? $this->input('store_id') : user()->store_id;
 
         $rules = [
-            'bank_name.ar' => 'required|string|max:255',
-            'bank_name.en' => 'required|string|max:255',
+            'account_type' => 'required|in:bank,wallet',
+            'payment_entity_id' => 'required|exists:payment_entities,id',
             'account_holder_name.ar' => 'required|string|max:255',
             'account_holder_name.en' => 'required|string|max:255',
             'account_number' => [
                 'required',
-                'digits:13',
+                'numeric',
                 function ($attribute, $value, $fail) use ($id, $storeId) {
-                    $bankNameAr = $this->input('bank_name.ar');
-                    $bankNameEn = $this->input('bank_name.en');
+                    $paymentEntityId = $this->input('payment_entity_id');
 
                     $exists = \DB::table('store_bank_accounts')
                         ->where('store_id', $storeId)
                         ->where('account_number', $value)
-                        ->where(function ($query) use ($bankNameAr, $bankNameEn) {
-                            $query->where('bank_name->ar', $bankNameAr)
-                                  ->orWhere('bank_name->en', $bankNameEn);
-                        })
+                        ->where('payment_entity_id', $paymentEntityId)
                         ->whereNull('deleted_at')
                         ->when($id, function ($query) use ($id) {
                             $query->where('id', '!=', $id);

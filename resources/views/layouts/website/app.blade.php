@@ -60,8 +60,8 @@
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/website/style.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('assets/website/toast.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/website/css/style.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('assets/website/css/toast.css') }}?v={{ time() }}">
     <link rel="shortcut icon" href="{!! setting()->favicon
         ? asset('uploads/settings/' . setting()->favicon)
         : asset('assets/dashboard/images/dokkana-logo.png') !!}" />
@@ -80,7 +80,7 @@
     <!-- Scripts -->
     @livewireScripts
     <script src="{{ asset('assets/website/vendor/sweetalert2/sweetalert2.all.min.js') }}"></script>
-    <script src="{{ asset('assets/website/toast.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('assets/website/js/toast.js') }}?v={{ time() }}"></script>
     @stack('scripts')
 </body>
 

@@ -25,6 +25,26 @@
                         <span class="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">₪</span>
                     </div>
                 </div>
+                
+                <div x-show="txType === 'payment'">
+                    <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('bank_accounts.bank_account') }} <span class="text-red-500">*</span></label>
+                    <div class="relative">
+                        <div class="absolute top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-primary text-xl {{ app()->getLocale() == 'ar' ? 'left-4' : 'right-4' }}">
+                            <i class="ph-bold ph-bank"></i>
+                        </div>
+                        <select x-model="txBankAccountId" :required="txType === 'payment'" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-gray-900 dark:text-white font-medium appearance-none {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4 text-right' : 'pr-12 pl-4 text-left' }}">
+                            <option value="">{{ __('general.select_from_list') }}</option>
+                            @foreach($storeBankAccounts as $account)
+                                @php
+                                    $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
+                                    $isDefault = $account->is_default ? "(" . __('bank_accounts.is_default') . ")" : "";
+                                    $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
+                                @endphp
+                                <option value="{{ $account->id }}" {{ $account->is_default ? 'selected' : '' }}>{{ $accountName }} {{ $isDefault }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 <div>
                     <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.transaction_date') }} <span class="text-red-500">*</span></label>
                     <div class="relative">
@@ -33,10 +53,21 @@
                             <i class="ph-bold ph-calendar"></i>
                         </div>
                         <!-- Input -->
-                        <input type="date" 
+                        <input type="text" 
                                required 
                                x-model="txDate"
-                               class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-gray-900 dark:text-white font-medium cursor-pointer {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4' : 'pr-12 pl-4' }}">
+                               x-init="
+                                   flatpickr($el, {
+                                       dateFormat: 'Y-m-d',
+                                       locale: '{{ app()->getLocale() == 'ar' ? 'ar' : 'en' }}',
+                                       disableMobile: true,
+                                       onChange: function(selectedDates, dateStr, instance) {
+                                           txDate = dateStr;
+                                           $el.dispatchEvent(new Event('input'));
+                                       }
+                                   });
+                               "
+                               class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-gray-900 dark:text-white font-medium cursor-pointer {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4 text-right' : 'pr-12 pl-4 text-left' }}">
                     </div>
                 </div>
                 <div>

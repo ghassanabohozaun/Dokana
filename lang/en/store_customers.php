@@ -7,13 +7,13 @@ return [
     'show_all_store_customers' => 'Show All Customers',
 
     'name' => 'Name',
-    'phone' => 'Phone',
+    'phone' => 'Mobile Number',
     'balance' => 'Balance',
     'created_at' => 'Created At',
     'created_by' => 'Created By',
 
     'enter_name' => 'Enter customer name',
-    'enter_phone' => 'Enter customer phone',
+    'enter_phone' => 'Enter customer mobile number',
 
     'no_store_customers_found' => 'No customers found!',
     
@@ -23,4 +23,11 @@ return [
     'financial_summary' => 'Financial Summary',
     'customer_details' => 'Customer Details',
     'customer_has_transactions' => 'This customer cannot be deleted because they have recorded transactions.',
+    'debt_age' => 'Debt Age',
+    'days' => 'days',
+    'today' => 'Today',
+    'name_required' => 'Customer name is required.',
+    'phone_invalid' => 'The mobile number must be exactly 10 digits.',
+    'bypass_debt_limit' => 'Bypass Overdue Debt Limit',
+    'bypass_debt_limit_desc' => 'Allow customer to buy on credit even if they have overdue debt',
 ];

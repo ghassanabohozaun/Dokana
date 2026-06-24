@@ -64,6 +64,19 @@
                         </div>
                     </div>
 
+                    <!-- Bank Account (Conditional) -->
+                    <div class="row d-none" id="transaction_bank_account_container_create">
+                        <div class="col-md-12 mb-2">
+                            <div class="premium-form-group">
+                                <label class="premium-label" for="transaction_store_bank_account_id_create">{!! __('bank_accounts.bank_account') !!} <span class="text-danger">*</span></label>
+                                <select class="form-control premium-input select2 shadow-none" id='transaction_store_bank_account_id_create' name="store_bank_account_id" style="width: 100%;">
+                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
+                                </select>
+                                <span class="text-danger error-text store_bank_account_id_error"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <!-- Amount -->
                         <div class="col-md-6 mb-2">
@@ -121,3 +134,59 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            // Initialize Select2 for Bank Accounts
+            if ($('#transaction_store_bank_account_id_create').length) {
+                $('#transaction_store_bank_account_id_create').select2({
+                    dropdownParent: $('#addCustomerTransactionModal'),
+                    width: '100%',
+                    dir: $('html').attr('data-textdirection') || 'ltr'
+                });
+            }
+            // Toggle Bank Account visibility based on Type
+            $('#transaction_type_create').on('change', function() {
+                let type = $(this).val();
+                let bankContainer = $('#transaction_bank_account_container_create');
+                let bankSelect = $('#transaction_store_bank_account_id_create');
+
+                if (type === 'payment') {
+                    bankContainer.removeClass('d-none');
+                } else {
+                    bankContainer.addClass('d-none');
+                    bankSelect.val('').trigger('change');
+                }
+            });
+
+            // Load Bank Accounts immediately when the modal is shown
+            $('#addCustomerTransactionModal').on('show.bs.modal', function () {
+                $('#transaction_bank_account_container_create').addClass('d-none');
+                
+                let bankSelect = $('#transaction_store_bank_account_id_create');
+                bankSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
+                
+                let storeId = $('#hidden_store_id_create').val();
+                if (storeId) {
+                    $.ajax({
+                        url: "{!! route('dashboard.bank-accounts.by-store') !!}",
+                        type: 'GET',
+                        data: { store_id: storeId },
+                        success: function(data) {
+                            $.each(data, function(key, account) {
+                                let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
+                                let isDefault = account.is_default ? "({!! __('general.default') !!})" : "";
+                                let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
+                                
+                                let newOption = new Option(accountName + ' ' + isDefault, account.id, account.is_default, account.is_default);
+                                bankSelect.append(newOption);
+                            });
+                            bankSelect.trigger('change');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+@endpush

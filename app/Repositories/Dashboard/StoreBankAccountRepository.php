@@ -19,7 +19,11 @@ class StoreBankAccountRepository
     public function getAll($request)
     {
         $query = $this->model
-            ->with(['store', 'creator'])
+            ->with(['store', 'creator', 'paymentEntity'])
+            ->withSum(['transactions as total_deposits' => function($q) {
+                $q->where('type', 'payment');
+            }], 'amount')
+            ->withSum('withdrawals as total_withdrawals', 'amount')
             ->when($request->store_id, function($query) use ($request) {
                 return $query->where('store_id', $request->store_id);
             })

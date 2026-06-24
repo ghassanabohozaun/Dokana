@@ -107,7 +107,7 @@ body.fixed-navbar {
 
 /* 1. Visual Content */
 .welcome-side {
-    background: url('../images/carbon-fibre.png'), url('../images/mjk/background.jpg') no-repeat center center;
+    background: url('../images/carbon-fibre.png'), url('../images/mjk/bg-dokana.png') no-repeat center center;
     background-size: auto, cover;
     flex: 1;
     display: none;
@@ -449,6 +449,7 @@ body.fixed-navbar {
     position: absolute;
     top: 30px;
     inset-inline-end: 30px;
+    z-index: 50;
 }
 
 .btn-lang-toggle {
@@ -462,14 +463,14 @@ body.fixed-navbar {
     border-radius: 2px;
     color: var(--accent);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 800;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 10px 20px rgba(0,0,0,0.05);
 }
 
 .btn-lang-toggle i {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--primary);
 }
 
@@ -491,7 +492,7 @@ body.fixed-navbar {
 
 @media (max-width: 991px) {
     .login-main-wrapper {
-        background: url('../images/mjk/background.png') no-repeat center center;
+        background: url('../images/mjk/bg-dokana.png') no-repeat center center;
         background-size: cover;
     }
 
@@ -508,13 +509,19 @@ body.fixed-navbar {
         background: transparent;
     }
 
+    .lang-toggle-container {
+        top: 20px;
+        inset-inline-end: 20px;
+    }
+
     .login-form-box {
         background: rgba(255, 255, 255, 0.95);
-        padding: 50px 35px;
-        border-radius: 2px;
+        padding: 60px 35px 40px;
+        border-radius: 12px;
         box-shadow: var(--card-shadow);
         max-width: 440px;
         width: 92%;
+        position: relative;
     }
 }
 

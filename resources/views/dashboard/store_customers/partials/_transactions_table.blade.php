@@ -32,8 +32,17 @@
                             {!! number_format($transaction->amount, 2) !!}
                         </span>
                     </td>
-                    <td class="align-middle text-muted">
-                        {!! $transaction->description ?: '-' !!}
+                    <td class="align-middle">
+                        <div class="font-weight-bold">{!! $transaction->description ?: '-' !!}</div>
+                        @if($transaction->type == 'payment' && $transaction->store_bank_account_id && $transaction->bankAccount)
+                            @php
+                                $entityName = optional($transaction->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($transaction->bankAccount->paymentEntity)->getTranslation('name', 'ar');
+                                $accountName = $transaction->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $transaction->bankAccount->account_number;
+                            @endphp
+                            <div class="mt-1">
+                                <span class="badge badge-light-success border-0"><i class="fas fa-university mr-1"></i>{{ $accountName }}</span>
+                            </div>
+                        @endif
                     </td>
                 </tr>
             @empty

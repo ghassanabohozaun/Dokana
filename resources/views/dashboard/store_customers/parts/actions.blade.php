@@ -13,7 +13,9 @@
             <a href="javascript:void(0)" class="btn-premium-action btn-premium-action-edit mr-1 edit_store_customer_button"
                 store_customer-id="{!! $store_customer->id !!}" store_customer-name="{!! $store_customer->name !!}"
                 store_customer-phone="{!! $store_customer->phone !!}" store_customer-store-id="{!! $store_customer->store_id !!}"
-                store_customer-store-name="{!! optional($store_customer->store)->name !!}" title="{!! __('general.edit') !!}">
+                store_customer-store-name="{!! optional($store_customer->store)->name !!}" 
+                store_customer-bypass-debt-limit="{!! $store_customer->bypass_debt_limit ? 1 : 0 !!}"
+                title="{!! __('general.edit') !!}">
                 <i class="fas fa-edit"></i>
             </a>
         @endcan

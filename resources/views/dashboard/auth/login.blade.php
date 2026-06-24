@@ -30,26 +30,28 @@
 
         <!-- 2. Form Side / Side Pane -->
         <div class="form-side">
-            <!-- Language Toggle -->
-            <div class="lang-toggle-container">
-                @php
-                    $currentLocale = Lang();
-                    $targetLocale = $currentLocale == 'ar' ? 'en' : 'ar';
-                    $targetNative = LaravelLocalization::getSupportedLocales()[$targetLocale]['native'];
-                @endphp
-                <a href="{{ LaravelLocalization::getLocalizedURL($targetLocale, null, [], true) }}" class="btn-lang-toggle">
-                    <i class="fas fa-language"></i>
-                    <span>{{ $targetNative }}</span>
-                </a>
-            </div>
+
 
             <div class="login-form-box">
+                <!-- Language Toggle -->
+                <div class="lang-toggle-container">
+                    @php
+                        $currentLocale = Lang();
+                        $targetLocale = $currentLocale == 'ar' ? 'en' : 'ar';
+                        $targetNative = LaravelLocalization::getSupportedLocales()[$targetLocale]['native'];
+                    @endphp
+                    <a href="{{ LaravelLocalization::getLocalizedURL($targetLocale, null, [], true) }}" class="btn-lang-toggle">
+                        <i class="fas fa-language"></i>
+                        <span>{{ $targetNative }}</span>
+                    </a>
+                </div>
+
                 <!-- Brand logo -->
                 <div class="brand-logo-modern">
                     @if (setting()->logo)
                         <img src="{!! asset('uploads/settings/' . setting()->logo) !!}" alt="{{ setting()->site_name }}">
                     @else
-                        <img src="{{ asset('assets/dashbaord/images/mjk/logo.png') }}" alt="MJK-ALTHANI">
+                        <img src="{{ asset('assets/dashbaord/images/mjk/logo-dokana-icon.png') }}" alt="Dokana">
                     @endif
                 </div>
 

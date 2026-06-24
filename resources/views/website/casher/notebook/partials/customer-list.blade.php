@@ -30,16 +30,36 @@
         <!-- List -->
         <div class="space-y-3" x-show="customers.length > 0">
             <template x-for="customer in customers" :key="customer.id">
-                <div @click="openLedger(customer.id)" class="card-hover smooth-enter bg-white dark:bg-darkCard p-4 rounded-[1.25rem] border border-gray-100 dark:border-gray-800 flex justify-between items-center cursor-pointer">
+                <div @click="openLedger(customer.id)" class="card-hover p-4 rounded-[1.25rem] border flex justify-between items-center cursor-pointer"
+                     :class="customer.status == 0 ? 'bg-gray-50 dark:bg-[#0b1121] border-gray-200 dark:border-gray-800 opacity-60 grayscale-[50%]' : 'bg-white dark:bg-darkCard border-gray-100 dark:border-gray-800'">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shrink-0 shadow-sm bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shrink-0 shadow-sm"
+                             :class="customer.status == 0 ? 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'"
                              x-text="customer.name ? customer.name.substring(0, 1) : '-'">
                         </div>
                         <div>
-                            <h4 class="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight" x-text="customer.name"></h4>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight" x-text="customer.name"></h4>
+                                <template x-if="customer.status == 0">
+                                    <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">{{ __('notebook.disabled') ?? 'معطل' }}</span>
+                                </template>
+                            </div>
                             <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
                                 <i class="ph-fill ph-phone text-xs"></i> <span x-text="customer.phone || '{{ __('notebook.no_phone') }}'"></span>
                             </p>
+                            <template x-if="customer.balance > 0 && customer.debt_age !== null">
+                                <div class="flex items-center gap-1 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit transition-all duration-300 border"
+                                     :class="customer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
+                                             (customer.debt_age <= 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
+                                             (customer.debt_age <= 60 ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30' : 
+                                             'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse'))">
+                                    <i class="ph-fill ph-clock text-[11px]"></i>
+                                    <span>
+                                        {{ __('notebook.debt_age') }}: 
+                                        <span x-text="customer.debt_age === 0 ? '{{ __('notebook.today') }}' : customer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
+                                    </span>
+                                </div>
+                            </template>
                         </div>
                     </div>
                     <div class="text-left flex flex-col items-end">

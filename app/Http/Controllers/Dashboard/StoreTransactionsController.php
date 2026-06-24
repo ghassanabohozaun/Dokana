@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dashboard\StoreTransactionRequest;
 use App\Models\Store;
 use App\Models\StoreCustomer;
+use App\Models\StoreBankAccount;
 use App\Services\Dashboard\StoreService;
 use App\Services\Dashboard\StoreTransactionService;
 use Illuminate\Http\Request;
@@ -32,17 +33,22 @@ class StoreTransactionsController extends Controller
             $stores = app(StoreService::class)->getActiveStoresForDropdown();
         }
 
-        // Get customers for the dropdowns
+        // Get customers and bank accounts for the dropdowns
         $customers = collect();
-        if (user()->role_id != 1 && user()->id != 1) {
-            $customers = StoreCustomer::active()->where('store_id', user()->store_id)->get();
+        $bankAccounts = collect();
+        if (user()->role_id == 1 || user()->id == 1) {
+            $customers = StoreCustomer::active()->latest()->get();
+            $bankAccounts = StoreBankAccount::with('paymentEntity')->get();
+        } else {
+            $customers = StoreCustomer::active()->where('store_id', user()->store_id)->latest()->get();
+            $bankAccounts = StoreBankAccount::where('store_id', user()->store_id)->with('paymentEntity')->get();
         }
 
         if ($request->ajax()) {
-            return view('dashboard.store_transactions.partials._table', compact('store_transactions', 'stores', 'customers'))->render();
+            return view('dashboard.store_transactions.partials._table', compact('store_transactions', 'stores', 'customers', 'bankAccounts'))->render();
         }
 
-        return view('dashboard.store_transactions.index', compact('store_transactions', 'title', 'stores', 'customers'));
+        return view('dashboard.store_transactions.index', compact('store_transactions', 'title', 'stores', 'customers', 'bankAccounts'));
     }
 
     public function store(StoreTransactionRequest $request)
@@ -59,7 +65,7 @@ class StoreTransactionsController extends Controller
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => false,
-                    'message' => __('general.add_error_message')
+                    'message' => $e->getMessage()
                 ], 500);
             }
         }

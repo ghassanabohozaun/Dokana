@@ -23,7 +23,8 @@ class StoreCustomerRequest extends FormRequest
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
+            'phone' => ['nullable', 'regex:/^[0-9]{10}$/'],
+            'bypass_debt_limit' => ['nullable', 'boolean'],
         ];
 
         if (user()->store_id == 1) {
@@ -31,5 +32,13 @@ class StoreCustomerRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('store_customers.name_required'),
+            'phone.regex' => __('store_customers.phone_invalid'),
+        ];
     }
 }

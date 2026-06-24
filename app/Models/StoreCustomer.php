@@ -14,7 +14,13 @@ class StoreCustomer extends Model implements MustBelongToStore
 {
     use HasFactory, CanBeDeleted, BelongsToStore, Filterable;
 
-    protected $fillable = ['store_id', 'name', 'phone', 'balance', 'status'];
+    protected $fillable = ['store_id', 'name', 'phone', 'balance', 'status', 'bypass_debt_limit'];
+
+    protected $casts = [
+        'bypass_debt_limit' => 'boolean',
+    ];
+
+    protected $appends = ['calculated_balance', 'debt_age'];
 
     public function scopeActive($query)
     {
@@ -38,5 +44,47 @@ class StoreCustomer extends Model implements MustBelongToStore
     public function getCalculatedBalanceAttribute()
     {
         return ($this->total_debts ?? 0) - ($this->total_payments ?? 0);
+    }
+
+    public function getDebtAgeAttribute()
+    {
+        if ($this->balance <= 0) {
+            return null;
+        }
+
+        if ($this->relationLoaded('transactions')) {
+            $totalPayments = (float) $this->transactions->where('type', 'payment')->sum('amount');
+            $debts = $this->transactions
+                ->where('type', 'debt')
+                ->sortBy(function($t) {
+                    $dateStr = $t->transaction_date ? $t->transaction_date->format('Y-m-d H:i:s') : '0000-00-00 00:00:00';
+                    return $dateStr . '_' . sprintf('%010d', $t->id);
+                });
+        } else {
+            $totalPayments = (float) $this->transactions()->where('type', 'payment')->sum('amount');
+            $debts = $this->transactions()
+                ->where('type', 'debt')
+                ->reorder()
+                ->orderBy('transaction_date', 'asc')
+                ->orderBy('id', 'asc')
+                ->get();
+        }
+
+        $remainingPayments = $totalPayments;
+
+        foreach ($debts as $debt) {
+            $amount = (float) $debt->amount;
+            if ($remainingPayments >= $amount) {
+                $remainingPayments -= $amount;
+            } else {
+                $transactionDate = $debt->transaction_date;
+                if ($transactionDate) {
+                    return (int) now()->diffInDays($transactionDate, true);
+                }
+                break;
+            }
+        }
+
+        return null;
     }
 }

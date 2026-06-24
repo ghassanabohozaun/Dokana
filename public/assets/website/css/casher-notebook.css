@@ -1,0 +1,116 @@
+/* Enhanced UI / UX for Casher Notebook */
+.glass-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+.dark .glass-header {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.btn-gradient-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    transition: all 0.3s ease;
+}
+.btn-gradient-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+.btn-gradient-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    transition: all 0.3s ease;
+}
+.btn-gradient-success:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.card-hover {
+    transition: all 0.2s ease-in-out;
+}
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+.smooth-enter {
+    animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Cashier Notebook Styles */
+[x-cloak] { display: none !important; }
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+}
+
+/* Flatpickr Custom Theme Override for Cashier */
+.flatpickr-calendar {
+    font-family: inherit !important;
+    border-radius: 1rem !important;
+    border: 1px solid rgba(229, 231, 235, 1) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    padding: 5px !important;
+    width: 325px !important;
+}
+.dark .flatpickr-calendar {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+}
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+    background: #ef4444 !important;
+    border-color: #ef4444 !important;
+    font-weight: bold;
+}
+.flatpickr-day.today {
+    border-color: #ef4444 !important;
+}
+.dark .flatpickr-day {
+    color: #f3f4f6 !important;
+}
+.dark .flatpickr-day.flatpickr-disabled {
+    color: #4b5563 !important;
+}
+.dark .flatpickr-day:hover, .dark .flatpickr-day:focus {
+    background: #374151 !important;
+    border-color: #374151 !important;
+}
+.flatpickr-weekday {
+    color: #ef4444 !important;
+    font-weight: 800 !important;
+    font-size: 0.85rem !important;
+}
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+}
+.flatpickr-current-month input.cur-year {
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+}
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months, .dark .flatpickr-current-month input.cur-year {
+    color: #fff !important;
+}
+.dark .flatpickr-prev-month svg, .dark .flatpickr-next-month svg {
+    fill: #fff !important;
+}
+.dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg {
+    fill: #ef4444 !important;
+}

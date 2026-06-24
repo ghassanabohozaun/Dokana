@@ -7,13 +7,13 @@ return [
     'show_all_store_customers' => 'عرض جميع العملاء',
 
     'name' => 'اسم العميل',
-    'phone' => 'رقم الهاتف',
+    'phone' => 'رقم الموبايل',
     'balance' => 'الرصيد',
     'created_at' => 'تاريخ الاضافة',
     'created_by' => 'بواسطة',
 
     'enter_name' => 'ادخل اسم العميل',
-    'enter_phone' => 'ادخل رقم هاتف العميل',
+    'enter_phone' => 'ادخل رقم موبايل العميل',
 
     'no_store_customers_found' => 'لا يوجد عملاء حالياً !',
     
@@ -23,4 +23,11 @@ return [
     'financial_summary' => 'الملخص المالي',
     'customer_details' => 'تفاصيل العميل',
     'customer_has_transactions' => 'لا يمكن حذف هذا العميل لوجود حركات مالية مسجلة باسمه.',
+    'debt_age' => 'عمر الدين',
+    'days' => 'يوم',
+    'today' => 'اليوم',
+    'name_required' => 'اسم العميل مطلوب.',
+    'phone_invalid' => 'رقم الموبايل يجب أن يتكون من 10 أرقام.',
+    'bypass_debt_limit' => 'تجاوز حد الدين المتأخر',
+    'bypass_debt_limit_desc' => 'السماح للعميل بأخذ دين جديد حتى لو كان لديه دين متأخر',
 ];

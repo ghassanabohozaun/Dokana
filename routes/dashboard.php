@@ -12,6 +12,8 @@ use App\Http\Controllers\Dashboard\StoreTransactionsController;
 use App\Http\Controllers\Dashboard\RolesController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UsersController;
+use App\Http\Controllers\Dashboard\PaymentEntityController;
+use App\Http\Controllers\Dashboard\StoreWithdrawalController;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -103,13 +105,27 @@ Route::group(
             });
             // ########################################## bank accounts routes #############################################################
             Route::group(['middleware' => 'can:bank_accounts_read'], function () {
+                Route::get('/bank-accounts/by-store', [StoreBankAccountController::class, 'getByStore'])->name('bank-accounts.by-store');
+                Route::get('/bank-accounts/get-balance', [StoreBankAccountController::class, 'getBalance'])->name('bank-accounts.get-balance');
                 Route::resource('bank-accounts', StoreBankAccountController::class);
                 Route::post('/bank-accounts/destroy', [StoreBankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
+            });
+            // ########################################## payment entities routes #############################################################
+            Route::group(['middleware' => 'can:payment_entities_read'], function () {
+                Route::resource('payment-entities', PaymentEntityController::class);
+                Route::post('/payment-entities/status', [PaymentEntityController::class, 'changeStatus'])->name('payment-entities.change.status');
+                Route::post('/payment-entities/destroy', [PaymentEntityController::class, 'destroy'])->name('payment-entities.destroy');
+            });
+
+            // ########################################## store withdrawals routes #############################################################
+            Route::group(['middleware' => 'can:store_withdrawals_read'], function () {
+                Route::resource('store-withdrawals', StoreWithdrawalController::class);
+                Route::post('/store-withdrawals/destroy', [StoreWithdrawalController::class, 'destroy'])->name('store-withdrawals.destroy');
             });
 
             // ########################################## notifications #############################################################
             Route::group(['middleware' => 'can:notifications_read'], function () {
-                Route::get('/notifications', \App\Livewire\NotificationCenter::class)->name('notifications');
+                Route::get('/notifications', \App\Livewire\Notifications\NotificationCenter::class)->name('notifications');
                 Route::get('/notifications/{id}/redirect', [\App\Http\Controllers\Dashboard\NotificationController::class, 'redirect'])->name('notifications.redirect');
             });
         });

@@ -117,7 +117,7 @@
                                         <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
                                         <div class="detail-info-box text-left">
                                             <span class="detail-info-label">{!! __('store_transactions.date') !!}</span>
-                                            <span class="text-secondary font-weight-bold">{{ $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d') : $store_transaction->created_at->format('Y-m-d') }}</span>
+                                            <span class="text-secondary font-weight-bold" dir="ltr">{{ $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d h:i A') : $store_transaction->created_at->format('Y-m-d h:i A') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -164,10 +164,21 @@
                     <td class="text-center align-middle">{!! $store_transaction->amount !!}</td>
 
                     <!-- Description -->
-                    <td class="text-center align-middle">{!! $store_transaction->description ?? '---' !!}</td>
+                    <td class="text-center align-middle">
+                        <div class="font-weight-bold">{!! $store_transaction->description ?? '---' !!}</div>
+                        @if($store_transaction->type == 'payment' && $store_transaction->store_bank_account_id && $store_transaction->bankAccount)
+                            @php
+                                $entityName = optional($store_transaction->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($store_transaction->bankAccount->paymentEntity)->getTranslation('name', 'ar');
+                                $accountName = $store_transaction->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $store_transaction->bankAccount->account_number;
+                            @endphp
+                            <div class="mt-1">
+                                <span class="badge badge-light-success border-0"><i class="fas fa-university mr-1"></i>{{ $accountName }}</span>
+                            </div>
+                        @endif
+                    </td>
 
                     <!-- Date -->
-                    <td class="text-center align-middle">{!! $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d') : $store_transaction->created_at->format('Y-m-d') !!}</td>
+                    <td class="text-center align-middle" dir="ltr">{!! $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d h:i A') : $store_transaction->created_at->format('Y-m-d h:i A') !!}</td>
 
                     <!-- Actions -->
                     @if (auth()->user()->can('store_transactions_update') || auth()->user()->can('store_transactions_delete'))

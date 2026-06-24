@@ -25,20 +25,11 @@ class StoreSeeder extends Seeder
             ],
         );
 
-        Store::firstOrCreate(
-            [
-                'name->en' => 'Demo Store',
-            ],
-            [
-                'name' => [
-                    'en' => 'Demo Store',
-                    'ar' => 'دكانة تجريبية',
-                ],
-                'subscription_plan' => 'Premium',
-                'status' => 'active',
-                'email' => 'demo-store@dokana.com',
-                'phone' => '0590000000',
-            ],
-        );
+        // Ensure Cash Box is created for each store using the centralized Service logic
+        $storeService = app(\App\Services\Dashboard\StoreService::class);
+        $stores = Store::all();
+        foreach ($stores as $store) {
+            $storeService->createDefaultCashBox($store);
+        }
     }
 }

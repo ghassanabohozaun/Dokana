@@ -161,7 +161,7 @@
                     </li>
 
                     {{-- Enterprise Notifications --}}
-                    @livewire('header-notifications')
+                    @livewire('notifications.header-notifications')
 
                     {{-- Enterprise Messages --}}
                     <li class="dropdown dropdown-notification nav-item">

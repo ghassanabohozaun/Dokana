@@ -17,13 +17,18 @@ class StoreBankAccount extends Model implements MustBelongToStore
 {
     use HasFactory, BelongsToStore, Filterable, HasTranslations, SoftDeletes, HasCreatedBy, CanBeDeleted;
 
-    public $translatable = ['bank_name', 'account_holder_name'];
+    public $translatable = ['account_holder_name'];
 
-    protected $restrictiveRelations = [];
+    protected $restrictiveRelations = [
+        'transactions' => 'bank_accounts.bank_account_has_transactions',
+        'withdrawals' => 'bank_accounts.bank_account_has_withdrawals',
+    ];
 
     protected $fillable = [
         'store_id',
-        'bank_name',
+        'account_type',
+        'payment_entity_id',
+        'current_balance',
         'account_number',
         'account_holder_name',
         'iban',
@@ -32,7 +37,8 @@ class StoreBankAccount extends Model implements MustBelongToStore
     ];
 
     protected $casts = [
-        'is_default' => 'boolean'
+        'is_default' => 'boolean',
+        'current_balance' => 'decimal:2',
     ];
 
     /**
@@ -60,4 +66,19 @@ class StoreBankAccount extends Model implements MustBelongToStore
     }
 
     // Removed cheques relationship
+
+    public function paymentEntity()
+    {
+        return $this->belongsTo(PaymentEntity::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(StoreTransaction::class);
+    }
+
+    public function withdrawals()
+    {
+        return $this->hasMany(StoreWithdrawal::class);
+    }
 }

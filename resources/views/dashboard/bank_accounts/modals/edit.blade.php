@@ -45,27 +45,30 @@
                     @endif
 
                     <div class="row">
-                        <!-- Bank Name Arabic -->
-                        <div class="col-md-6 mb-2">
+                        <!-- Account Type -->
+                        <div class="col-md-12 mb-2">
                             <div class="premium-form-group">
-                                <label class="premium-label" for="bank_name_ar_edit">{!! __('bank_accounts.bank_name_ar') !!} <span
+                                <label class="premium-label" for="account_type_edit">{!! __('bank_accounts.account_type') !!} <span
                                         class="text-danger">*</span></label>
-                                <input type="text" id="bank_name_ar_edit" name="bank_name[ar]"
-                                    class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('bank_accounts.enter_bank_name_ar') !!}">
-                                <span class="text-danger error-text bank_name_ar_error"></span>
+                                <select class="form-control premium-input shadow-none select2" id="account_type_edit" name="account_type">
+                                    <option value="">{!! __('bank_accounts.select_account_type') !!}</option>
+                                    <option value="bank">{!! __('bank_accounts.type_bank') !!}</option>
+                                    <option value="wallet">{!! __('bank_accounts.type_wallet') !!}</option>
+                                </select>
+                                <span class="text-danger error-text account_type_error"></span>
                             </div>
                         </div>
 
-                        <!-- Bank Name English -->
-                        <div class="col-md-6 mb-2">
+                        <!-- Bank / Wallet Name Select -->
+                        <div class="col-md-12 mb-2" id="bank_name_container_edit" style="display: none;">
                             <div class="premium-form-group">
-                                <label class="premium-label" for="bank_name_en_edit">{!! __('bank_accounts.bank_name_en') !!} <span
+                                <label class="premium-label" id="bank_name_label_edit" for="bank_name_select_edit">{!! __('bank_accounts.bank_name') !!} <span
                                         class="text-danger">*</span></label>
-                                <input type="text" id="bank_name_en_edit" name="bank_name[en]"
-                                    class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('bank_accounts.enter_bank_name_en') !!}">
-                                <span class="text-danger error-text bank_name_en_error"></span>
+                                <select class="form-control premium-input shadow-none select2" id="payment_entity_id_edit" name="payment_entity_id">
+                                    <option value="">{!! __('bank_accounts.select_bank_name') !!}</option>
+                                    <!-- Options populated by JS -->
+                                </select>
+                                <span class="text-danger error-text bank_name_ar_error bank_name_en_error"></span>
                             </div>
                         </div>
 
@@ -96,18 +99,18 @@
                         <!-- Account Number -->
                         <div class="col-md-6 mb-2">
                             <div class="premium-form-group">
-                                <label class="premium-label" for="account_number_edit">{!! __('bank_accounts.account_number') !!} <span
+                                <label class="premium-label" id="account_number_label_edit" for="account_number_edit">{!! __('bank_accounts.account_number') !!} <span
                                         class="text-danger">*</span></label>
                                 <input type="text" id="account_number_edit" name="account_number"
                                     class="form-control premium-input shadow-none" autocomplete="off"
-                                    maxlength="13" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    maxlength="20" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                     placeholder="{!! __('bank_accounts.enter_account_number') !!}">
                                 <span class="text-danger error-text account_number_error"></span>
                             </div>
                         </div>
 
                         <!-- IBAN -->
-                        <div class="col-md-6 mb-2">
+                        <div class="col-md-6 mb-2" id="iban_container_edit">
                             <div class="premium-form-group">
                                 <label class="premium-label" for="iban_edit">{!! __('bank_accounts.iban') !!}</label>
                                 <input type="text" id="iban_edit" name="iban"
@@ -166,6 +169,9 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            var banksList = @json($banks ?? []);
+            var walletsList = @json($wallets ?? []);
+
             if ($('#store_id_bank_edit').length) {
                 $('#store_id_bank_edit').select2({
                     dropdownParent: $('#editBankAccountModal'),
@@ -174,22 +180,77 @@
                 });
             }
 
+            $('#account_type_edit').select2({
+                dropdownParent: $('#editBankAccountModal'),
+                width: '100%',
+                dir: $('html').attr('data-textdirection') || 'ltr'
+            });
+
+            $('#payment_entity_id_edit').on('change', function() {
+                // We no longer need to populate hidden fields
+            });
+
+            $('#account_type_edit').on('change', function() {
+                var type = $(this).val();
+                var $select = $('#payment_entity_id_edit');
+                var lang = $('html').attr('lang') || 'ar';
+                
+                $select.empty().append('<option value="">' + (type === 'bank' ? '{!! __("bank_accounts.select_bank_name") !!}' : '{!! __("bank_accounts.select_wallet_name") !!}') + '</option>');
+                
+                var list = type === 'bank' ? banksList : walletsList;
+                
+                list.forEach(function(item) {
+                    var text = lang === 'ar' ? item.ar : item.en;
+                    $select.append('<option value="' + item.id + '">' + text + '</option>');
+                });
+                
+                $('#bank_name_container_edit').show();
+                
+                $select.select2({
+                    dropdownParent: $('#editBankAccountModal'),
+                    width: '100%',
+                    dir: $('html').attr('data-textdirection') || 'ltr'
+                });
+                
+                // Pre-select logic if variables are available
+                var prePaymentEntityId = $('#payment_entity_id_edit').attr('data-selected-id');
+                if (prePaymentEntityId) {
+                    $select.val(prePaymentEntityId);
+                }
+
+                $select.trigger('change.select2');
+
+                if (type === 'bank') {
+                    $('#bank_name_label_edit').html('{!! __("bank_accounts.bank_name") !!} <span class="text-danger">*</span>');
+                    $('#account_number_label_edit').html('{!! __("bank_accounts.account_number") !!} <span class="text-danger">*</span>');
+                    $('#account_number_edit').attr('placeholder', '{!! __("bank_accounts.enter_account_number") !!}');
+                    $('#iban_container_edit').show();
+                } else {
+                    $('#bank_name_label_edit').html('{!! __("bank_accounts.wallet_name") !!} <span class="text-danger">*</span>');
+                    $('#account_number_label_edit').html('{!! __("bank_accounts.wallet_number") !!} <span class="text-danger">*</span>');
+                    $('#account_number_edit').attr('placeholder', '{!! __("bank_accounts.enter_wallet_number") !!}');
+                    $('#iban_container_edit').hide();
+                }
+            });
+
             $(document).on('click', '.editBankAccountBtn', function(e) {
                 e.preventDefault();
                 var id = $(this).data('id');
-                var bank_name_ar = $(this).data('bank_name_ar');
-                var bank_name_en = $(this).data('bank_name_en');
+                var account_type = $(this).data('account_type');
+                var payment_entity_id = $(this).data('payment_entity_id');
                 var account_holder_name_ar = $(this).data('account_holder_name_ar');
                 var account_holder_name_en = $(this).data('account_holder_name_en');
                 var account_number = $(this).data('account_number');
                 var iban = $(this).data('iban');
                 var is_default = $(this).data('is_default');
                 var store_id = $(this).data('store_id');
-                var store_name = $(this).data('store_name');
 
                 $('#edit_id').val(id);
-                $('#bank_name_ar_edit').val(bank_name_ar);
-                $('#bank_name_en_edit').val(bank_name_en);
+                $('#account_type_edit').val(account_type);
+                $('#payment_entity_id_edit').attr('data-selected-id', payment_entity_id);
+                
+                $('#account_type_edit').trigger('change');
+
                 $('#account_holder_name_ar_edit').val(account_holder_name_ar);
                 $('#account_holder_name_en_edit').val(account_holder_name_en);
                 $('#account_number_edit').val(account_number);

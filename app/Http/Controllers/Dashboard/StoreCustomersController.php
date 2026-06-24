@@ -47,6 +47,7 @@ class StoreCustomersController extends Controller
 
         try {
             $data = $request->only(['name', 'phone', 'store_id']);
+            $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
             $this->storeCustomerService->create($data);
             return response()->json([
                 'status' => true,
@@ -91,6 +92,7 @@ class StoreCustomersController extends Controller
 
         try {
             $data = $request->only(['id', 'name', 'phone', 'store_id']);
+            $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
             $this->storeCustomerService->update($data);
             return response()->json([
                 'status' => true,
@@ -159,6 +161,7 @@ class StoreCustomersController extends Controller
             $customers = StoreCustomer::active()
                 ->where('store_id', $request->store_id)
                 ->select('id', 'name', 'phone')
+                ->latest()
                 ->get();
                 
             return response()->json($customers);
