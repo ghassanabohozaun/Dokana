@@ -48,7 +48,20 @@ class StoreCustomersController extends Controller
         try {
             $data = $request->only(['name', 'phone', 'store_id']);
             $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
-            $this->storeCustomerService->create($data);
+            $customer = $this->storeCustomerService->create($data);
+            
+            if ($customer && $request->filled('opening_balance') && $request->opening_balance > 0) {
+                StoreTransaction::create([
+                    'store_id' => $customer->store_id,
+                    'store_customer_id' => $customer->id,
+                    'type' => 'debt',
+                    'amount' => $request->opening_balance,
+                    'transaction_date' => now(),
+                    'description' => __('store_customers.opening_balance') ?? 'رصيد افتتاحي',
+                    'created_by' => user()->id ?? null,
+                ]);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => __('general.add_success_message')

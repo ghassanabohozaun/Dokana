@@ -108,7 +108,46 @@
                 </li>
                 @endif
 
-                {{-- Group 2: Customers Management --}}
+                {{-- Group: Suppliers & Invoices Management --}}
+                @if(auth()->user()->can('store_suppliers_read') || auth()->user()->can('store_supplier_invoices_read') || auth()->user()->can('store_supplier_payments_read'))
+                @php
+                    $isSuppliersActive =
+                        Request::routeIs('dashboard.store-suppliers.*') ||
+                        Request::routeIs('dashboard.store-supplier-invoices.*') ||
+                        Request::routeIs('dashboard.store-supplier-payments.*');
+                @endphp
+                <li class="nav-item has-sub @if ($isSuppliersActive) open @endif">
+                    <a href="javascript:void(0)">
+                        <i class="fas fa-truck"></i>
+                        <span class="menu-title">{!! __('store_suppliers.store_suppliers') !!}</span>
+                    </a>
+                    <ul class="menu-content">
+                        @can('store_suppliers_read')
+                            <li class="@if (Request::routeIs('dashboard.store-suppliers.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.store-suppliers.index') !!}">
+                                    {!! __('store_suppliers.store_suppliers') !!}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('store_supplier_invoices_read')
+                            <li class="@if (Request::routeIs('dashboard.store-supplier-invoices.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.store-supplier-invoices.index') !!}">
+                                    {!! __('store_supplier_invoices.store_supplier_invoices') !!}
+                                </a>
+                            </li>
+                        @endcan
+                        @can('store_supplier_payments_read')
+                            <li class="@if (Request::routeIs('dashboard.store-supplier-payments.*')) active @endif">
+                                <a class="menu-item" href="{!! route('dashboard.store-supplier-payments.index') !!}">
+                                    {!! __('store_supplier_payments.store_supplier_payments') !!}
+                                </a>
+                            </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endif
+
+                {{-- Group 3: Customers Management --}}
                 @if(auth()->user()->can('store_customers_read') || auth()->user()->can('store_transactions_read'))
                 @php
                     $isCustomersActive = Request::routeIs('dashboard.store-customers.*') || Request::routeIs('dashboard.store-transactions.*');

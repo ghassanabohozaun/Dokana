@@ -14,6 +14,9 @@ return [
         'store_transactions' => 'store_transactions.store_transactions',
         'payment_entities' => 'payment_entities.payment_entities',
         'store_withdrawals' => 'store_withdrawals.store_withdrawals',
+        'store_suppliers' => 'store_suppliers.store_suppliers',
+        'store_supplier_invoices' => 'store_supplier_invoices.store_supplier_invoices',
+        'store_supplier_payments' => 'store_supplier_payments.store_supplier_payments',
     ],
 
     // Define custom operations for specific modules that don't follow standard CRUD
@@ -39,6 +42,10 @@ return [
         'store_customers' => 'fas fa-users fa-fw',
         'store_transactions' => 'fas fa-exchange-alt fa-fw',
         'payment_entities' => 'fas fa-landmark fa-fw',
+        'store_withdrawals' => 'fas fa-money-bill-wave fa-fw',
+        'store_suppliers' => 'fas fa-truck fa-fw',
+        'store_supplier_invoices' => 'fas fa-file-invoice-dollar fa-fw',
+        'store_supplier_payments' => 'fas fa-money-check-alt fa-fw',
     ],
 
     // Define the CRUD operations available for these modules

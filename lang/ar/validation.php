@@ -450,6 +450,24 @@ return [
         'license_number' => 'رقم الرخصة',
         'tenant_type' => 'نوع المستأجر',
         
+        // Store Supplier Payments
+        'store_id'                   => 'الدكانة',
+        'store_supplier_id'          => 'المورد',
+        'store_supplier_invoice_id'  => 'الفاتورة',
+        'store_bank_account_id'      => 'حساب بنكي / محفظة',
+        'payment_date'               => 'تاريخ الدفع',
+        'notes'                      => 'ملاحظات',
+
+        // Store Supplier Invoices
+        'invoice_number'             => 'رقم الفاتورة',
+        'invoice_date'               => 'تاريخ الفاتورة',
+        'total_amount'               => 'إجمالي الفاتورة',
+
+        // Store Suppliers
+        'bank_name'                  => 'اسم البنك / المحفظة',
+        'account_number'             => 'رقم الحساب',
+        'mobile'                     => 'رقم الجوال',
+
         // Maintenances Items
         'items.*.type' => 'نوع الصيانة',
         'items.*.cost' => 'تكلفة البند',

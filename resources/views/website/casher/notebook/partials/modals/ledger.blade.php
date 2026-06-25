@@ -58,26 +58,51 @@
                             </div>
                         </template>
                         @if(auth('casher')->user()->hasAbility('notebook_create'))
-                        <div class="grid grid-cols-2 gap-3">
-                            <button @click="if(activeCustomer.status != 0) openTxModal('debt')"
-                                :disabled="activeCustomer.status == 0"
-                                :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-95 group'"
-                                class="flex flex-col items-center justify-center gap-2 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 py-3 rounded-[1rem] font-bold transition-all border border-red-100 dark:border-red-900/30">
-                                <div class="w-10 h-10 rounded-full bg-white dark:bg-red-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                    <i class="ph-bold ph-minus text-xl"></i>
-                                </div>
-                                {{ __('notebook.new_debt') }}
-                            </button>
-                            <button @click="if(activeCustomer.status != 0) openTxModal('payment')"
-                                :disabled="activeCustomer.status == 0"
-                                :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
-                                class="flex flex-col items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-3 rounded-[1rem] font-bold transition-all border border-emerald-100 dark:border-emerald-900/30">
-                                <div class="w-10 h-10 rounded-full bg-white dark:bg-emerald-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                    <i class="ph-bold ph-plus text-xl"></i>
-                                </div>
-                                {{ __('notebook.payment_transfer') }}
-                            </button>
-                        </div>
+                        <template x-if="activeCustomer.is_walk_in">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button @click="if(activeCustomer.status != 0) openTxModal('pos_cash')"
+                                    :disabled="activeCustomer.status == 0"
+                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
+                                    class="flex flex-col items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-3 rounded-[1rem] font-bold transition-all border border-emerald-100 dark:border-emerald-900/30">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-emerald-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
+                                        <i class="ph-bold ph-money text-xl"></i>
+                                    </div>
+                                    دفع كاش 💵
+                                </button>
+                                <button @click="if(activeCustomer.status != 0) openTxModal('pos_bank')"
+                                    :disabled="activeCustomer.status == 0"
+                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group'"
+                                    class="flex flex-col items-center justify-center gap-2 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-3 rounded-[1rem] font-bold transition-all border border-blue-100 dark:border-blue-900/30">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-blue-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
+                                        <i class="ph-bold ph-bank text-xl"></i>
+                                    </div>
+                                    دفع بنك / محفظة 💳
+                                </button>
+                            </div>
+                        </template>
+
+                        <template x-if="!activeCustomer.is_walk_in">
+                            <div class="grid grid-cols-2 gap-3">
+                                <button @click="if(activeCustomer.status != 0) openTxModal('debt')"
+                                    :disabled="activeCustomer.status == 0"
+                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-95 group'"
+                                    class="flex flex-col items-center justify-center gap-2 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 py-3 rounded-[1rem] font-bold transition-all border border-red-100 dark:border-red-900/30">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-red-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
+                                        <i class="ph-bold ph-minus text-xl"></i>
+                                    </div>
+                                    {{ __('notebook.new_debt') }}
+                                </button>
+                                <button @click="if(activeCustomer.status != 0) openTxModal('payment')"
+                                    :disabled="activeCustomer.status == 0"
+                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
+                                    class="flex flex-col items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-3 rounded-[1rem] font-bold transition-all border border-emerald-100 dark:border-emerald-900/30">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-emerald-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
+                                        <i class="ph-bold ph-plus text-xl"></i>
+                                    </div>
+                                    {{ __('notebook.payment_transfer') }}
+                                </button>
+                            </div>
+                        </template>
                         @endif
                         <template x-if="activeCustomer.status == 0">
                             <div class="mt-3 text-center text-xs font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/10 py-1.5 rounded-lg border border-red-100 dark:border-red-900/20">

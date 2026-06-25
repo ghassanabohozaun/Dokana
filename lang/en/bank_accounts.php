@@ -41,6 +41,9 @@ return [
     
     // Errors
     'store_required' => 'Please select a store',
+    'bank_account_has_transactions' => 'Cannot delete the bank account or wallet because there are transactions associated with it.',
+    'bank_account_has_withdrawals' => 'Cannot delete the bank account or wallet because there are withdrawals associated with it.',
+    'bank_account_has_supplier_payments' => 'Cannot delete the bank account or wallet because there are supplier payments associated with it.',
     
     // Show Page
     'account_details' => 'Account Details',

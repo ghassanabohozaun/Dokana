@@ -130,6 +130,13 @@ document.addEventListener('alpine:init', () => {
                     this.totalCustomers = data.totalCustomers;
                     this.totalDebt = data.totalDebt;
                     this.todayCollections = data.todayCollections;
+                    
+                    if (!this.activeCustomer && this.customers.length > 0) {
+                        const walkIn = this.customers.find(c => c.is_walk_in);
+                        if (walkIn) {
+                            this.openLedger(walkIn.id);
+                        }
+                    }
                 }
             } catch (e) {
                 console.error(e);
@@ -165,7 +172,8 @@ document.addEventListener('alpine:init', () => {
                     },
                     body: JSON.stringify({
                         name: this.newCustomerName,
-                        phone: this.newCustomerPhone
+                        phone: this.newCustomerPhone,
+                        opening_balance: this.newCustomerOpeningBalance
                     })
                 });
                 const data = await res.json();
@@ -220,7 +228,9 @@ document.addEventListener('alpine:init', () => {
             this.txDescription = '';
             this.txDate = config.todayDate;
             
-            if (type === 'payment') {
+            if (type === 'payment' || type === 'pos_bank') {
+                this.txBankAccountId = '';
+            } else if (type === 'pos_cash') {
                 const selectEl = document.querySelector('select[x-model="txBankAccountId"]');
                 if (selectEl) {
                     const defaultOpt = selectEl.querySelector('option[selected]');
@@ -263,11 +273,12 @@ document.addEventListener('alpine:init', () => {
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: this.txType,
+                        type: (this.txType === 'pos_cash' || this.txType === 'pos_bank') ? 'payment' : this.txType,
                         amount: this.txAmount,
                         transaction_date: this.txDate,
                         description: this.txDescription,
-                        store_bank_account_id: this.txType === 'payment' ? this.txBankAccountId : null
+                        store_bank_account_id: (this.txType === 'payment' || this.txType === 'pos_bank' || this.txType === 'pos_cash') ? this.txBankAccountId : null,
+                        is_direct_sale: (this.txType === 'pos_cash' || this.txType === 'pos_bank')
                     })
                 });
                 const data = await res.json();

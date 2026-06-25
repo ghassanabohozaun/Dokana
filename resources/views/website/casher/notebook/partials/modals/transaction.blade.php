@@ -10,8 +10,8 @@
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 sm:hidden"></div>
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <i class="ph-fill text-2xl" :class="txType === 'debt' ? 'ph-minus-circle text-red-500' : 'ph-plus-circle text-emerald-500'"></i>
-                    <span x-text="editingTxId ? (txType === 'debt' ? '{{ __('notebook.edit_debt') }}' : '{{ __('notebook.edit_payment') }}') : (txType === 'debt' ? '{{ __('notebook.add_new_debt') }}' : '{{ __('notebook.add_new_payment') }}')"></span>
+                    <i class="ph-fill text-2xl" :class="(txType === 'debt') ? 'ph-minus-circle text-red-500' : 'ph-plus-circle text-emerald-500'"></i>
+                    <span x-text="editingTxId ? (txType === 'debt' ? '{{ __('notebook.edit_debt') }}' : '{{ __('notebook.edit_payment') }}') : (txType === 'debt' ? '{{ __('notebook.add_new_debt') }}' : (txType === 'pos_cash' ? 'دفع كاش مباشر' : (txType === 'pos_bank' ? 'دفع بنكي مباشر' : '{{ __('notebook.add_new_payment') }}')))"></span>
                 </h2>
                 <button x-on:click="show = false" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500">
                     <i class="ph-bold ph-x"></i>
@@ -26,13 +26,13 @@
                     </div>
                 </div>
                 
-                <div x-show="txType === 'payment'">
+                <div x-show="txType === 'payment' || txType === 'pos_bank'">
                     <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('bank_accounts.bank_account') }} <span class="text-red-500">*</span></label>
                     <div class="relative">
                         <div class="absolute top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-primary text-xl {{ app()->getLocale() == 'ar' ? 'left-4' : 'right-4' }}">
                             <i class="ph-bold ph-bank"></i>
                         </div>
-                        <select x-model="txBankAccountId" :required="txType === 'payment'" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-gray-900 dark:text-white font-medium appearance-none {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4 text-right' : 'pr-12 pl-4 text-left' }}">
+                        <select x-model="txBankAccountId" :required="txType === 'payment' || txType === 'pos_bank'" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-gray-900 dark:text-white font-medium appearance-none {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4 text-right' : 'pr-12 pl-4 text-left' }}">
                             <option value="">{{ __('general.select_from_list') }}</option>
                             @foreach($storeBankAccounts as $account)
                                 @php

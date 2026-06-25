@@ -43,6 +43,7 @@ return [
     'store_required' => 'يرجى تحديد الدكانة',
     'bank_account_has_transactions' => 'لا يمكن حذف الحساب البنكي أو المحفظة لوجود حركات مالية مرتبطة به.',
     'bank_account_has_withdrawals' => 'لا يمكن حذف الحساب البنكي أو المحفظة لوجود سحوبات مالية مرتبطة به.',
+    'bank_account_has_supplier_payments' => 'لا يمكن حذف الحساب البنكي أو المحفظة لوجود مدفوعات موردين مرتبطة به.',
     
     // Show Page
     'account_details' => 'تفاصيل الحساب',

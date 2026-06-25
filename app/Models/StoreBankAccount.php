@@ -22,6 +22,7 @@ class StoreBankAccount extends Model implements MustBelongToStore
     protected $restrictiveRelations = [
         'transactions' => 'bank_accounts.bank_account_has_transactions',
         'withdrawals' => 'bank_accounts.bank_account_has_withdrawals',
+        'supplierPayments' => 'bank_accounts.bank_account_has_supplier_payments',
     ];
 
     protected $fillable = [
@@ -80,5 +81,10 @@ class StoreBankAccount extends Model implements MustBelongToStore
     public function withdrawals()
     {
         return $this->hasMany(StoreWithdrawal::class);
+    }
+
+    public function supplierPayments()
+    {
+        return $this->hasMany(StoreSupplierPayment::class);
     }
 }

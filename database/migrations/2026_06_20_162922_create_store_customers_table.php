@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->decimal('balance', 10, 2)->default(0);
             $table->tinyInteger('status')->default(1);
+            $table->boolean('is_walk_in')->default(false);
             $table->timestamps();
         });
     }

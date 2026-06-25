@@ -14,6 +14,10 @@ use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\UsersController;
 use App\Http\Controllers\Dashboard\PaymentEntityController;
 use App\Http\Controllers\Dashboard\StoreWithdrawalController;
+use App\Http\Controllers\Dashboard\StoreSupplierController;
+use App\Http\Controllers\Dashboard\StoreSupplierInvoiceController;
+use App\Http\Controllers\Dashboard\StoreSupplierPaymentController;
+use App\Livewire\Notifications\NotificationCenter;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
@@ -123,10 +127,30 @@ Route::group(
                 Route::post('/store-withdrawals/destroy', [StoreWithdrawalController::class, 'destroy'])->name('store-withdrawals.destroy');
             });
 
+            // ########################################## store suppliers routes #############################################################
+            Route::group(['middleware' => 'can:store_suppliers_read'], function () {
+                Route::get('/store-suppliers/by-store', [StoreSupplierController::class, 'getByStore'])->name('store-suppliers.by-store');
+                Route::resource('store-suppliers', StoreSupplierController::class);
+                Route::post('/store-suppliers/destroy', [StoreSupplierController::class, 'destroy'])->name('store-suppliers.destroy');
+            });
+
+            // ########################################## store supplier invoices routes #############################################################
+            Route::group(['middleware' => 'can:store_supplier_invoices_read'], function () {
+                Route::get('/store-supplier-invoices/by-supplier', [StoreSupplierInvoiceController::class, 'getBySupplier'])->name('store-supplier-invoices.by-supplier');
+                Route::resource('store-supplier-invoices', StoreSupplierInvoiceController::class);
+                Route::post('/store-supplier-invoices/destroy', [StoreSupplierInvoiceController::class, 'destroy'])->name('store-supplier-invoices.destroy');
+            });
+
+            // ########################################## store supplier payments routes #############################################################
+            Route::group(['middleware' => 'can:store_supplier_payments_read'], function () {
+                Route::resource('store-supplier-payments', StoreSupplierPaymentController::class);
+                Route::post('/store-supplier-payments/destroy', [StoreSupplierPaymentController::class, 'destroy'])->name('store-supplier-payments.destroy');
+            });
+
             // ########################################## notifications #############################################################
             Route::group(['middleware' => 'can:notifications_read'], function () {
-                Route::get('/notifications', \App\Livewire\Notifications\NotificationCenter::class)->name('notifications');
-                Route::get('/notifications/{id}/redirect', [\App\Http\Controllers\Dashboard\NotificationController::class, 'redirect'])->name('notifications.redirect');
+                Route::get('/notifications', NotificationCenter::class)->name('notifications');
+                Route::get('/notifications/{id}/redirect', [NotificationController::class, 'redirect'])->name('notifications.redirect');
             });
         });
     },

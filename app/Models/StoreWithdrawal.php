@@ -45,6 +45,16 @@ class StoreWithdrawal extends Model implements MustBelongToStore
         return $this->belongsTo(Store::class);
     }
 
+    public function paymentEntity(): BelongsTo
+    {
+        return $this->belongsTo(PaymentEntity::class, 'payment_entity_id');
+    }
+
+    public function supplierPayment(): BelongsTo
+    {
+        return $this->belongsTo(StoreSupplierPayment::class, 'store_supplier_payment_id');
+    }
+
     public function bankAccount()
     {
         return $this->belongsTo(StoreBankAccount::class, 'store_bank_account_id');

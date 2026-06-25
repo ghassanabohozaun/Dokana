@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'store_supplier_payments' => 'مدفوعات الموردين',
+    'store_supplier_payment' => 'دفعة المورد',
+    'title' => 'مدفوعات الموردين',
+    'plural' => 'المدفوعات',
+    'singular' => 'دفعة',
+    'supplier' => 'المورد',
+    'invoice' => 'الفاتورة (اختياري)',
+    'bank_account' => 'صندوق الدفع',
+    'amount' => 'المبلغ',
+    'payment_date' => 'تاريخ الدفع',
+    'notes' => 'ملاحظات',
+    'add_new' => 'إضافة دفعة جديدة',
+    'edit' => 'تعديل الدفعة',
+    'delete' => 'حذف الدفعة',
+    'delete_confirmation' => 'هل أنت متأكد من حذف هذه الدفعة؟ سيتم إرجاع المبلغ لصندوق الدفع وتحديث رصيد المورد!',
+    'created_successfully' => 'تم تسجيل الدفعة بنجاح',
+    'updated_successfully' => 'تم تعديل الدفعة بنجاح',
+    'deleted_successfully' => 'تم حذف الدفعة بنجاح',
+    
+    'store_supplier_payments_list' => 'قائمة مدفوعات الموردين',
+    'create_new_store_supplier_payment' => 'إضافة دفعة جديدة',
+    'update_store_supplier_payment' => 'تعديل بيانات الدفعة',
+    'date' => 'تاريخ الدفع',
+    'no_store_supplier_payments_found' => 'لم يتم العثور على أي مدفوعات',
+    'search_by_notes' => 'ابحث بالملاحظات...',
+    'balance_exceeded_warning' => 'تنبيه: تم تجاوز الرصيد المتاح!',
+    'insufficient_balance' => 'الرصيد المتوفر في الحساب (:balance) لا يكفي لإتمام عملية الدفع.',
+    'amount_exceeds_invoice_remaining' => 'المبلغ المدخل (:amount) يتجاوز الرصيد المتبقي للفاتورة (:remaining).',
+];

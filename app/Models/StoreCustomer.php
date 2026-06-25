@@ -14,10 +14,11 @@ class StoreCustomer extends Model implements MustBelongToStore
 {
     use HasFactory, CanBeDeleted, BelongsToStore, Filterable;
 
-    protected $fillable = ['store_id', 'name', 'phone', 'balance', 'status', 'bypass_debt_limit'];
+    protected $fillable = ['store_id', 'name', 'phone', 'balance', 'status', 'bypass_debt_limit', 'is_walk_in'];
 
     protected $casts = [
         'bypass_debt_limit' => 'boolean',
+        'is_walk_in' => 'boolean',
     ];
 
     protected $appends = ['calculated_balance', 'debt_age'];
@@ -30,6 +31,11 @@ class StoreCustomer extends Model implements MustBelongToStore
     public function scopeInactive($query)
     {
         return $query->whereStatus(0);
+    }
+
+    public function scopeWalkIn($query)
+    {
+        return $query->where('is_walk_in', true);
     }
 
     public function transactions()

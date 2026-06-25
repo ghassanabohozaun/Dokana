@@ -69,8 +69,13 @@ class StoreBankAccountController extends Controller
 
     public function getByStore(Request $request)
     {
+        if (user()->store_id == 1 || user()->role_id == 1 || user()->id == 1) {
+            $storeId = $request->input('store_id');
+        } else {
+            $storeId = user()->store_id;
+        }
         $bankAccounts = StoreBankAccount::with(['paymentEntity'])
-            ->where('store_id', $request->store_id)
+            ->where('store_id', $storeId)
             ->get();
 
         return response()->json($bankAccounts);

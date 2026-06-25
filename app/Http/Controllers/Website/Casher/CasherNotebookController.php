@@ -102,6 +102,7 @@ class CasherNotebookController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'opening_balance' => 'nullable|numeric|min:0',
         ]);
 
         $customer = StoreCustomer::create([
@@ -109,6 +110,18 @@ class CasherNotebookController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
         ]);
+
+        if ($request->filled('opening_balance') && $request->opening_balance > 0) {
+            StoreTransaction::create([
+                'store_id' => $customer->store_id,
+                'store_customer_id' => $customer->id,
+                'type' => 'debt',
+                'amount' => $request->opening_balance,
+                'transaction_date' => now(),
+                'description' => __('notebook.opening_balance') ?? 'رصيد افتتاحي',
+                'created_by' => Auth::guard('casher')->id(),
+            ]);
+        }
 
         return response()->json(['customer' => $customer, 'message' => __('notebook.customer_added') . ' ' . $customer->name]);
     }
@@ -175,6 +188,7 @@ class CasherNotebookController extends Controller
             'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
+            'is_direct_sale' => 'nullable|boolean',
         ]);
 
         if ($request->type === 'debt' && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 10) {
@@ -183,18 +197,42 @@ class CasherNotebookController extends Controller
             ], 422);
         }
 
-        $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
+        if ($request->boolean('is_direct_sale')) {
+            // Direct POS sale: record debt then immediate payment
+            StoreTransaction::create([
+                'store_id' => $this->getStoreId(),
+                'store_customer_id' => $customer->id,
+                'type' => 'debt',
+                'amount' => $request->amount,
+                'transaction_date' => $request->transaction_date,
+                'description' => $request->description ?: 'مبيعات',
+                'created_by' => Auth::guard('casher')->id(),
+            ]);
 
-        $tx = StoreTransaction::create([
-            'store_id' => $this->getStoreId(),
-            'store_customer_id' => $customer->id,
-            'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
-            'type' => $request->type,
-            'amount' => $request->amount,
-            'transaction_date' => $request->transaction_date,
-            'description' => $description,
-            'created_by' => Auth::guard('casher')->id(),
-        ]);
+            $tx = StoreTransaction::create([
+                'store_id' => $this->getStoreId(),
+                'store_customer_id' => $customer->id,
+                'store_bank_account_id' => $request->store_bank_account_id,
+                'type' => 'payment',
+                'amount' => $request->amount,
+                'transaction_date' => $request->transaction_date,
+                'description' => $request->description ?: 'دفع مباشر',
+                'created_by' => Auth::guard('casher')->id(),
+            ]);
+        } else {
+            $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
+
+            $tx = StoreTransaction::create([
+                'store_id' => $this->getStoreId(),
+                'store_customer_id' => $customer->id,
+                'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
+                'type' => $request->type,
+                'amount' => $request->amount,
+                'transaction_date' => $request->transaction_date,
+                'description' => $description,
+                'created_by' => Auth::guard('casher')->id(),
+            ]);
+        }
 
         $customer->refresh();
 

@@ -386,6 +386,24 @@ return [
         'license_number' => 'License Number',
         'tenant_type' => 'Tenant Type',
         
+        // Store Supplier Payments
+        'store_id'                   => 'Store',
+        'store_supplier_id'          => 'Supplier',
+        'store_supplier_invoice_id'  => 'Invoice',
+        'store_bank_account_id'      => 'Bank Account / Wallet',
+        'payment_date'               => 'Payment Date',
+        'notes'                      => 'Notes',
+
+        // Store Supplier Invoices
+        'invoice_number'             => 'Invoice Number',
+        'invoice_date'               => 'Invoice Date',
+        'total_amount'               => 'Total Amount',
+
+        // Store Suppliers
+        'bank_name'                  => 'Bank / Wallet Name',
+        'account_number'             => 'Account Number',
+        'mobile'                     => 'Mobile Number',
+
         // Maintenances Items
         'items.*.type' => 'Maintenance Type',
         'items.*.cost' => 'Item Cost',

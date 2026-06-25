@@ -39,6 +39,7 @@ class StoreService
         if ($store) {
             $this->syncStoreSettings($store);
             $this->createDefaultCashBox($store);
+            $this->createDefaultWalkInCustomer($store);
         }
 
         return $store;
@@ -131,6 +132,24 @@ class StoreService
                 'account_number' => 'CASH-' . $store->id,
                 'account_holder_name' => ['ar' => 'صندوق المتجر', 'en' => 'Store Cash Box'],
                 'is_default' => 1,
+            ]
+        );
+    }
+
+    /**
+     * Create the default Walk-in Customer for the store.
+     */
+    public function createDefaultWalkInCustomer($store)
+    {
+        \App\Models\StoreCustomer::firstOrCreate(
+            [
+                'store_id' => $store->id,
+                'is_walk_in' => true,
+            ],
+            [
+                'name' => 'مبيعات نقدية', // Walk-in Sales
+                'balance' => 0,
+                'status' => 1,
             ]
         );
     }

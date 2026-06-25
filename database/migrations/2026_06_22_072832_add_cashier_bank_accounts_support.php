@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 2);
             $table->text('reason')->nullable();
             $table->dateTime('withdrawal_date');
+            $table->foreignId('store_supplier_payment_id')->nullable()->constrained('store_supplier_payments')->cascadeOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });
