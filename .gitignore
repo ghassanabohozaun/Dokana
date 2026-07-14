@@ -5,14 +5,10 @@
 /public/storage
 /public/uploads/settings/*
 /public/uploads/users/*
-/public/uploads/companies/*
-/public/uploads/properties/*
-/public/uploads//contracts/*
-/public/uploads/properties/docs/
+
 
 
 /storage/*.key
-/storage/framework/views
 /storage/pail
 /vendor
 .env
