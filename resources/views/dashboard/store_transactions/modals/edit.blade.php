@@ -28,7 +28,8 @@
                         <div class="col-md-12 mb-1">
                             <div class="premium-form-group">
                                 <label class="premium-label" for="store_id_dept_edit">{!! __('stores.store') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input select2 shadow-none" id='store_id_dept_edit' name="store_id">
+                                <input type="hidden" name="store_id" id="hidden_store_id_edit">
+                                <select class="form-control premium-input select2 shadow-none" id='store_id_dept_edit' disabled>
                                     <option value="" selected>{!! __('general.select_from_list') !!}</option>
                                     @foreach ($stores as $store)
                                         <option value="{{ $store->id }}">{{ $store->name }}</option>
@@ -43,7 +44,8 @@
                         <div class="col-md-6 mb-1">
                             <div class="premium-form-group">
                                 <label class="premium-label" for="store_customer_id_edit">{!! __('store_customers.store_customer') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input select2 shadow-none" id='store_customer_id_edit' name="store_customer_id">
+                                <input type="hidden" name="store_customer_id" id="hidden_store_customer_id_edit">
+                                <select class="form-control premium-input select2 shadow-none" id='store_customer_id_edit' disabled>
                                     <option value="" selected>{!! __('general.select_from_list') !!}</option>
                                     @if(isset($customers))
                                         @foreach ($customers as $customer)
@@ -167,9 +169,13 @@
                 $('#amount_edit').val(store_transaction_amount);
                 $('#description_edit').val(store_transaction_description);
                 $('#transaction_date_edit').val(store_transaction_date);
+                
+                // Set hidden inputs
+                $('#hidden_store_id_edit').val(store_transaction_store_id);
+                $('#hidden_store_customer_id_edit').val(store_transaction_store_customer_id);
 
                 // Populate Select2 for Customer
-                if ($('#store_customer_id_edit').length) {
+                if ($('#store_customer_id_edit').length && !$('#store_id_dept_edit').length) {
                     if (store_transaction_store_customer_id) {
                         if ($('#store_customer_id_edit').find("option[value='" + store_transaction_store_customer_id + "']").length == 0) {
                             $('#store_customer_id_edit').append(new Option(store_transaction_customer_name, store_transaction_store_customer_id, true, true));
@@ -181,7 +187,7 @@
                 }
 
                 // Populate Select2 for Bank Account
-                if ($('#store_bank_account_id_edit').length) {
+                if ($('#store_bank_account_id_edit').length && !$('#store_id_dept_edit').length) {
                     if (store_transaction_bank_account_id) {
                         if ($('#store_bank_account_id_edit').find("option[value='" + store_transaction_bank_account_id + "']").length == 0) {
                             $('#store_bank_account_id_edit').append(new Option(store_transaction_bank_account_name, store_transaction_bank_account_id, true, true));
@@ -195,7 +201,10 @@
                 // Populate Select2 for Store
                 if ($('#store_id_dept_edit').length) {
                     if (store_transaction_store_id) {
-                        $('#store_id_dept_edit').val(store_transaction_store_id).trigger('change');
+                        $('#store_id_dept_edit').val(store_transaction_store_id).trigger('change', [{
+                            customer_id: store_transaction_store_customer_id,
+                            bank_account_id: store_transaction_bank_account_id
+                        }]);
                     } else {
                         $('#store_id_dept_edit').val(null).trigger('change');
                     }
@@ -243,43 +252,45 @@
             }
 
             // Fetch customers and bank accounts by store on change
-            $('#store_id_dept_edit').on('change', function(e) {
-                // Ignore if triggered by programmatic update during modal open, 
-                // unless user actually clicked (isTrusted or triggered manually without modal data)
-                if (!e.isTrigger || e.type !== 'change') {
-                    let store_id = $(this).val();
-                    let customerSelect = $('#store_customer_id_edit');
-                    let bankAccountSelect = $('#store_bank_account_id_edit');
-                    
-                    customerSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
-                    bankAccountSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
-                    
-                    if (store_id) {
-                        $.ajax({
-                            url: "{!! route('dashboard.store-customers.by-store') !!}",
-                            type: 'GET',
-                            data: { store_id: store_id },
-                            success: function(data) {
-                                $.each(data, function(key, customer) {
-                                    customerSelect.append('<option value="' + customer.id + '">' + customer.name + ' - ' + (customer.phone || '') + '</option>');
-                                });
+            $('#store_id_dept_edit').on('change', function(e, initData) {
+                let store_id = $(this).val();
+                let customerSelect = $('#store_customer_id_edit');
+                let bankAccountSelect = $('#store_bank_account_id_edit');
+                
+                if (store_id) {
+                    $.ajax({
+                        url: "{!! route('dashboard.store-customers.by-store') !!}",
+                        type: 'GET',
+                        data: { store_id: store_id },
+                        success: function(data) {
+                            customerSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
+                            $.each(data, function(key, customer) {
+                                customerSelect.append('<option value="' + customer.id + '">' + customer.name + ' - ' + (customer.phone || '') + '</option>');
+                            });
+                            if (initData && initData.customer_id) {
+                                customerSelect.val(initData.customer_id).trigger('change.select2');
                             }
-                        });
+                        }
+                    });
 
-                        $.ajax({
-                            url: "{!! route('dashboard.bank-accounts.by-store') !!}",
-                            type: 'GET',
-                            data: { store_id: store_id },
-                            success: function(data) {
-                                $.each(data, function(key, account) {
-                                    let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
-                                    let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
-                                    let newOption = new Option(accountName, account.id, false, false);
-                                    bankAccountSelect.append(newOption);
-                                });
+                    $.ajax({
+                        url: "{!! route('dashboard.bank-accounts.by-store') !!}",
+                        type: 'GET',
+                        data: { store_id: store_id },
+                        success: function(data) {
+                            bankAccountSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
+                            data.sort((a, b) => b.id - a.id);
+                            $.each(data, function(key, account) {
+                                let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
+                                let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
+                                let newOption = new Option(accountName, account.id, false, false);
+                                bankAccountSelect.append(newOption);
+                            });
+                            if (initData && initData.bank_account_id) {
+                                bankAccountSelect.val(initData.bank_account_id).trigger('change.select2');
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
         });

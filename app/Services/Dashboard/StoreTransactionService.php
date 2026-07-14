@@ -56,6 +56,31 @@ class StoreTransactionService
             }
         }
 
+        if ($customer && $customer->is_walk_in) {
+            // Dashboard Direct Sale for Walk-in: Record debt then payment to keep balance zero
+            $debtData = $data;
+            $debtData['type'] = 'debt';
+            $debtData['description'] = !empty($data['description']) ? $data['description'] : 'مبيعات مباشرة (لوحة الإدارة)';
+            $debtData['store_bank_account_id'] = null;
+            $debtTx = $this->storeTransactionRepository->create($debtData);
+
+            $paymentData = $data;
+            $paymentData['type'] = 'payment';
+            $paymentData['description'] = !empty($data['description']) ? $data['description'] : 'دفع مباشر (لوحة الإدارة)';
+            
+            // If no bank account selected (e.g. user chose 'debt' in UI), default to cash box
+            if (empty($paymentData['store_bank_account_id'])) {
+                 $cashBox = \App\Models\StoreBankAccount::where('store_id', $data['store_id'])
+                            ->where('account_type', 'cash')->first();
+                 $paymentData['store_bank_account_id'] = $cashBox ? $cashBox->id : null;
+            }
+            $paymentData['linked_transaction_id'] = $debtTx->id;
+            $tx = $this->storeTransactionRepository->create($paymentData);
+
+            $debtTx->updateQuietly(['linked_transaction_id' => $tx->id]);
+            return $tx;
+        }
+
         if (empty($data['description'])) {
             $data['description'] = $data['type'] === 'payment' ? __('store_transactions.payment') : __('store_transactions.debt');
         }

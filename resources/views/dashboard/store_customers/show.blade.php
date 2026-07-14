@@ -27,7 +27,7 @@
             </div>
             <div class="content-header-right col-md-6 col-12 text-md-right">
                 <a href="{!! route('dashboard.store-customers.index') !!}" class="btn btn-premium-secondary shadow-sm">
-                    <i class="fas fa-arrow-right"></i> {!! __('general.back') !!}
+                    <i class="fas fa-arrow-right ml-1"></i> {!! __('general.back') !!}
                 </a>
             </div>
         </div>
@@ -122,6 +122,16 @@
                                 <div class="detail-box">
                                     <div class="detail-box-label"><i class="fas fa-chart-line text-warning mr-1"></i> إجمالي الحركات</div>
                                     <div class="detail-box-value text-primary" style="font-size: 15px;">{!! $transactions->total() !!} حركة</div>
+                                </div>
+                                <div class="detail-box">
+                                    <div class="detail-box-label"><i class="fas fa-shield-alt text-danger mr-1"></i> تجاوز حد الدين</div>
+                                    <div class="detail-box-value">
+                                        @if($store_customer->bypass_debt_limit)
+                                            <span class="badge badge-success shadow-sm" style="font-size: 12px; padding: 4px 10px;">مسموح</span>
+                                        @else
+                                            <span class="badge badge-secondary shadow-sm" style="font-size: 12px; padding: 4px 10px;">غير مسموح</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>

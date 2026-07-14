@@ -18,6 +18,9 @@
                             <div>
                                 <h2 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
                                     <span x-text="activeCustomer.name"></span>
+                                    <button @click="openEditCustomerModal()" class="text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors w-7 h-7 flex items-center justify-center rounded-full shadow-sm border border-blue-100 dark:border-blue-800/50">
+                                        <i class="ph-bold ph-pencil-simple text-sm"></i>
+                                    </button>
                                     <template x-if="activeCustomer.status == 0">
                                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">{{ __('notebook.disabled') ?? 'معطل' }}</span>
                                     </template>
@@ -31,75 +34,64 @@
                     </div>
                     
                     <!-- Balance & Actions -->
-                    <div class="p-5 bg-white dark:bg-darkCard shadow-sm z-10 relative shrink-0">
-                        <div class="flex justify-between items-end mb-5">
+                    <div class="p-4 bg-white dark:bg-darkCard shadow-sm z-10 relative shrink-0">
+                        <div class="flex justify-between items-end mb-3">
                             <div>
-                                <p class="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">{{ __('notebook.current_balance') }}</p>
-                                <h3 class="text-3xl font-black tracking-tight" :class="activeCustomer.balance > 0 ? 'text-red-500' : (activeCustomer.balance < 0 ? 'text-emerald-500' : 'text-gray-800 dark:text-white')">
-                                    <span x-text="Math.abs(activeCustomer.balance).toFixed(1)"></span> <span class="text-base font-normal opacity-80">{{ __('notebook.currency') }}</span>
+                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-0.5">{{ __('notebook.current_balance') }}</p>
+                                <h3 class="text-2xl font-black tracking-tight" :class="activeCustomer.balance > 0 ? 'text-red-500' : (activeCustomer.balance < 0 ? 'text-emerald-500' : 'text-gray-800 dark:text-white')">
+                                    <span x-text="Math.abs(activeCustomer.balance).toFixed(1)"></span> <span class="text-sm font-normal opacity-80">{{ __('notebook.currency') }}</span>
                                 </h3>
                             </div>
-                            <div class="text-xs font-bold px-3 py-1.5 rounded-full" :class="activeCustomer.balance > 0 ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : (activeCustomer.balance < 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
-                                <span x-text="activeCustomer.balance > 0 ? '{{ __('notebook.owes_debt') }}' : (activeCustomer.balance < 0 ? '{{ __('notebook.has_credit') }}' : '{{ __('notebook.paid') }}')"></span>
+                            <div class="flex flex-col items-end gap-1.5">
+                                <div class="text-[11px] font-bold px-2.5 py-1 rounded-md" :class="activeCustomer.balance > 0 ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : (activeCustomer.balance < 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
+                                    <span x-text="activeCustomer.balance > 0 ? '{{ __('notebook.owes_debt') }}' : (activeCustomer.balance < 0 ? '{{ __('notebook.has_credit') }}' : '{{ __('notebook.paid') }}')"></span>
+                                </div>
+                                <template x-if="activeCustomer.balance > 0 && activeCustomer.debt_age !== null">
+                                    <div class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all duration-300"
+                                         :class="activeCustomer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
+                                                 (activeCustomer.debt_age <= 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
+                                                 (activeCustomer.debt_age <= 60 ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30' : 
+                                                 'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse'))">
+                                        <i class="ph-fill ph-clock"></i>
+                                        <span x-text="activeCustomer.debt_age === 0 ? '{{ __('notebook.today') }}' : activeCustomer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
+                                    </div>
+                                </template>
                             </div>
                         </div>
 
-                        <template x-if="activeCustomer.balance > 0 && activeCustomer.debt_age !== null">
-                            <div class="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl border mb-4 w-fit transition-all duration-300"
-                                 :class="activeCustomer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
-                                         (activeCustomer.debt_age <= 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
-                                         (activeCustomer.debt_age <= 60 ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30' : 
-                                         'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse'))">
-                                <i class="ph-fill ph-clock text-sm"></i>
-                                <span>
-                                    {{ __('notebook.debt_age') }}: 
-                                    <span x-text="activeCustomer.debt_age === 0 ? '{{ __('notebook.today') }}' : activeCustomer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
-                                </span>
-                            </div>
-                        </template>
                         @if(auth('casher')->user()->hasAbility('notebook_create'))
                         <template x-if="activeCustomer.is_walk_in">
-                            <div class="grid grid-cols-2 gap-3">
-                                <button @click="if(activeCustomer.status != 0) openTxModal('pos_cash')"
+                            <div class="grid grid-cols-1 gap-2">
+                                <button @click="if(activeCustomer.status != 0) openTxModal('direct_sale')"
                                     :disabled="activeCustomer.status == 0"
                                     :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
-                                    class="flex flex-col items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-3 rounded-[1rem] font-bold transition-all border border-emerald-100 dark:border-emerald-900/30">
-                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-emerald-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                        <i class="ph-bold ph-money text-xl"></i>
-                                    </div>
-                                    دفع كاش 💵
-                                </button>
-                                <button @click="if(activeCustomer.status != 0) openTxModal('pos_bank')"
-                                    :disabled="activeCustomer.status == 0"
-                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group'"
-                                    class="flex flex-col items-center justify-center gap-2 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-3 rounded-[1rem] font-bold transition-all border border-blue-100 dark:border-blue-900/30">
-                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-blue-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                        <i class="ph-bold ph-bank text-xl"></i>
-                                    </div>
-                                    دفع بنك / محفظة 💳
+                                    class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-2.5 rounded-xl font-bold transition-all border border-emerald-100 dark:border-emerald-900/30 text-sm">
+                                    <i class="ph-bold ph-money text-lg"></i>
+                                    دفع 💵
                                 </button>
                             </div>
                         </template>
 
                         <template x-if="!activeCustomer.is_walk_in">
-                            <div class="grid grid-cols-2 gap-3">
+                            <div class="grid grid-cols-3 gap-2">
                                 <button @click="if(activeCustomer.status != 0) openTxModal('debt')"
                                     :disabled="activeCustomer.status == 0"
                                     :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-red-100 dark:hover:bg-red-900/40 active:scale-95 group'"
-                                    class="flex flex-col items-center justify-center gap-2 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 py-3 rounded-[1rem] font-bold transition-all border border-red-100 dark:border-red-900/30">
-                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-red-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                        <i class="ph-bold ph-minus text-xl"></i>
-                                    </div>
-                                    {{ __('notebook.new_debt') }}
+                                    class="flex items-center justify-center gap-1 bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-red-100 dark:border-red-900/30 text-[12px] sm:text-[13px]">
+                                    <i class="ph-bold ph-minus text-base"></i>
+                                    <span class="truncate">{{ __('notebook.new_debt') }}</span>
                                 </button>
-                                <button @click="if(activeCustomer.status != 0) openTxModal('payment')"
+                                <button @click="openTxModal('payment')"
+                                    class="flex items-center justify-center gap-1 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-emerald-100 dark:border-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group text-[12px] sm:text-[13px]">
+                                    <i class="ph-bold ph-plus text-base"></i>
+                                    <span class="truncate">{{ __('notebook.payment_transfer') }}</span>
+                                </button>
+                                <button @click="if(activeCustomer.status != 0) openTxModal('direct_sale')"
                                     :disabled="activeCustomer.status == 0"
-                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
-                                    class="flex flex-col items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-3 rounded-[1rem] font-bold transition-all border border-emerald-100 dark:border-emerald-900/30">
-                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-emerald-900/40 flex items-center justify-center shadow-sm" :class="activeCustomer.status == 0 ? '' : 'group-hover:scale-110 transition-transform'">
-                                        <i class="ph-bold ph-plus text-xl"></i>
-                                    </div>
-                                    {{ __('notebook.payment_transfer') }}
+                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group'"
+                                    class="flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-blue-100 dark:border-blue-900/30 text-[12px] sm:text-[13px]">
+                                    <i class="ph-bold ph-shopping-cart text-base"></i>
+                                    <span class="truncate">شراء فوري</span>
                                 </button>
                             </div>
                         </template>
@@ -137,7 +129,7 @@
                                                     <p class="font-bold text-sm text-gray-900 dark:text-gray-100" x-text="tx.description"></p>
                                                     <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
                                                         <i class="ph-fill ph-calendar text-xs"></i> 
-                                                        <span x-text="(tx.transaction_date || tx.created_at || '').substring(0,10)"></span>
+                                                        <span x-text="formatDateTime(tx.transaction_date || tx.created_at)"></span>
                                                     </p>
                                                     <!-- Cashier Name -->
                                                     <template x-if="tx.cashier_name">
@@ -158,18 +150,20 @@
                                             </div>
                                         </div>
                                         @if(auth('casher')->user()->hasAbility('notebook_update') || auth('casher')->user()->hasAbility('notebook_delete'))
-                                        <div class="flex items-center gap-2 border-t dark:border-gray-800 pt-3 mt-1">
-                                            @if(auth('casher')->user()->hasAbility('notebook_update'))
-                                            <button @click="editTransaction(tx)" class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-lg transition-colors flex items-center justify-center gap-1">
-                                                <i class="ph-bold ph-pencil-simple"></i> {{ __('notebook.edit') }}
-                                            </button>
-                                            @endif
-                                            @if(auth('casher')->user()->hasAbility('notebook_delete'))
-                                            <button @click="deleteTransaction(tx.id)" class="flex-1 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40 rounded-lg transition-colors flex items-center justify-center gap-1">
-                                                <i class="ph-bold ph-trash"></i> {{ __('notebook.delete') }}
-                                            </button>
-                                            @endif
-                                        </div>
+                                        <template x-if="!(tx.type === 'debt' && tx.linked_transaction_id !== null) && activeCustomer.status != 0">
+                                            <div class="flex items-center gap-2 border-t dark:border-gray-800 pt-3 mt-1">
+                                                @if(auth('casher')->user()->hasAbility('notebook_update'))
+                                                <button @click="editTransaction(tx)" class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-lg transition-colors flex items-center justify-center gap-1">
+                                                    <i class="ph-bold ph-pencil-simple"></i> {{ __('notebook.edit') }}
+                                                </button>
+                                                @endif
+                                                @if(auth('casher')->user()->hasAbility('notebook_delete'))
+                                                <button @click="deleteTransaction(tx.id)" class="flex-1 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40 rounded-lg transition-colors flex items-center justify-center gap-1">
+                                                    <i class="ph-bold ph-trash"></i> {{ __('notebook.delete') }}
+                                                </button>
+                                                @endif
+                                            </div>
+                                        </template>
                                         @endif
                                     </div>
                                 </template>

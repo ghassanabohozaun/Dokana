@@ -11,16 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('store_withdrawals', function (Blueprint $table) {
+        Schema::disableForeignKeyConstraints();
+        Schema::create('store_bank_account_adjustments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_id')->constrained()->cascadeOnDelete();
             $table->foreignId('store_bank_account_id')->constrained('store_bank_accounts')->cascadeOnDelete();
-            $table->decimal('amount', 12, 2);
-            $table->text('reason')->nullable();
-            $table->dateTime('withdrawal_date');
-            $table->foreignId('store_supplier_payment_id')->nullable()->constrained('store_supplier_payments')->cascadeOnDelete();
-            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->softDeletes();
+            
+            $table->decimal('amount', 12, 2); // Can be positive or negative
+            $table->decimal('old_balance', 12, 2);
+            $table->decimal('new_balance', 12, 2);
+            $table->string('notes')->nullable();
+            
+            $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+            
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('store_withdrawals');
+        Schema::dropIfExists('store_bank_account_adjustments');
     }
 };

@@ -7,6 +7,7 @@
 
     <!-- Edit -->
     @can('bank_accounts_update')
+        @if($account->account_type !== 'cash')
         <a href="javascript:void(0)" 
             data-id="{!! $account->id !!}" 
             data-account_type="{!! $account->account_type !!}"
@@ -22,10 +23,23 @@
             title="{!! __('general.edit') !!}">
             <i class="fas fa-edit"></i>
         </a>
-        @endcan
+        @endif
+    @endcan
 
-        <!-- Delete -->
-        @can('bank_accounts_delete')
+    <!-- Adjust Balance -->
+    @can('bank_accounts_update')
+    <a href="javascript:void(0)" 
+        data-id="{!! $account->id !!}" 
+        data-current_balance="{!! $account->current_balance !!}"
+        class="btn-premium-action btn-premium-action-warning mr-1 adjustBankAccountBtn"
+        title="{!! __('bank_accounts.adjust_balance') !!}">
+        <i class="fas fa-balance-scale"></i>
+    </a>
+    @endcan
+
+    <!-- Delete -->
+    @can('bank_accounts_delete')
+        @if($account->account_type !== 'cash')
         <a href="javascript:void(0)"
             class="btn-premium-action btn-premium-action-danger delete-confirm text-decoration-none"
             data-id="{!! $account->id !!}" data-route="{!! route('dashboard.bank-accounts.destroy', $account->id) !!}" 
@@ -35,7 +49,8 @@
             data-success-text="{!! __('general.delete_success_message') !!}" title="{!! __('general.delete') !!}">
             <i class="fas fa-trash-alt"></i>
         </a>
-        @endcan
+        @endif
+    @endcan
     </div>
 </div>
 

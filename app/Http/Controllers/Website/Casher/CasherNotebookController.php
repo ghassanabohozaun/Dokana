@@ -59,26 +59,52 @@ class CasherNotebookController extends Controller
 
         $query = StoreCustomer::where('store_id', $this->getStoreId());
 
-        if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+        if ($search || $filter !== 'all') {
+            $query->where(function($q) use ($search, $filter) {
+                $q->where(function($subQ) use ($search, $filter) {
+                    if ($search) {
+                        $subQ->where('name', 'like', '%' . $search . '%');
+                    }
+                    if ($filter === 'debt' || $filter === 'highest_debt') {
+                        $subQ->where('balance', '>', 0);
+                    } elseif ($filter === 'paid') {
+                        $subQ->where('balance', '=', 0);
+                    } elseif ($filter === 'credit') {
+                        $subQ->where('balance', '<', 0);
+                    } elseif ($filter === 'disabled') {
+                        $subQ->where('status', 0);
+                    }
+                    $subQ->where('is_walk_in', false);
+                });
+
+                if ($search) {
+                    $q->orWhere('is_walk_in', true);
+                }
+            });
         }
 
-        if ($filter === 'debt') {
-            $query->where('balance', '>', 0);
-        } elseif ($filter === 'paid') {
-            $query->where('balance', '=', 0);
-        } elseif ($filter === 'credit') {
-            $query->where('balance', '<', 0);
-        } elseif ($filter === 'disabled') {
-            $query->where('status', 0);
-        }
-
+        // The total will include the walk-in customer regardless of filter/search.
+        // We might want to subtract 1 if we don't want it to skew "total customers found" 
+        // but it's fine to just count it as a result.
         $totalCustomers = $query->count();
-        $customers = $query->latest()->take($perPage)->get();
+        
+        if ($filter === 'highest_debt') {
+            $customers = $query->orderByDesc('is_walk_in')->orderByDesc('balance')->latest()->take($perPage)->get();
+        } else {
+            $customers = $query->orderByDesc('is_walk_in')->latest()->take($perPage)->get();
+        }
 
         $totalDebt = StoreCustomer::where('store_id', $this->getStoreId())->where('balance', '>', 0)->sum('balance');
         $todayCollections = StoreTransaction::where('store_id', $this->getStoreId())
             ->where('type', 'payment')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('amount');
+        $todayDirectSales = StoreTransaction::where('store_id', $this->getStoreId())
+            ->where('type', 'direct_sale')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('amount');
+        $todayDebts = StoreTransaction::where('store_id', $this->getStoreId())
+            ->where('type', 'debt')
             ->whereDate('created_at', Carbon::today())
             ->sum('amount');
 
@@ -87,7 +113,48 @@ class CasherNotebookController extends Controller
             'totalCustomers' => $totalCustomers,
             'totalDebt' => $totalDebt,
             'todayCollections' => $todayCollections,
+            'todayDirectSales' => $todayDirectSales,
+            'todayDebts' => $todayDebts,
         ]);
+    }
+
+    /**
+     * API: Get financial summary for today, week, and month.
+     */
+    public function getFinancialSummary(Request $request)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $storeId = $this->getStoreId();
+
+        $periods = [
+            'today' => Carbon::today(),
+            'week' => Carbon::now()->startOfWeek(),
+            'month' => Carbon::now()->startOfMonth(),
+        ];
+
+        $summary = [];
+
+        foreach ($periods as $key => $startDate) {
+            $summary[$key] = [
+                'collections' => StoreTransaction::where('store_id', $storeId)
+                    ->where('type', 'payment')
+                    ->where('created_at', '>=', $startDate)
+                    ->sum('amount'),
+                'direct_sales' => StoreTransaction::where('store_id', $storeId)
+                    ->where('type', 'direct_sale')
+                    ->where('created_at', '>=', $startDate)
+                    ->sum('amount'),
+                'debts' => StoreTransaction::where('store_id', $storeId)
+                    ->where('type', 'debt')
+                    ->where('created_at', '>=', $startDate)
+                    ->sum('amount'),
+            ];
+        }
+
+        return response()->json(['summary' => $summary]);
     }
 
     /**
@@ -127,6 +194,30 @@ class CasherNotebookController extends Controller
     }
 
     /**
+     * API: Update an existing customer.
+     */
+    public function updateCustomer(Request $request, $id)
+    {
+        if (!$this->isAuthorized('notebook_update')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $customer->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+        ]);
+
+        return response()->json(['customer' => $customer, 'message' => __('notebook.customer_updated') ?? 'تم تحديث بيانات الزبون']);
+    }
+
+    /**
      * API: Get ledger for a specific customer.
      */
     public function getLedger(Request $request, $customerId)
@@ -140,7 +231,9 @@ class CasherNotebookController extends Controller
 
         $transactions = $customer->transactions()
             ->with(['createdBy', 'bankAccount.paymentEntity'])
-            ->latest()
+            ->reorder()
+            ->orderBy('transaction_date', 'desc')
+            ->orderBy('id', 'desc')
             ->take($perPage)
             ->get();
             
@@ -178,8 +271,8 @@ class CasherNotebookController extends Controller
 
         $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($customerId);
 
-        if ($customer->status == 0) {
-            return response()->json(['message' => __('notebook.customer_disabled_cannot_add_transaction') ?? 'العميل معطل، لا يمكن إضافة حركات مالية له.'], 403);
+        if ($customer->status == 0 && ($request->type === 'debt' || $request->boolean('is_direct_sale'))) {
+            return response()->json(['message' => __('notebook.customer_disabled_cannot_add_debt') ?? 'العميل معطل، لا يمكن إضافة ديون أو مبيعات له، يُسمح بتسديد الدفعات فقط.'], 403);
         }
 
         $request->validate([
@@ -199,7 +292,7 @@ class CasherNotebookController extends Controller
 
         if ($request->boolean('is_direct_sale')) {
             // Direct POS sale: record debt then immediate payment
-            StoreTransaction::create([
+            $debtTx = StoreTransaction::create([
                 'store_id' => $this->getStoreId(),
                 'store_customer_id' => $customer->id,
                 'type' => 'debt',
@@ -217,8 +310,12 @@ class CasherNotebookController extends Controller
                 'amount' => $request->amount,
                 'transaction_date' => $request->transaction_date,
                 'description' => $request->description ?: 'دفع مباشر',
+                'linked_transaction_id' => $debtTx->id,
                 'created_by' => Auth::guard('casher')->id(),
             ]);
+
+            // Link debt to payment
+            $debtTx->updateQuietly(['linked_transaction_id' => $tx->id]);
         } else {
             $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
 

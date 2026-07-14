@@ -58,4 +58,25 @@ return [
     'account_details' => 'تفاصيل الحساب',
     'account_info' => 'بيانات الحساب',
     'account_properties' => 'الخصائص',
+
+    // Adjustments
+    'adjustments' => 'التسويات',
+    'opening_balance' => 'الرصيد الافتتاحي',
+    'enter_opening_balance' => 'أدخل الرصيد الافتتاحي (اختياري)',
+    'adjust_balance' => 'تسوية رصيد',
+    'system_balance' => 'الرصيد الحالي في النظام',
+    'actual_balance' => 'الرصيد الفعلي (الموجود حقاً)',
+    'enter_actual_balance' => 'أدخل الرصيد الفعلي الموجود...',
+    'enter_adjustment_notes' => 'مثال: تسوية عجز الصندوق، أو خطأ في الحساب...',
+    'reconciliation_successful' => 'تمت تسوية الرصيد بنجاح!',
+    'balance_is_same' => 'الرصيد الفعلي مطابق للرصيد الحالي، لا توجد حاجة للتسوية.',
+    
+    // Adjustments Table
+    'previous_balance' => 'الرصيد السابق',
+    'actual_balance_title' => 'الرصيد الفعلي',
+    'difference_adjustment' => 'الفارق (التسوية)',
+    'notes' => 'الملاحظات',
+    'surplus' => 'فائض',
+    'deficit' => 'عجز',
+    'no_adjustments_yet' => 'لا توجد أي تسويات سابقة لهذا الحساب',
 ];

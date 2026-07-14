@@ -14,7 +14,14 @@ class StoreTransactionObserver
 
     public function updated(StoreTransaction $transaction): void
     {
+        $this->syncLinkedTransaction($transaction, 'update');
+        
+        if ($transaction->isDirty('store_customer_id')) {
+            $oldCustomer = \App\Models\StoreCustomer::find($transaction->getOriginal('store_customer_id'));
+            $this->recalculateBalance($oldCustomer);
+        }
         $this->recalculateBalance($transaction->customer);
+        
         if ($transaction->isDirty('store_bank_account_id')) {
             $this->recalculateBankAccountBalance($transaction->getOriginal('store_bank_account_id'));
         }
@@ -23,6 +30,7 @@ class StoreTransactionObserver
 
     public function deleted(StoreTransaction $transaction): void
     {
+        $this->syncLinkedTransaction($transaction, 'delete');
         $this->recalculateBalance($transaction->customer);
         $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
     }
@@ -35,8 +43,32 @@ class StoreTransactionObserver
 
     public function forceDeleted(StoreTransaction $transaction): void
     {
+        $this->syncLinkedTransaction($transaction, 'forceDelete');
         $this->recalculateBalance($transaction->customer);
         $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+    }
+
+    protected function syncLinkedTransaction(StoreTransaction $transaction, $action)
+    {
+        if ($transaction->linked_transaction_id && !session()->has('syncing_tx_'.$transaction->id)) {
+            session()->put('syncing_tx_'.$transaction->linked_transaction_id, true);
+            
+            $linked = \App\Models\StoreTransaction::find($transaction->linked_transaction_id);
+            if ($linked) {
+                if ($action === 'update') {
+                    $linked->update([
+                        'amount' => $transaction->amount,
+                        'transaction_date' => $transaction->transaction_date
+                    ]);
+                } elseif ($action === 'delete') {
+                    $linked->delete();
+                } elseif ($action === 'forceDelete') {
+                    $linked->forceDelete();
+                }
+            }
+            
+            session()->forget('syncing_tx_'.$transaction->linked_transaction_id);
+        }
     }
 
     protected function recalculateBalance($customer)
@@ -56,6 +88,8 @@ class StoreTransactionObserver
         $bankAccount = \App\Models\StoreBankAccount::find($bankAccountId);
         if (!$bankAccount) return;
 
+        $opening = $bankAccount->opening_balance ?? 0;
+
         $totalPayments = \App\Models\StoreTransaction::where('store_bank_account_id', $bankAccountId)
             ->where('type', 'payment')
             ->sum('amount');
@@ -63,6 +97,9 @@ class StoreTransactionObserver
         $totalWithdrawals = \App\Models\StoreWithdrawal::where('store_bank_account_id', $bankAccountId)
             ->sum('amount');
             
-        $bankAccount->updateQuietly(['current_balance' => $totalPayments - $totalWithdrawals]);
+        $totalAdjustments = \App\Models\StoreBankAccountAdjustment::where('store_bank_account_id', $bankAccountId)
+            ->sum('amount');
+            
+        $bankAccount->updateQuietly(['current_balance' => $opening + $totalPayments + $totalAdjustments - $totalWithdrawals]);
     }
 }

@@ -89,7 +89,7 @@
                     <div class="px-4 pb-4 pt-1 flex items-center justify-between border-t border-gray-50 dark:border-gray-800/50 mt-1">
                         <div class="text-xs text-gray-400">
                             <!-- Show who added it if available, else date -->
-                            <span x-text="new Date(withdrawal.created_at).toLocaleDateString()"></span>
+                            <span x-text="formatDateTime(withdrawal.created_at)"></span>
                         </div>
                         <div class="flex items-center gap-2">
                             @if (auth('casher')->user()->hasAbility('notebook_delete'))

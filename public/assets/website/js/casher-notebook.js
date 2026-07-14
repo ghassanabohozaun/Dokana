@@ -7,6 +7,8 @@ document.addEventListener('alpine:init', () => {
         totalCustomers: 0,
         totalDebt: 0,
         todayCollections: 0,
+        todayDirectSales: 0,
+        todayDebts: 0,
         
         todayWithdrawals: [],
         totalTodayWithdrawals: 0,
@@ -19,9 +21,20 @@ document.addEventListener('alpine:init', () => {
         isLoading: false,
         showAccountsSheet: false,
         
+        // Financial Summary
+        summaryData: null,
+        summaryTab: 'today',
+        isSummaryLoading: false,
+        
         // New Customer form
         newCustomerName: '',
         newCustomerPhone: '',
+        newCustomerOpeningBalance: '',
+        
+        // Edit Customer form
+        editCustomerName: '',
+        editCustomerPhone: '',
+        isSavingCustomer: false,
         
         // Ledger state
         activeCustomer: null,
@@ -37,15 +50,18 @@ document.addEventListener('alpine:init', () => {
         txDate: config.todayDate,
         txBankAccountId: '',
         editingTxId: null,
+        isSavingTransaction: false,
 
         // Withdrawal form
         withdrawalAmount: '',
         withdrawalReason: '',
         withdrawalBankAccountId: '',
         withdrawalDate: config.todayDate,
+        isSavingWithdrawal: false,
         
         // APIs
         apiBase: config.apiBase,
+        locale: config.locale || 'ar',
         csrf: config.csrf,
         bankBalances: config.bankBalances || {},
         storeAccounts: config.storeAccounts || [],
@@ -90,6 +106,24 @@ document.addEventListener('alpine:init', () => {
             return this.filteredWithdrawals.reduce((sum, w) => sum + Number(w.amount), 0);
         },
 
+        formatDateTime(dateStr) {
+            if (!dateStr) return '';
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr.substring(0, 10);
+                return date.toLocaleDateString(this.locale === 'ar' ? 'ar-EG' : 'en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dateStr.substring(0, 10);
+            }
+        },
+
         init() {
             this.fetchCustomers();
             this.fetchWithdrawals();
@@ -104,6 +138,49 @@ document.addEventListener('alpine:init', () => {
                 }, 500);
             });
             this.$watch('filter', () => { this.perPage = 15; this.fetchCustomers(); });
+            
+            // Drag to scroll for filters
+            this.$nextTick(() => {
+                const slider = document.querySelector('.hide-scrollbar');
+                if(!slider) return;
+                
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+                let isDragging = false;
+
+                slider.addEventListener('mousedown', (e) => {
+                    isDown = true;
+                    isDragging = false;
+                    startX = e.pageX - slider.offsetLeft;
+                    scrollLeft = slider.scrollLeft;
+                });
+                slider.addEventListener('mouseleave', () => {
+                    isDown = false;
+                });
+                slider.addEventListener('mouseup', () => {
+                    isDown = false;
+                });
+                slider.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault();
+                    isDragging = true;
+                    const x = e.pageX - slider.offsetLeft;
+                    const walk = (x - startX) * 2; 
+                    slider.scrollLeft = scrollLeft - walk;
+                });
+                
+                // Prevent button click if it was a drag
+                const buttons = slider.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        if(isDragging) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }, { capture: true });
+                });
+            });
         },
         
         switchTab(tab) {
@@ -111,6 +188,22 @@ document.addEventListener('alpine:init', () => {
             if (tab === 'withdrawals') {
                 this.fetchWithdrawals();
             }
+        },
+
+        async openFinancialSummary() {
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'financialSummaryModal' } }));
+            this.isSummaryLoading = true;
+            this.summaryTab = 'today';
+            try {
+                const res = await fetch(`${this.apiBase}/financial-summary`);
+                const data = await res.json();
+                if (res.ok) {
+                    this.summaryData = data.summary;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isSummaryLoading = false;
         },
         
         async fetchCustomers() {
@@ -130,13 +223,8 @@ document.addEventListener('alpine:init', () => {
                     this.totalCustomers = data.totalCustomers;
                     this.totalDebt = data.totalDebt;
                     this.todayCollections = data.todayCollections;
-                    
-                    if (!this.activeCustomer && this.customers.length > 0) {
-                        const walkIn = this.customers.find(c => c.is_walk_in);
-                        if (walkIn) {
-                            this.openLedger(walkIn.id);
-                        }
-                    }
+                    this.todayDirectSales = data.todayDirectSales;
+                    this.todayDebts = data.todayDebts;
                 }
             } catch (e) {
                 console.error(e);
@@ -157,11 +245,15 @@ document.addEventListener('alpine:init', () => {
         openAddCustomer() {
             this.newCustomerName = '';
             this.newCustomerPhone = '';
+            this.newCustomerOpeningBalance = '';
+            this.isSavingCustomer = false;
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'addCustomerModal' } }));
         },
         
         async saveCustomer() {
+            if(this.isSavingCustomer) return;
             if(!this.newCustomerName) return;
+            this.isSavingCustomer = true;
             try {
                 const res = await fetch(`${this.apiBase}/customers`, {
                     method: 'POST',
@@ -188,6 +280,52 @@ document.addEventListener('alpine:init', () => {
             } catch (e) {
                 console.error(e);
             }
+            this.isSavingCustomer = false;
+        },
+        
+        openEditCustomerModal() {
+            if(!this.activeCustomer) return;
+            this.editCustomerName = this.activeCustomer.name;
+            this.editCustomerPhone = this.activeCustomer.phone || '';
+            this.isSavingCustomer = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'editCustomerModal' } }));
+        },
+        
+        async submitEditCustomer() {
+            if(this.isSavingCustomer) return;
+            if(!this.editCustomerName || !this.activeCustomer) return;
+            this.isSavingCustomer = true;
+            try {
+                const res = await fetch(`${this.apiBase}/customers/${this.activeCustomer.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrf,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: this.editCustomerName,
+                        phone: this.editCustomerPhone
+                    })
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'editCustomerModal' } }));
+                    Toast.show(config.translations.success, data.message, 'success');
+                    this.activeCustomer.name = data.customer.name;
+                    this.activeCustomer.phone = data.customer.phone;
+                    const index = this.customers.findIndex(c => c.id === this.activeCustomer.id);
+                    if(index !== -1) {
+                        this.customers[index].name = data.customer.name;
+                        this.customers[index].phone = data.customer.phone;
+                    }
+                } else {
+                    Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isSavingCustomer = false;
         },
         
         // Ledger
@@ -222,15 +360,16 @@ document.addEventListener('alpine:init', () => {
         
         // Transactions
         openTxModal(type) {
+            if(!this.activeCustomer) return;
             this.txType = type;
-            this.editingTxId = null;
             this.txAmount = '';
             this.txDescription = '';
             this.txDate = config.todayDate;
+            this.txBankAccountId = '';
+            this.editingTxId = null;
+            this.isSavingTransaction = false;
             
-            if (type === 'payment' || type === 'pos_bank') {
-                this.txBankAccountId = '';
-            } else if (type === 'pos_cash') {
+            if (type === 'payment' || type === 'direct_sale') {
                 const selectEl = document.querySelector('select[x-model="txBankAccountId"]');
                 if (selectEl) {
                     const defaultOpt = selectEl.querySelector('option[selected]');
@@ -241,22 +380,27 @@ document.addEventListener('alpine:init', () => {
             } else {
                 this.txBankAccountId = '';
             }
-
+            
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'transactionModal' } }));
         },
         
         editTransaction(tx) {
-            this.editingTxId = tx.id;
             this.txType = tx.type;
+            if (tx.is_direct_sale) {
+                this.txType = 'direct_sale';
+            }
             this.txAmount = tx.amount;
-            this.txDescription = tx.description;
+            this.txDescription = tx.description || '';
+            this.txDate = tx.transaction_date ? tx.transaction_date.substring(0, 10) : config.todayDate;
             this.txBankAccountId = tx.store_bank_account_id || '';
-            this.txDate = tx.transaction_date ? tx.transaction_date.split('T')[0] : config.todayDate;
+            this.editingTxId = tx.id;
+            this.isSavingTransaction = false;
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'transactionModal' } }));
         },
         
         async saveTransaction() {
-            if(!this.txAmount || !this.txDate) return;
+            if(this.isSavingTransaction) return;
+            if(!this.txAmount || !this.txDate || !this.activeCustomer) return;
             
             const url = this.editingTxId 
                 ? `${this.apiBase}/transactions/${this.editingTxId}`
@@ -264,6 +408,7 @@ document.addEventListener('alpine:init', () => {
                 
             const method = this.editingTxId ? 'PUT' : 'POST';
             
+            this.isSavingTransaction = true;
             try {
                 const res = await fetch(url, {
                     method: method,
@@ -273,12 +418,12 @@ document.addEventListener('alpine:init', () => {
                         'Accept': 'application/json'
                     },
                     body: JSON.stringify({
-                        type: (this.txType === 'pos_cash' || this.txType === 'pos_bank') ? 'payment' : this.txType,
+                        type: (this.txType === 'direct_sale') ? 'payment' : this.txType,
                         amount: this.txAmount,
                         transaction_date: this.txDate,
                         description: this.txDescription,
-                        store_bank_account_id: (this.txType === 'payment' || this.txType === 'pos_bank' || this.txType === 'pos_cash') ? this.txBankAccountId : null,
-                        is_direct_sale: (this.txType === 'pos_cash' || this.txType === 'pos_bank')
+                        store_bank_account_id: (this.txType === 'payment' || this.txType === 'direct_sale') ? this.txBankAccountId : null,
+                        is_direct_sale: (this.txType === 'direct_sale')
                     })
                 });
                 const data = await res.json();
@@ -293,6 +438,7 @@ document.addEventListener('alpine:init', () => {
             } catch(e) {
                 console.error(e);
             }
+            this.isSavingTransaction = false;
         },
         
         async deleteTransaction(txId) {
@@ -361,6 +507,7 @@ document.addEventListener('alpine:init', () => {
             this.withdrawalDate = config.todayDate;
             this.isEditingWithdrawal = false;
             this.editingWithdrawalId = null;
+            this.isSavingWithdrawal = false;
             
             const selectEl = document.querySelector('select[x-model="withdrawalBankAccountId"]');
             if (selectEl) {
@@ -378,13 +525,15 @@ document.addEventListener('alpine:init', () => {
             this.withdrawalAmount = withdrawal.amount;
             this.withdrawalReason = withdrawal.reason;
             this.withdrawalBankAccountId = withdrawal.store_bank_account_id;
-            this.withdrawalDate = withdrawal.withdrawal_date.split(' ')[0] || config.todayDate;
+            this.withdrawalDate = withdrawal.withdrawal_date ? withdrawal.withdrawal_date.substring(0, 10) : config.todayDate;
+            this.isSavingWithdrawal = false;
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'withdrawalModal' } }));
         },
 
         async submitWithdrawal() {
+            if(this.isSavingWithdrawal) return;
             if (!this.withdrawalAmount || !this.withdrawalReason || !this.withdrawalBankAccountId || !this.withdrawalDate) return;
-            this.isLoading = true;
+            this.isSavingWithdrawal = true;
 
             const url = this.isEditingWithdrawal 
                 ? `${this.apiBase}/withdrawals/${this.editingWithdrawalId}` 
@@ -408,9 +557,8 @@ document.addEventListener('alpine:init', () => {
                 });
 
                 const data = await res.json();
-                this.isLoading = false;
-
-                if(res.ok) {
+                
+                if (res.ok) {
                     window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'withdrawalModal' } }));
                     Toast.show(config.translations.success, data.message, 'success');
                     this.fetchWithdrawals();
@@ -418,9 +566,9 @@ document.addEventListener('alpine:init', () => {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }
             } catch (e) {
-                this.isLoading = false;
                 console.error(e);
             }
+            this.isSavingWithdrawal = false;
         },
 
         async deleteWithdrawal(id) {

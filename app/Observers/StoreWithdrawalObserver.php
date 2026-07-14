@@ -43,6 +43,8 @@ class StoreWithdrawalObserver
         $bankAccount = StoreBankAccount::find($bankAccountId);
         if (!$bankAccount) return;
 
+        $opening = $bankAccount->opening_balance ?? 0;
+
         $totalPayments = StoreTransaction::where('store_bank_account_id', $bankAccountId)
             ->where('type', 'payment')
             ->sum('amount');
@@ -50,6 +52,9 @@ class StoreWithdrawalObserver
         $totalWithdrawals = StoreWithdrawal::where('store_bank_account_id', $bankAccountId)
             ->sum('amount');
             
-        $bankAccount->updateQuietly(['current_balance' => $totalPayments - $totalWithdrawals]);
+        $totalAdjustments = \App\Models\StoreBankAccountAdjustment::where('store_bank_account_id', $bankAccountId)
+            ->sum('amount');
+            
+        $bankAccount->updateQuietly(['current_balance' => $opening + $totalPayments + $totalAdjustments - $totalWithdrawals]);
     }
 }

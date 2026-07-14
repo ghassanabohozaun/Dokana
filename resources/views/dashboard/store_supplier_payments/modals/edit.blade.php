@@ -65,20 +65,7 @@
                             </div>
                         </div>
 
-                        <!-- Supplier Bank Details Info Card -->
-                        <div class="col-md-12 mb-1 d-none" id="supplier_bank_details_container_edit">
-                            <div class="p-3 mb-2 shadow-sm text-secondary"
-                                style="border: 2px dashed #007bff; background-color: #f0f8ff; border-radius: 8px;">
-                                <div class="d-flex justify-content-between flex-wrap" style="font-size: 13px;">
-                                    <div><strong>{!! __('store_suppliers.mobile') !!}:</strong> <span
-                                            id="supplier_mobile_val_edit">-</span></div>
-                                    <div><strong>{!! __('store_suppliers.bank_name') !!}:</strong> <span
-                                            id="supplier_bank_name_val_edit">-</span></div>
-                                    <div><strong>{!! __('store_suppliers.account_number') !!}:</strong> <span
-                                            id="supplier_account_number_val_edit">-</span></div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Supplier Invoice -->
                         <div class="col-md-12 mb-1">
@@ -319,18 +306,10 @@
                 let supplier_id = $(this).val();
                 let selectedOption = $(this).find('option:selected');
                 let invoiceSelect = $('#store_supplier_invoice_id_edit');
-                let detailsContainer = $('#supplier_bank_details_container_edit');
 
                 invoiceSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
 
                 if (supplier_id) {
-                    // Update supplier info card
-                    $('#supplier_mobile_val_edit').text(selectedOption.data('mobile') || '-');
-                    $('#supplier_bank_name_val_edit').text(selectedOption.data('bank-name') || '-');
-                    $('#supplier_account_number_val_edit').text(selectedOption.data('account-number') ||
-                        '-');
-                    detailsContainer.removeClass('d-none');
-
                     // Fetch supplier's invoices
                     $.ajax({
                         url: "{!! route('dashboard.store-supplier-invoices.by-supplier') !!}",
@@ -378,7 +357,7 @@
                                             pendingVal).trigger(
                                             'change.select2');
                                         invoiceSelect.removeAttr(
-                                        'data-pending-val');
+                                            'data-pending-val');
 
                                         window.isStoreSupplierPaymentPopulating =
                                             false;
@@ -398,7 +377,6 @@
                         }
                     });
                 } else {
-                    detailsContainer.addClass('d-none');
                     invoiceSelect.prop('disabled', true).trigger('change.select2');
                     window.isStoreSupplierPaymentPopulating = false;
                 }
@@ -415,7 +393,7 @@
                 bankAccountSelect.empty().append(
                     '<option value="" data-balance="0" selected>{!! __('general.select_from_list') !!}</option>');
                 supplierSelect.empty().append(
-                '<option value="" selected>{!! __('general.select_from_list') !!}</option>');
+                    '<option value="" selected>{!! __('general.select_from_list') !!}</option>');
 
                 if (store_id) {
                     // Fetch bank accounts
@@ -546,11 +524,13 @@
                 if (remaining < 0) {
                     remainingContainer.removeClass('text-primary').addClass('text-danger');
                     remainingSpan.removeClass('text-primary').addClass('text-danger');
-                    warningMsg.removeClass('d-none').hide().fadeIn(200);
+                    if (warningMsg.hasClass('d-none')) {
+                        warningMsg.removeClass('d-none').hide().fadeIn(200);
+                    }
                 } else {
                     remainingContainer.removeClass('text-danger').addClass('text-primary');
                     remainingSpan.removeClass('text-danger').addClass('text-primary');
-                    warningMsg.addClass('d-none');
+                    warningMsg.addClass('d-none').hide();
                 }
             }
 

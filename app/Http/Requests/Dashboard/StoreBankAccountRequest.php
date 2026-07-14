@@ -52,6 +52,7 @@ class StoreBankAccountRequest extends FormRequest
                 }
             ],
             'iban' => ['nullable', 'string', 'max:255', Rule::unique('store_bank_accounts', 'iban')->ignore($id)->whereNull('deleted_at')],
+            'opening_balance' => 'nullable|numeric',
             'is_default' => 'nullable', // Checkbox sends 'on' or nothing
         ];
 

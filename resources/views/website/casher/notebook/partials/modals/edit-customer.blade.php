@@ -1,8 +1,8 @@
-    <!-- Add Customer Modal -->
+    <!-- Edit Customer Modal -->
     <div x-data="{ show: false }" 
          x-show="show" 
-         x-on:open-modal.window="if ($event.detail.id === 'addCustomerModal') show = true"
-         x-on:close-modal.window="if ($event.detail.id === 'addCustomerModal') show = false"
+         x-on:open-modal.window="if ($event.detail.id === 'editCustomerModal') show = true"
+         x-on:close-modal.window="if ($event.detail.id === 'editCustomerModal') show = false"
          style="display: none;"
          class="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
         <div x-show="show" x-transition.opacity class="fixed inset-0 bg-gray-900/75 dark:bg-black/85" x-on:click="show = false"></div>
@@ -10,31 +10,27 @@
             <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 sm:hidden"></div>
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <i class="ph-fill ph-user-plus text-primary text-2xl"></i>
-                    {{ __('notebook.add_new_customer') }}
+                    <i class="ph-fill ph-pencil-simple text-primary text-2xl"></i>
+                    {{ __('notebook.edit_customer') ?? 'تعديل بيانات الزبون' }}
                 </h2>
                 <button x-on:click="show = false" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-500">
                     <i class="ph-bold ph-x"></i>
                 </button>
             </div>
-            <form @submit.prevent="saveCustomer()" class="space-y-4">
+            <form @submit.prevent="submitEditCustomer()" class="space-y-4">
                 <div>
                     <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.name') }} <span class="text-red-500">*</span></label>
-                    <input x-model="newCustomerName" type="text" required placeholder="{{ __('notebook.enter_customer_name') ?? 'أدخل اسم الزبون' }}" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400">
+                    <input x-model="editCustomerName" type="text" required placeholder="{{ __('notebook.enter_customer_name') ?? 'أدخل اسم الزبون' }}" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400">
                 </div>
                 <div>
                     <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.phone_optional') }}</label>
-                    <input x-model="newCustomerPhone" type="tel" maxlength="10" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" dir="ltr" placeholder="05...">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.opening_balance') ?? 'رصيد افتتاحي (ديون سابقة)' }}</label>
-                    <input x-model="newCustomerOpeningBalance" type="number" step="0.01" min="0" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" placeholder="0.00">
+                    <input x-model="editCustomerPhone" type="tel" maxlength="10" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" dir="ltr" placeholder="05...">
                 </div>
                 <button type="submit" 
                         x-bind:disabled="isSavingCustomer"
                         class="w-full btn-gradient-primary font-bold rounded-xl py-3.5 mt-4 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all">
                     <i x-show="isSavingCustomer" class="ph-bold ph-spinner-gap animate-spin text-xl relative z-10" x-cloak></i>
-                    <span x-show="!isSavingCustomer">{{ __('notebook.save_customer_data') }}</span>
+                    <span x-show="!isSavingCustomer">{{ __('notebook.save_changes') ?? 'حفظ التعديلات' }}</span>
                     <span x-show="isSavingCustomer">{{ __('notebook.saving') ?? 'جاري الحفظ...' }}</span>
                 </button>
             </form>

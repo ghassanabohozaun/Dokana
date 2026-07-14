@@ -6,6 +6,9 @@ use App\Repositories\Dashboard\StoreRepository;
 use App\Utils\ImageManagerUtils;
 use App\Models\Setting;
 use App\Models\Store;
+use App\Models\PaymentEntity;
+use App\Models\StoreBankAccount;
+use App\Models\StoreCustomer;
 use Illuminate\Support\Facades\File;
 
 class StoreService
@@ -117,12 +120,12 @@ class StoreService
     public function createDefaultCashBox($store)
     {
         // 1. Get Cash PaymentEntity (already seeded)
-        $cashEntity = \App\Models\PaymentEntity::where('type', 'cash')->first();
+        $cashEntity = PaymentEntity::where('type', 'cash')->first();
         
         if (!$cashEntity) return;
 
         // 2. Ensure StoreBankAccount for Cash Box exists
-        \App\Models\StoreBankAccount::firstOrCreate(
+        StoreBankAccount::firstOrCreate(
             [
                 'store_id' => $store->id,
                 'account_type' => 'cash',
@@ -141,13 +144,13 @@ class StoreService
      */
     public function createDefaultWalkInCustomer($store)
     {
-        \App\Models\StoreCustomer::firstOrCreate(
+        StoreCustomer::firstOrCreate(
             [
                 'store_id' => $store->id,
                 'is_walk_in' => true,
             ],
             [
-                'name' => 'مبيعات نقدية', // Walk-in Sales
+                'name' => 'زبون طياري', // Direct/Walk-in Sales
                 'balance' => 0,
                 'status' => 1,
             ]

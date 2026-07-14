@@ -143,8 +143,13 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link font-weight-bold py-3" id="withdrawals-tab" data-toggle="tab" href="#withdrawals" role="tab" aria-controls="withdrawals" aria-selected="false" data-tab="withdrawals" style="border:none; border-radius: 0;">
+                                    <a class="nav-link font-weight-bold py-3" id="withdrawals-tab" data-toggle="tab" href="#withdrawals" role="tab" aria-controls="withdrawals" aria-selected="false" data-tab="withdrawals" style="border:none; border-right: 1px solid #e2e8f0; border-radius: 0;">
                                         <i class="fas fa-arrow-up text-danger mr-1"></i> {!! __('bank_accounts.withdrawals') !!}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link font-weight-bold py-3" id="adjustments-tab" data-toggle="tab" href="#adjustments" role="tab" aria-controls="adjustments" aria-selected="false" data-tab="adjustments" style="border:none; border-radius: 0;">
+                                        <i class="fas fa-balance-scale text-warning mr-1"></i> {!! __('bank_accounts.adjustments') !!}
                                     </a>
                                 </li>
                             </ul>
@@ -162,6 +167,9 @@
                                     </div>
                                     <div class="tab-pane" id="withdrawals" role="tabpanel" aria-labelledby="withdrawals-tab">
                                         <div id="withdrawals_table_data"></div>
+                                    </div>
+                                    <div class="tab-pane" id="adjustments" role="tabpanel" aria-labelledby="adjustments-tab">
+                                        <div id="adjustments_table_data"></div>
                                     </div>
                                 </div>
                             </div>
@@ -190,8 +198,10 @@
             success: function(response) {
                 if (currentTab === 'deposits') {
                     $('#deposits_table_data').html(response);
-                } else {
+                } else if (currentTab === 'withdrawals') {
                     $('#withdrawals_table_data').html(response);
+                } else if (currentTab === 'adjustments') {
+                    $('#adjustments_table_data').html(response);
                 }
                 $('#tableLoader').fadeOut(200);
             },
@@ -207,6 +217,8 @@
         
         // Check if content is empty before fetching
         if (currentTab === 'withdrawals' && $.trim($('#withdrawals_table_data').html()) === '') {
+            fetchTabData(1);
+        } else if (currentTab === 'adjustments' && $.trim($('#adjustments_table_data').html()) === '') {
             fetchTabData(1);
         } else if (currentTab === 'deposits' && $.trim($('#deposits_table_data').html()) === '') {
             fetchTabData(1);

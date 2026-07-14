@@ -38,10 +38,10 @@ class StoreTransactionsController extends Controller
         $bankAccounts = collect();
         if (user()->role_id == 1 || user()->id == 1) {
             $customers = StoreCustomer::active()->latest()->get();
-            $bankAccounts = StoreBankAccount::with('paymentEntity')->get();
+            $bankAccounts = StoreBankAccount::with('paymentEntity')->latest()->get();
         } else {
             $customers = StoreCustomer::active()->where('store_id', user()->store_id)->latest()->get();
-            $bankAccounts = StoreBankAccount::where('store_id', user()->store_id)->with('paymentEntity')->get();
+            $bankAccounts = StoreBankAccount::where('store_id', user()->store_id)->with('paymentEntity')->latest()->get();
         }
 
         if ($request->ajax()) {

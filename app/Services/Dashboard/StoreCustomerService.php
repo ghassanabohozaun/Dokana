@@ -60,6 +60,10 @@ class StoreCustomerService
             return false;
         }
 
+        if ($storeCustomer->is_walk_in) {
+            throw new \App\Exceptions\DeleteRestrictionException(__('store_customers.cannot_delete_walk_in') ?? 'لا يمكن حذف زبون المبيعات المباشرة (الطياري).');
+        }
+
         $storeCustomer->checkRestrictiveRelations();
 
         $storeCustomer = $this->storeCustomerRepository->destroy($storeCustomer);

@@ -26,13 +26,22 @@ class StoreSupplierPaymentObserver
 
     public function updated(StoreSupplierPayment $payment): void
     {
-        // 1. Update the StoreWithdrawal
+        // 1. Update the StoreWithdrawal or create if missing
         if ($payment->withdrawal) {
             $payment->withdrawal->update([
                 'store_bank_account_id' => $payment->store_bank_account_id,
                 'amount' => $payment->amount,
                 'reason' => 'دفعة لمورد: ' . $payment->supplier->name . ($payment->invoice ? ' (فاتورة ' . $payment->invoice->invoice_number . ')' : ''),
                 'withdrawal_date' => $payment->payment_date,
+            ]);
+        } else {
+            $payment->withdrawal()->create([
+                'store_id' => $payment->store_id,
+                'store_bank_account_id' => $payment->store_bank_account_id,
+                'amount' => $payment->amount,
+                'reason' => 'دفعة لمورد: ' . $payment->supplier->name . ($payment->invoice ? ' (فاتورة ' . $payment->invoice->invoice_number . ')' : ''),
+                'withdrawal_date' => $payment->payment_date,
+                'created_by' => $payment->created_by,
             ]);
         }
 

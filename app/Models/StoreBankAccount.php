@@ -29,6 +29,7 @@ class StoreBankAccount extends Model implements MustBelongToStore
         'store_id',
         'account_type',
         'payment_entity_id',
+        'opening_balance',
         'current_balance',
         'account_number',
         'account_holder_name',
@@ -39,6 +40,7 @@ class StoreBankAccount extends Model implements MustBelongToStore
 
     protected $casts = [
         'is_default' => 'boolean',
+        'opening_balance' => 'decimal:2',
         'current_balance' => 'decimal:2',
     ];
 
@@ -86,5 +88,10 @@ class StoreBankAccount extends Model implements MustBelongToStore
     public function supplierPayments()
     {
         return $this->hasMany(StoreSupplierPayment::class);
+    }
+
+    public function adjustments()
+    {
+        return $this->hasMany(StoreBankAccountAdjustment::class);
     }
 }

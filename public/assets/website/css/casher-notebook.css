@@ -59,6 +59,13 @@
 .dark ::-webkit-scrollbar-thumb {
     background: #475569;
 }
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 
 /* Flatpickr Custom Theme Override for Cashier */
 .flatpickr-calendar {

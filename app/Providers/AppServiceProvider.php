@@ -78,5 +78,7 @@ class AppServiceProvider extends ServiceProvider
             }
             return \Illuminate\Support\Facades\URL::hasValidSignature($this, $absolute);
         });
+
+        \App\Models\StoreBankAccountAdjustment::observe(\App\Observers\StoreBankAccountAdjustmentObserver::class);
     }
 }

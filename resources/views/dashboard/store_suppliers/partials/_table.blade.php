@@ -10,6 +10,9 @@
                 @endif
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.name') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.mobile') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_invoices') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_paid') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_remaining') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.bank_name') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.account_number') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.date') !!}</th>
@@ -86,6 +89,30 @@
                                     </div>
 
                                     <div class="detail-item-modern">
+                                        <div class="icon-circle"><i class="fas fa-file-invoice-dollar"></i></div>
+                                        <div class="detail-info-box text-left">
+                                            <span class="detail-info-label">{!! __('store_suppliers.total_invoices') !!}</span>
+                                            <span class="detail-info-value font-weight-bold">{!! number_format($supplier->invoices_sum_total_amount ?: 0, 2) !!}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="detail-item-modern">
+                                        <div class="icon-circle text-success"><i class="fas fa-money-check-alt text-success"></i></div>
+                                        <div class="detail-info-box text-left">
+                                            <span class="detail-info-label">{!! __('store_suppliers.total_paid') !!}</span>
+                                            <span class="detail-info-value text-success font-weight-bold">{!! number_format($supplier->invoices_sum_paid_amount ?: 0, 2) !!}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="detail-item-modern">
+                                        <div class="icon-circle text-danger"><i class="fas fa-hand-holding-usd text-danger"></i></div>
+                                        <div class="detail-info-box text-left">
+                                            <span class="detail-info-label">{!! __('store_suppliers.total_remaining') !!}</span>
+                                            <span class="detail-info-value text-danger font-weight-bold">{!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="detail-item-modern">
                                         <div class="icon-circle"><i class="fas fa-university"></i></div>
                                         <div class="detail-info-box text-left">
                                             <span class="detail-info-label">{!! __('store_suppliers.bank_name') !!}</span>
@@ -143,6 +170,27 @@
 
                     <!-- Mobile -->
                     <td class="text-center align-middle">{!! $supplier->mobile !!}</td>
+
+                    <!-- Total Invoices -->
+                    <td class="text-center align-middle" dir="ltr">
+                        <div class="font-weight-bold text-primary" title="{!! __('store_suppliers.total_invoices') !!}">
+                            <i class="fas fa-file-invoice-dollar mr-1"></i> {!! number_format($supplier->invoices_sum_total_amount ?: 0, 2) !!}
+                        </div>
+                    </td>
+
+                    <!-- Total Paid -->
+                    <td class="text-center align-middle" dir="ltr">
+                        <div class="font-weight-bold text-success" title="{!! __('store_suppliers.total_paid') !!}">
+                            <i class="fas fa-money-check-alt mr-1"></i> {!! number_format($supplier->invoices_sum_paid_amount ?: 0, 2) !!}
+                        </div>
+                    </td>
+
+                    <!-- Total Remaining -->
+                    <td class="text-center align-middle" dir="ltr">
+                        <div class="font-weight-bold {{ ($supplier->invoices_sum_remaining_amount ?: 0) > 0 ? 'text-danger' : 'text-muted' }}" title="{!! __('store_suppliers.total_remaining') !!}">
+                            <i class="fas fa-hand-holding-usd mr-1"></i> {!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}
+                        </div>
+                    </td>
 
                     <!-- Bank Name -->
                     <td class="text-center align-middle font-weight-bold text-primary">{!! $supplier->bank_name !!}</td>

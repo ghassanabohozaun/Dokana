@@ -183,7 +183,9 @@
                     <!-- Actions -->
                     @if (auth()->user()->can('store_transactions_update') || auth()->user()->can('store_transactions_delete'))
                         <td class="text-center align-middle sticky-actions">
-                            @include('dashboard.store_transactions.parts.actions')
+                            @if(!($store_transaction->type === 'debt' && $store_transaction->linked_transaction_id !== null))
+                                @include('dashboard.store_transactions.parts.actions')
+                            @endif
                         </td>
                     @endif
                 </tr>

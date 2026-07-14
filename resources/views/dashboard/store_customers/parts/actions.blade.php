@@ -10,14 +10,17 @@
 
         <!-- Edit -->
         @can('store_customers_update')
-            <a href="javascript:void(0)" class="btn-premium-action btn-premium-action-edit mr-1 edit_store_customer_button"
-                store_customer-id="{!! $store_customer->id !!}" store_customer-name="{!! $store_customer->name !!}"
-                store_customer-phone="{!! $store_customer->phone !!}" store_customer-store-id="{!! $store_customer->store_id !!}"
-                store_customer-store-name="{!! optional($store_customer->store)->name !!}" 
-                store_customer-bypass-debt-limit="{!! $store_customer->bypass_debt_limit ? 1 : 0 !!}"
-                title="{!! __('general.edit') !!}">
-                <i class="fas fa-edit"></i>
-            </a>
+            @if (!$store_customer->is_walk_in)
+                <a href="javascript:void(0)" class="btn-premium-action btn-premium-action-edit mr-1 edit_store_customer_button"
+                    store_customer-id="{!! $store_customer->id !!}" store_customer-name="{!! $store_customer->name !!}"
+                    store_customer-phone="{!! $store_customer->phone !!}" store_customer-store-id="{!! $store_customer->store_id !!}"
+                    store_customer-store-name="{!! optional($store_customer->store)->name !!}" 
+                    store_customer-bypass-debt-limit="{!! $store_customer->bypass_debt_limit ? 1 : 0 !!}"
+                    store_customer-is-walk-in="{!! $store_customer->is_walk_in ? 1 : 0 !!}"
+                    title="{!! __('general.edit') !!}">
+                    <i class="fas fa-edit"></i>
+                </a>
+            @endif
         @endcan
 
         <!-- Add Transaction -->
@@ -39,14 +42,16 @@
 
         <!-- Delete -->
         @can('store_customers_delete')
-            <a href="javascript:void(0)"
-                class="btn-premium-action btn-premium-action-danger delete-confirm text-decoration-none"
-                data-id="{!! $store_customer->id !!}" data-route="{!! route('dashboard.store-customers.destroy') !!}" data-title="{!! __('general.ask_delete_record') !!}"
-                data-text="{!! __('general.delete_warning_text') !!}" data-confirm-btn="{!! __('general.yes') !!}"
-                data-cancel-btn="{!! __('general.no') !!}" data-success-title="{!! __('general.deleted') !!}"
-                data-success-text="{!! __('general.delete_success_message') !!}" title="{!! __('general.delete') !!}">
-                <i class="fas fa-trash-alt"></i>
-            </a>
+            @if (!$store_customer->is_walk_in)
+                <a href="javascript:void(0)"
+                    class="btn-premium-action btn-premium-action-danger delete-confirm text-decoration-none"
+                    data-id="{!! $store_customer->id !!}" data-route="{!! route('dashboard.store-customers.destroy') !!}" data-title="{!! __('general.ask_delete_record') !!}"
+                    data-text="{!! __('general.delete_warning_text') !!}" data-confirm-btn="{!! __('general.yes') !!}"
+                    data-cancel-btn="{!! __('general.no') !!}" data-success-title="{!! __('general.deleted') !!}"
+                    data-success-text="{!! __('general.delete_success_message') !!}" title="{!! __('general.delete') !!}">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            @endif
         @endcan
 
     </div>

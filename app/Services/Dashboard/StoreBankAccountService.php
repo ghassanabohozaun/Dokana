@@ -27,6 +27,11 @@ class StoreBankAccountService
         if (!isset($data['store_id'])) {
             $data['store_id'] = user()->store_id;
         }
+        
+        // Initialize current_balance with opening_balance
+        if (isset($data['opening_balance'])) {
+            $data['current_balance'] = $data['opening_balance'];
+        }
 
         return $this->repository->create($data);
     }

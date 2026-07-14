@@ -23,10 +23,12 @@
 
     <!-- Modals -->
     @include('website.casher.notebook.partials.modals.add-customer')
+    @include('website.casher.notebook.partials.modals.edit-customer')
     @include('website.casher.notebook.partials.modals.add-withdrawal')
     @include('website.casher.notebook.partials.modals.ledger')
     @include('website.casher.notebook.partials.modals.transaction')
     @include('website.casher.notebook.partials.modals.accounts-sheet')
+    @include('website.casher.notebook.partials.modals.financial-summary')
 
 </div>
 
@@ -56,6 +58,7 @@
 <script>
     window.casherConfig = {
         apiBase: '{{ url(app()->getLocale() . "/casher/api") }}',
+        locale: '{{ app()->getLocale() }}',
         csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         todayDate: '{{ \Carbon\Carbon::today()->format("Y-m-d") }}',
         translations: {

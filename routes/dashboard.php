@@ -17,6 +17,7 @@ use App\Http\Controllers\Dashboard\StoreWithdrawalController;
 use App\Http\Controllers\Dashboard\StoreSupplierController;
 use App\Http\Controllers\Dashboard\StoreSupplierInvoiceController;
 use App\Http\Controllers\Dashboard\StoreSupplierPaymentController;
+use App\Http\Controllers\Dashboard\StoreBankAccountAdjustmentController;
 use App\Livewire\Notifications\NotificationCenter;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
@@ -111,6 +112,7 @@ Route::group(
             Route::group(['middleware' => 'can:bank_accounts_read'], function () {
                 Route::get('/bank-accounts/by-store', [StoreBankAccountController::class, 'getByStore'])->name('bank-accounts.by-store');
                 Route::get('/bank-accounts/get-balance', [StoreBankAccountController::class, 'getBalance'])->name('bank-accounts.get-balance');
+                Route::post('/bank-accounts/adjust', [StoreBankAccountAdjustmentController::class, 'store'])->name('bank-accounts.adjust');
                 Route::resource('bank-accounts', StoreBankAccountController::class);
                 Route::post('/bank-accounts/destroy', [StoreBankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
             });

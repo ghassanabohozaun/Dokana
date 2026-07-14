@@ -66,7 +66,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" id="bypass_debt_limit_row_edit">
                         <div class="col-md-12 mt-2 mb-2">
                             <label for="bypass_debt_limit_edit" class="premium-switch-container"
                                 style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; width: 100% !important;">
@@ -123,12 +123,19 @@
                 let store_customer_store_id = $(this).attr('store_customer-store-id');
                 let store_customer_store_name = $(this).attr('store_customer-store-name');
                 let store_customer_bypass_debt_limit = $(this).attr('store_customer-bypass-debt-limit') == '1';
+                let store_customer_is_walk_in = $(this).attr('store_customer-is-walk-in') == '1';
 
                 // Populate form fields
                 $('#id_edit').val(store_customer_id);
                 $('#name_edit').val(store_customer_name);
                 $('#phone_edit').val(store_customer_phone);
                 $('#bypass_debt_limit_edit').prop('checked', store_customer_bypass_debt_limit);
+
+                if (store_customer_is_walk_in) {
+                    $('#bypass_debt_limit_row_edit').hide();
+                } else {
+                    $('#bypass_debt_limit_row_edit').show();
+                }
 
                 // Populate Select2 for Store
                 if ($('#store_id_dept_edit').length) {

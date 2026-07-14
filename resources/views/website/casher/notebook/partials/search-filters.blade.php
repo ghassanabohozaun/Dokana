@@ -14,9 +14,10 @@
                 <i class="ph-bold ph-x text-sm"></i>
             </button>
         </div>
-        <div class="flex gap-2 flex-wrap pb-1">
+        <div class="flex gap-2 overflow-x-auto hide-scrollbar whitespace-nowrap pb-1">
             <button @click="setFilter('all')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'all' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_all') }}</button>
             <button @click="setFilter('debt')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'debt' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_has_debt') }}</button>
+            <button @click="setFilter('highest_debt')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'highest_debt' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_highest_debt') ?? 'الأعلى ديوناً' }}</button>
             <button @click="setFilter('paid')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'paid' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_paid') }}</button>
             <button @click="setFilter('credit')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'credit' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_credit') ?? 'لهم رصيد' }}</button>
             <button @click="setFilter('disabled')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'disabled' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_disabled') ?? 'معطل' }}</button>

@@ -129,10 +129,13 @@
 
             <!-- Submit Button -->
             <button type="submit" 
-                :disabled="isWithdrawalExceeding || isLoading" 
-                :class="isWithdrawalExceeding ? 'opacity-50 cursor-not-allowed from-gray-400 to-gray-500' : 'from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 shadow-[0_8px_20px_rgba(239,68,68,0.3)]'"
+                :disabled="isWithdrawalExceeding || isSavingWithdrawal" 
+                :class="isWithdrawalExceeding ? 'opacity-50 cursor-not-allowed from-gray-400 to-gray-500' : 'from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 shadow-[0_8px_20px_rgba(239,68,68,0.3)] disabled:opacity-70 disabled:cursor-not-allowed'"
                 class="w-full bg-gradient-to-r text-white font-bold rounded-xl py-3.5 mt-4 flex items-center justify-center gap-2 transition-all">
-                <i class="ph-bold ph-check-circle text-lg"></i> <span x-text="isLoading ? '{{ __('notebook.saving') ?? 'جاري الحفظ...' }}' : '{{ __('notebook.save') ?? 'حفظ السحب' }}'"></span>
+                <i x-show="isSavingWithdrawal" class="ph-bold ph-spinner-gap animate-spin text-xl relative z-10" x-cloak></i>
+                <i x-show="!isSavingWithdrawal" class="ph-bold ph-check-circle text-lg"></i> 
+                <span x-show="!isSavingWithdrawal">{{ __('notebook.save') ?? 'حفظ السحب' }}</span>
+                <span x-show="isSavingWithdrawal">{{ __('notebook.saving') ?? 'جاري الحفظ...' }}</span>
             </button>
         </form>
     </div>

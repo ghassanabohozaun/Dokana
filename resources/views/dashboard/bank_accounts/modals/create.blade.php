@@ -115,11 +115,21 @@
                                 <span class="text-danger error-text iban_error"></span>
                             </div>
                         </div>
+
+                        <!-- Opening Balance -->
+                        <div class="col-md-12 mb-2">
+                            <div class="premium-form-group">
+                                <label class="premium-label" for="opening_balance_create">{!! __('bank_accounts.opening_balance') !!}</label>
+                                <input type="number" step="0.01" id="opening_balance_create" name="opening_balance"
+                                    class="form-control premium-input shadow-none" autocomplete="off" value="0"
+                                    placeholder="{!! __('bank_accounts.enter_opening_balance') !!}">
+                                <span class="text-danger error-text opening_balance_error"></span>
+                            </div>
+                        </div>
                     </div>
 
-
                     <div class="row">
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mt-1">
                             <label for="is_default_create" class="premium-switch-container"
                                 style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; width: 100% !important;">
                                 <div class="premium-switch-content"

@@ -25,11 +25,12 @@ class StoreSeeder extends Seeder
             ],
         );
 
-        // Ensure Cash Box is created for each store using the centralized Service logic
+        // Ensure Cash Box and Walk-in Customer are created for each store using the centralized Service logic
         $storeService = app(\App\Services\Dashboard\StoreService::class);
         $stores = Store::all();
         foreach ($stores as $store) {
             $storeService->createDefaultCashBox($store);
+            $storeService->createDefaultWalkInCustomer($store);
         }
     }
 }

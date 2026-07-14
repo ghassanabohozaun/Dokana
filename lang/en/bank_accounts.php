@@ -58,4 +58,25 @@ return [
     'account_details' => 'Account Details',
     'account_info' => 'Account Info',
     'account_properties' => 'Properties',
+    
+    // Adjustments
+    'adjustments' => 'Adjustments',
+    'opening_balance' => 'Opening Balance',
+    'enter_opening_balance' => 'Enter opening balance (optional)',
+    'adjust_balance' => 'Adjust Balance',
+    'system_balance' => 'Current System Balance',
+    'actual_balance' => 'Actual Balance (Real)',
+    'enter_actual_balance' => 'Enter actual physical balance...',
+    'enter_adjustment_notes' => 'e.g. cash deficit, calculation error...',
+    'reconciliation_successful' => 'Balance reconciled successfully!',
+    'balance_is_same' => 'Actual balance matches system balance, no adjustment needed.',
+    
+    // Adjustments Table
+    'previous_balance' => 'Previous Balance',
+    'actual_balance_title' => 'Actual Balance',
+    'difference_adjustment' => 'Difference (Adjustment)',
+    'notes' => 'Notes',
+    'surplus' => 'Surplus',
+    'deficit' => 'Deficit',
+    'no_adjustments_yet' => 'No adjustments recorded yet',
 ];

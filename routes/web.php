@@ -5,6 +5,7 @@ use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\Auth\AuthController as CasherAuthController;
 use App\Http\Controllers\Website\Casher\CasherNotebookController;
 use App\Livewire\Website\Casher\CasherNotebook;
+use App\Http\Controllers\Website\Casher\CasherWithdrawalController;
 
 Route::group(
     [
@@ -38,15 +39,17 @@ Route::group(
                 ->name('casher.api.')
                 ->group(function () {
                     Route::get('customers', [CasherNotebookController::class, 'getCustomers'])->name('customers.index');
+                    Route::get('financial-summary', [CasherNotebookController::class, 'getFinancialSummary'])->name('financial-summary');
                     Route::post('customers', [CasherNotebookController::class, 'storeCustomer'])->name('customers.store');
+                    Route::put('customers/{customer}', [CasherNotebookController::class, 'updateCustomer'])->name('customers.update');
                     Route::get('customers/{customer}/transactions', [CasherNotebookController::class, 'getLedger'])->name('customers.ledger');
                     Route::post('customers/{customer}/transactions', [CasherNotebookController::class, 'storeTransaction'])->name('transactions.store');
                     Route::put('transactions/{transaction}', [CasherNotebookController::class, 'updateTransaction'])->name('transactions.update');
                     Route::delete('transactions/{transaction}', [CasherNotebookController::class, 'destroyTransaction'])->name('transactions.destroy');
 
-                    Route::get('withdrawals', [\App\Http\Controllers\Website\Casher\CasherWithdrawalController::class, 'index'])->name('withdrawals.index');
-                    Route::post('withdrawals', [\App\Http\Controllers\Website\Casher\CasherWithdrawalController::class, 'store'])->name('withdrawals.store');
-                    Route::delete('withdrawals/{withdrawal}', [\App\Http\Controllers\Website\Casher\CasherWithdrawalController::class, 'destroy'])->name('withdrawals.destroy');
+                    Route::get('withdrawals', [CasherWithdrawalController::class, 'index'])->name('withdrawals.index');
+                    Route::post('withdrawals', [CasherWithdrawalController::class, 'store'])->name('withdrawals.store');
+                    Route::delete('withdrawals/{withdrawal}', [CasherWithdrawalController::class, 'destroy'])->name('withdrawals.destroy');
                 });
         });
     },

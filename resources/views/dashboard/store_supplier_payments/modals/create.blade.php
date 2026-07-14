@@ -60,16 +60,7 @@
                             </div>
                         </div>
 
-                        <!-- Supplier Bank Details Info Card -->
-                        <div class="col-md-12 mb-1 d-none" id="supplier_bank_details_container_create">
-                            <div class="p-3 mb-2 shadow-sm text-secondary" style="border: 2px dashed #007bff; background-color: #f0f8ff; border-radius: 8px;">
-                                <div class="d-flex justify-content-between flex-wrap" style="font-size: 13px;">
-                                    <div><strong>{!! __('store_suppliers.mobile') !!}:</strong> <span id="supplier_mobile_val_create">-</span></div>
-                                    <div><strong>{!! __('store_suppliers.bank_name') !!}:</strong> <span id="supplier_bank_name_val_create">-</span></div>
-                                    <div><strong>{!! __('store_suppliers.account_number') !!}:</strong> <span id="supplier_account_number_val_create">-</span></div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Supplier Invoice -->
                         <div class="col-md-12 mb-1">
@@ -95,7 +86,7 @@
                                                 $isDefault = $account->is_default ? "(" . __('general.default') . ")" : "";
                                                 $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
                                             @endphp
-                                            <option value="{{ $account->id }}" data-balance="{{ $account->current_balance }}" @if($account->is_default) selected @endif>{{ $accountName }} {{ $isDefault }}</option>
+                                            <option value="{{ $account->id }}" data-balance="{{ $account->current_balance }}">{{ $accountName }} {{ $isDefault }}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -211,17 +202,10 @@
                 let supplier_id = $(this).val();
                 let selectedOption = $(this).find('option:selected');
                 let invoiceSelect = $('#store_supplier_invoice_id_create');
-                let detailsContainer = $('#supplier_bank_details_container_create');
 
                 invoiceSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
 
                 if (supplier_id) {
-                    // Update supplier info card
-                    $('#supplier_mobile_val_create').text(selectedOption.data('mobile') || '-');
-                    $('#supplier_bank_name_val_create').text(selectedOption.data('bank-name') || '-');
-                    $('#supplier_account_number_val_create').text(selectedOption.data('account-number') || '-');
-                    detailsContainer.removeClass('d-none');
-
                     // Fetch supplier's invoices
                     $.ajax({
                         url: "{!! route('dashboard.store-supplier-invoices.by-supplier') !!}",
@@ -238,7 +222,6 @@
                         }
                     });
                 } else {
-                    detailsContainer.addClass('d-none');
                     invoiceSelect.prop('disabled', true).trigger('change');
                 }
             });
@@ -266,7 +249,7 @@
                                 let isDefault = account.is_default ? "({!! __('general.default') !!})" : "";
                                 let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
                                 
-                                let newOption = new Option(accountName + ' ' + isDefault, account.id, account.is_default, account.is_default);
+                                let newOption = new Option(accountName + ' ' + isDefault, account.id, false, false);
                                 $(newOption).attr('data-balance', account.current_balance);
                                 bankAccountSelect.append(newOption);
                             });
@@ -298,6 +281,7 @@
 
             // Show balance on account change
             $('#store_bank_account_id_create').on('change', function() {
+                $('#amount_create').val('');
                 updateCreateBalance();
             });
 
@@ -345,11 +329,13 @@
                 if (remaining < 0) {
                     remainingContainer.removeClass('text-primary').addClass('text-danger');
                     remainingSpan.removeClass('text-primary').addClass('text-danger');
-                    warningMsg.removeClass('d-none').hide().fadeIn(200);
+                    if (warningMsg.hasClass('d-none')) {
+                        warningMsg.removeClass('d-none').hide().fadeIn(200);
+                    }
                 } else {
                     remainingContainer.removeClass('text-danger').addClass('text-primary');
                     remainingSpan.removeClass('text-danger').addClass('text-primary');
-                    warningMsg.addClass('d-none');
+                    warningMsg.addClass('d-none').hide();
                 }
             }
 

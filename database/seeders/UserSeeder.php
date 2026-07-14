@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'store_id' => 1,
                 'role_id' => $superRole->id,
                 'status' => true,
-                'mobile' => '0592404940',
+                'mobile' => '0599999999',
             ],
         );
 

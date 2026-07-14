@@ -28,8 +28,8 @@ class StoreTransactionRequest extends FormRequest
                 'exists:store_customers,id',
                 function ($attribute, $value, $fail) {
                     $customer = StoreCustomer::find($value);
-                    if ($customer && $customer->status == 0) {
-                        $fail(__('store_transactions.customer_is_disabled'));
+                    if ($customer && $customer->status == 0 && request()->input('type') === 'debt') {
+                        $fail(__('store_transactions.customer_is_disabled') ?? 'العميل معطل، يُسمح بتسجيل الدفعات فقط.');
                     }
                 }
             ],

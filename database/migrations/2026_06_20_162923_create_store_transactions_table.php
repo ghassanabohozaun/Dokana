@@ -20,6 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->dateTime('transaction_date');
             $table->string('description')->nullable();
+            $table->unsignedBigInteger('linked_transaction_id')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });

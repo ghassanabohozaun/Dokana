@@ -14,10 +14,15 @@
                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95 text-gray-600 dark:text-gray-300 font-bold text-sm flex items-center gap-1">
                 <span>{{ $targetNative }}</span>
             </a>
-            <button @click="showAccountsSheet = true" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
-                <i class="ph-fill ph-wallet text-xl text-primary"></i>
+            <button @click="openFinancialSummary()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95 relative group">
+                <i class="ph-fill ph-chart-bar text-xl text-primary"></i>
+                <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">التقارير المالية</span>
             </button>
-            <button id="themeToggleBtn" onclick="document.documentElement.classList.toggle('dark')" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
+            <button @click="showAccountsSheet = true" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95 relative group">
+                <i class="ph-fill ph-wallet text-xl text-primary"></i>
+                <span class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">الحسابات البنكية</span>
+            </button>
+            <button id="themeToggleBtn" onclick="document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors active:scale-95">
                 <i class="ph-fill ph-moon text-xl dark:hidden text-gray-600"></i>
                 <i class="ph-fill ph-sun text-xl hidden dark:block text-yellow-400"></i>
             </button>

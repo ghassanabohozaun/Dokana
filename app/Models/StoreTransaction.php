@@ -16,7 +16,7 @@ class StoreTransaction extends Model implements MustBelongToStore
 {
     use HasFactory, BelongsToStore, Filterable, HasCreatedBy;
 
-    protected $fillable = ['store_id', 'store_customer_id', 'store_bank_account_id', 'type', 'amount', 'transaction_date', 'description', 'created_by'];
+    protected $fillable = ['store_id', 'store_customer_id', 'store_bank_account_id', 'type', 'amount', 'transaction_date', 'description', 'linked_transaction_id', 'created_by'];
 
     protected $casts = [
         'transaction_date' => 'datetime',

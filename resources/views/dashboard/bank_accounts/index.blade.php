@@ -92,6 +92,7 @@
 
     @can('bank_accounts_update')
     @include('dashboard.bank_accounts.modals.edit')
+    @include('dashboard.bank_accounts.modals.adjustment')
     @endcan
 
     @include('dashboard.bank_accounts.modals.details')
@@ -107,6 +108,19 @@
                     detailsModalBody: "#detailsBankAccountModalBody"
                 });
             }
+
+            // Handle Adjust Balance Button Click
+            $(document).on('click', '.adjustBankAccountBtn', function() {
+                let id = $(this).data('id');
+                let current_balance = parseFloat($(this).data('current_balance')).toFixed(2);
+                
+                $('#adjust_store_bank_account_id').val(id);
+                $('#current_system_balance').text(current_balance);
+                $('#actual_balance').val('');
+                $('#adjust_notes').val('');
+                
+                $('#adjustBankAccountModal').modal('show');
+            });
         });
     </script>
 @endpush

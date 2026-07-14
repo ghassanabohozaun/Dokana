@@ -19,6 +19,9 @@ class StoreSupplierRepository
     public function getAll($keyword = null, $storeId = null)
     {
         $query = $this->model->with(['store', 'createdBy'])
+            ->withSum('invoices', 'total_amount')
+            ->withSum('invoices', 'paid_amount')
+            ->withSum('invoices', 'remaining_amount')
             ->filter([
                 'keyword' => $keyword,
                 'store_id' => $storeId,

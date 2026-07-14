@@ -168,7 +168,9 @@
                                         <div class="detail-info-box text-left">
                                             <span class="detail-info-label">{!! __('store_customers.bypass_debt_limit') !!}</span>
                                             <span class="detail-info-value mt-1">
-                                                @if ($store_customer->bypass_debt_limit)
+                                                @if ($store_customer->is_walk_in)
+                                                    <span class="text-muted">---</span>
+                                                @elseif ($store_customer->bypass_debt_limit)
                                                     <span class="badge badge-light-success border-0 font-weight-bold">
                                                         {!! __('general.enable') ?? 'مفعّل' !!}
                                                     </span>
@@ -272,20 +274,34 @@
 
                     <!-- Bypass Debt Limit -->
                     <td class="text-center align-middle">
-                        <div class="badge badge-pill badge-glow premium-status-badge {!! $store_customer->bypass_debt_limit == 1 ? 'badge-success' : 'badge-danger' !!}">
-                            {!! $store_customer->bypass_debt_limit == 1 ? __('general.enable') : __('general.disabled') !!}
-                        </div>
+                        @if ($store_customer->is_walk_in)
+                            <span class="text-muted font-weight-bold">---</span>
+                        @else
+                            <div class="badge badge-pill badge-glow premium-status-badge {!! $store_customer->bypass_debt_limit == 1 ? 'badge-success' : 'badge-danger' !!}">
+                                {!! $store_customer->bypass_debt_limit == 1 ? __('general.enable') : __('general.disabled') !!}
+                            </div>
+                        @endif
                     </td>
 
                     <!-- Status -->
                     <td class="text-center align-middle">
-                        @include('dashboard.store_customers.parts.status')
+                        @if ($store_customer->is_walk_in)
+                            <span class="badge badge-pill badge-light-info border-0 font-weight-bold">
+                                زبون افتراضي
+                            </span>
+                        @else
+                            @include('dashboard.store_customers.parts.status')
+                        @endif
                     </td>
 
                     <!-- Manage Status -->
                     @can('store_customers_update')
                     <td class="text-center align-middle">
-                        @include('dashboard.store_customers.parts.manage_status')
+                        @if ($store_customer->is_walk_in)
+                            <span class="text-muted font-weight-bold">---</span>
+                        @else
+                            @include('dashboard.store_customers.parts.manage_status')
+                        @endif
                     </td>
                     @endcan
 

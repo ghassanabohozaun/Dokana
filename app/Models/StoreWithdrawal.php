@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Contracts\MustBelongToStore;
 use App\Traits\BelongsToStore;
 use App\Observers\StoreWithdrawalObserver;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[ObservedBy(StoreWithdrawalObserver::class)]
 class StoreWithdrawal extends Model implements MustBelongToStore
 {
-    use HasFactory, Filterable, HasCreatedBy, BelongsToStore;
+    use HasFactory, Filterable, HasCreatedBy, BelongsToStore, SoftDeletes;
 
     protected $fillable = [
         'store_id',

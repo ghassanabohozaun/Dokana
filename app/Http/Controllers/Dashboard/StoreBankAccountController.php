@@ -101,7 +101,7 @@ class StoreBankAccountController extends Controller
         // Calculate totals
         $totalDeposits = StoreTransaction::where('store_bank_account_id', $id)->where('type', 'payment')->sum('amount');
         $totalWithdrawals = StoreWithdrawal::where('store_bank_account_id', $id)->sum('amount');
-        $currentBalance = $totalDeposits - $totalWithdrawals;
+        $currentBalance = $account->current_balance;
 
         $tab = $request->get('tab', 'deposits');
 
@@ -109,6 +109,11 @@ class StoreBankAccountController extends Controller
             $transactions = StoreWithdrawal::where('store_bank_account_id', $id)
                 ->with(['creator'])
                 ->orderBy('withdrawal_date', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        } elseif ($tab === 'adjustments') {
+            $transactions = \App\Models\StoreBankAccountAdjustment::where('store_bank_account_id', $id)
+                ->with(['creator'])
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
         } else {
@@ -123,6 +128,8 @@ class StoreBankAccountController extends Controller
         if ($request->ajax()) {
             if ($tab === 'withdrawals') {
                 return view('dashboard.bank_accounts.partials._withdrawals_table', compact('transactions', 'account'))->render();
+            } elseif ($tab === 'adjustments') {
+                return view('dashboard.bank_accounts.partials._adjustments_table', compact('transactions', 'account'))->render();
             }
             return view('dashboard.bank_accounts.partials._deposits_table', compact('transactions', 'account'))->render();
         }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained()->cascadeOnDelete();
             $table->enum('account_type', ['bank', 'wallet', 'cash'])->default('bank');
             $table->foreignId('payment_entity_id')->constrained('payment_entities')->restrictOnDelete();
+            $table->decimal('opening_balance', 12, 2)->default(0);
             $table->decimal('current_balance', 12, 2)->default(0);
             $table->string('account_number');
             $table->json('account_holder_name');
