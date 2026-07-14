@@ -54,3 +54,17 @@ Route::group(
         });
     },
 );
+
+ 
+// Route::get('/run-migrations', function() {
+//     try {
+//         // نستخدم migrate فقط (بدون fresh) لكي لا نحذف أي بيانات موجودة
+//         \Illuminate\Support\Facades\Artisan::call('migrate', [
+//             '--force' => true 
+//         ]);
+        
+//         return 'تم عمل التهجير (Migration) بنجاح مع الحفاظ على البيانات: <br>' . \Illuminate\Support\Facades\Artisan::output();
+//     } catch (\Exception $e) {
+//         return 'حدث خطأ: ' . $e->getMessage();
+//     }
+// });
