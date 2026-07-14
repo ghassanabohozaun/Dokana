@@ -69,9 +69,8 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/website/css/style.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('assets/website/css/toast.css') }}?v={{ time() }}">
-    <link rel="shortcut icon" href="{!! setting()->favicon
-        ? asset('uploads/settings/' . setting()->favicon)
-        : asset('assets/dashboard/images/dokkana-logo.png') !!}" />
+    <link rel="apple-touch-icon" href="{!! setting()->favicon ? asset('uploads/settings/' . setting()->favicon) : asset('logo/dokkana-logo.png') !!}">
+    <link rel="shortcut icon" type="image/x-icon" href="{!! setting()->favicon ? asset('uploads/settings/' . setting()->favicon) : asset('logo/dokkana-logo.png') !!}">
     @stack('css')
     @livewireStyles
 </head>
