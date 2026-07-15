@@ -92,7 +92,8 @@ class StoreCustomersController extends Controller
             ->with(['store'])
             ->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
-            ->paginate(20);
+            ->paginate(20)
+            ->appends($request->query());
 
         if ($request->ajax()) {
             return view('dashboard.store_customers.partials._transactions_table', compact('transactions', 'store_customer'))->render();
