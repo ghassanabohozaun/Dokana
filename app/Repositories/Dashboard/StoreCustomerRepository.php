@@ -42,7 +42,7 @@ class StoreCustomerRepository
             ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'status' => $status], ['name', 'phone'], ['store_id', 'status']);
             
         if ($sort_by === 'highest_debts') {
-            $query->orderBy('total_debts', 'desc')->orderBy('id', 'desc');
+            $query->orderByRaw('(COALESCE(total_debts, 0) - COALESCE(total_payments, 0)) DESC')->orderBy('id', 'desc');
         } elseif ($sort_by === 'highest_payments') {
             $query->orderBy('total_payments', 'desc')->orderBy('id', 'desc');
         } elseif ($sort_by === 'oldest_debts') {
