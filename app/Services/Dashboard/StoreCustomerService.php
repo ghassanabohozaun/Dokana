@@ -20,15 +20,15 @@ class StoreCustomerService
     }
 
     // get all
-    public function getAll($keyword = null, $store_id = null)
+    public function getAll($keyword = null, $store_id = null, $status = null, $sort_by = null)
     {
-        return $this->storeCustomerRepository->getAll($keyword, $store_id);
+        return $this->storeCustomerRepository->getAll($keyword, $store_id, $status, $sort_by);
     }
 
     // get metrics
-    public function getMetrics($keyword = null, $store_id = null)
+    public function getMetrics($keyword = null, $store_id = null, $status = null)
     {
-        return $this->storeCustomerRepository->getMetrics($keyword, $store_id);
+        return $this->storeCustomerRepository->getMetrics($keyword, $store_id, $status);
     }
 
     // create

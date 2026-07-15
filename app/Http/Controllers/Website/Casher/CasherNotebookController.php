@@ -256,7 +256,7 @@ class CasherNotebookController extends Controller
         return response()->json([
             'customer' => $customer,
             'transactions' => $transactions,
-            'totalTransactions' => $totalTransactions,
+            'totalLedgerTransactions' => $totalTransactions,
         ]);
     }
 

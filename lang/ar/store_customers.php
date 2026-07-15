@@ -4,6 +4,7 @@ return [
     'update_store_customer' => 'تعديل بيانات العميل',
     'store_customers' => 'العملاء',
     'store_customer' => 'عميل',
+    'customer' => 'عميل',
     'show_all_store_customers' => 'عرض جميع العملاء',
 
     'name' => 'اسم العميل',
@@ -21,6 +22,9 @@ return [
     'total_payments' => 'إجمالي التحصيلات (منهم)',
     'net_balance' => 'الرصيد الصافي',
     'total_customers_count' => 'إجمالي العملاء',
+    'highest_debts' => 'الأعلى ديوناً',
+    'highest_payments' => 'الأكثر سداداً',
+    'oldest_debts' => 'أقدم الديون',
     'current_balance' => 'الرصيد الحالي',
     'financial_summary' => 'الملخص المالي',
     'customer_details' => 'تفاصيل العميل',

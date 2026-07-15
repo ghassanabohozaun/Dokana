@@ -30,7 +30,7 @@ class StoreCustomerRepository
     }
 
     // get all
-    public function getAll($keyword = null, $store_id = null)
+    public function getAll($keyword = null, $store_id = null, $status = null, $sort_by = null)
     {
         $query = $this->model->with(['store'])
             ->withSum(['transactions as total_debts' => function($q) {
@@ -39,15 +39,24 @@ class StoreCustomerRepository
             ->withSum(['transactions as total_payments' => function($q) {
                 $q->where('type', 'payment');
             }], 'amount')
-            ->filter(['keyword' => $keyword, 'store_id' => $store_id], ['name', 'phone'], ['store_id'])
-            ->orderByDesc('id');
+            ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'status' => $status], ['name', 'phone'], ['store_id', 'status']);
+            
+        if ($sort_by === 'highest_debts') {
+            $query->orderBy('total_debts', 'desc')->orderBy('id', 'desc');
+        } elseif ($sort_by === 'highest_payments') {
+            $query->orderBy('total_payments', 'desc')->orderBy('id', 'desc');
+        } elseif ($sort_by === 'oldest_debts') {
+            $query->orderByDesc('debt_age')->orderBy('id', 'desc');
+        } else {
+            $query->orderBy('id', 'desc');
+        }
 
         return $this->applyAjaxPagination(request(), $query);
     }
 
-    public function getMetrics($keyword = null, $store_id = null)
+    public function getMetrics($keyword = null, $store_id = null, $status = null)
     {
-        $query = $this->model->filter(['keyword' => $keyword, 'store_id' => $store_id], ['name', 'phone'], ['store_id']);
+        $query = $this->model->filter(['keyword' => $keyword, 'store_id' => $store_id, 'status' => $status], ['name', 'phone'], ['store_id', 'status']);
 
         $total_customers_count = (clone $query)->count();
 

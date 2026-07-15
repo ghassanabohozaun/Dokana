@@ -40,7 +40,7 @@ document.addEventListener('alpine:init', () => {
         activeCustomer: null,
         ledgerTransactions: [],
         totalLedgerTransactions: 0,
-        ledgerPerPage: 15,
+        ledgerPerPage: 20,
         isLedgerLoading: false,
         
         // Transaction form
@@ -330,7 +330,7 @@ document.addEventListener('alpine:init', () => {
         
         // Ledger
         async openLedger(customerId) {
-            this.ledgerPerPage = 15;
+            this.ledgerPerPage = 20;
             await this.fetchLedger(customerId);
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'ledgerModal' } }));
         },
@@ -352,7 +352,7 @@ document.addEventListener('alpine:init', () => {
         },
         
         loadMoreLedger() {
-            this.ledgerPerPage += 15;
+            this.ledgerPerPage += 20;
             if(this.activeCustomer) {
                 this.fetchLedger(this.activeCustomer.id);
             }

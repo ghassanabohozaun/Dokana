@@ -27,14 +27,14 @@ class StoreCustomersController extends Controller
         Gate::authorize('store_customers_read');
 
         $title = __('store_customers.store_customers');
-        $store_customers = $this->storeCustomerService->getAll($request->keyword, $request->store_id);
+        $store_customers = $this->storeCustomerService->getAll($request->keyword, $request->store_id, $request->status, $request->sort_by);
 
         $stores = null;
         if (user()->role_id == 1 || user()->id == 1) {
             $stores = $this->storeService->getActiveStoresForDropdown();
         }
 
-        $metrics = $this->storeCustomerService->getMetrics($request->keyword, $request->store_id);
+        $metrics = $this->storeCustomerService->getMetrics($request->keyword, $request->store_id, $request->status);
 
         if ($request->ajax()) {
             return view('dashboard.store_customers.partials._table', compact('store_customers', 'stores', 'metrics'))->render();
@@ -92,7 +92,7 @@ class StoreCustomersController extends Controller
             ->with(['store'])
             ->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
-            ->paginate(5);
+            ->paginate(20);
 
         if ($request->ajax()) {
             return view('dashboard.store_customers.partials._transactions_table', compact('transactions', 'store_customer'))->render();
