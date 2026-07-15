@@ -44,11 +44,13 @@ class StoreTransactionsController extends Controller
             $bankAccounts = StoreBankAccount::where('store_id', user()->store_id)->with('paymentEntity')->latest()->get();
         }
 
+        $metrics = $this->storeTransactionService->getMetrics($request);
+
         if ($request->ajax()) {
-            return view('dashboard.store_transactions.partials._table', compact('store_transactions', 'stores', 'customers', 'bankAccounts'))->render();
+            return view('dashboard.store_transactions.partials._table', compact('store_transactions', 'stores', 'customers', 'bankAccounts', 'metrics'))->render();
         }
 
-        return view('dashboard.store_transactions.index', compact('store_transactions', 'title', 'stores', 'customers', 'bankAccounts'));
+        return view('dashboard.store_transactions.index', compact('store_transactions', 'title', 'stores', 'customers', 'bankAccounts', 'metrics'));
     }
 
     public function store(StoreTransactionRequest $request)

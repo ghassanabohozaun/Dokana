@@ -24353,3 +24353,108 @@ html[dir='ltr'] .premium-error-bubble::after {
 .scrollable-table-container::-webkit-scrollbar-thumb:hover {
     background: rgba(67, 97, 238, 0.5) !important;
 }
+
+/* --- Premium Stats Cards --- */
+.stat-card-premium {
+    position: relative;
+    border-radius: 16px;
+    padding: 22px 20px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,0.03);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1;
+    cursor: default;
+}
+
+.stat-card-premium:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+.stat-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    transition: transform 0.4s ease;
+}
+
+.stat-card-premium:hover .stat-icon-wrapper {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.stat-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 3px;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.stat-currency {
+    font-size: 13px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+/* Card Specific Themes */
+.sc-payments .stat-icon-wrapper { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+.sc-debts .stat-icon-wrapper { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3); }
+.sc-balance .stat-icon-wrapper { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3); }
+.sc-count .stat-icon-wrapper { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3); }
+
+/* Decorative Background element */
+.bg-shape {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.04;
+    transition: all 0.6s ease;
+    transform: scale(1);
+}
+[dir="rtl"] .bg-shape { left: -30px; top: -30px; }
+[dir="ltr"] .bg-shape { right: -30px; top: -30px; }
+
+.stat-card-premium:hover .bg-shape {
+    transform: scale(2.5);
+    opacity: 0.08;
+}
+
+.sc-payments .bg-shape { background: #10b981; }
+.sc-debts .bg-shape { background: #ef4444; }
+.sc-balance .bg-shape { background: #3b82f6; }
+.sc-count .bg-shape { background: #8b5cf6; }
+
+@media (max-width: 767.98px) {
+    .stat-card-premium { padding: 16px 15px; }
+    .stat-icon-wrapper { width: 46px; height: 46px; font-size: 20px; }
+    .stat-value { font-size: 20px; }
+}

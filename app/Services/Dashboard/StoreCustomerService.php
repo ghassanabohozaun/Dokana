@@ -25,6 +25,12 @@ class StoreCustomerService
         return $this->storeCustomerRepository->getAll($keyword, $store_id);
     }
 
+    // get metrics
+    public function getMetrics($keyword = null, $store_id = null)
+    {
+        return $this->storeCustomerRepository->getMetrics($keyword, $store_id);
+    }
+
     // create
     public function create($data)
     {

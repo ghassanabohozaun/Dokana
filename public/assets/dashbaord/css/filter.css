@@ -288,3 +288,37 @@
 [data-textdirection="rtl"] .select2-container .select2-selection--single .select2-selection__clear {
     float: left !important;
 }
+
+/* --- Mobile Filter Layout Improvements --- */
+@media (max-width: 767.98px) {
+    .query-bar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 15px;
+        gap: 10px;
+    }
+    .query-bar-label {
+        margin: 0 0 5px 0 !important;
+        justify-content: center;
+    }
+    .query-bar form {
+        flex-wrap: wrap !important;
+        width: 100%;
+        gap: 8px;
+        justify-content: center;
+    }
+    .filter-item {
+        flex: 1 1 calc(50% - 8px); /* Two columns on mobile */
+        max-width: 100%;
+    }
+    .filter-chip {
+        width: 100%;
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    .reset-chip {
+        flex: 1 1 100%; /* Reset button takes full width */
+        margin-top: 5px;
+    }
+}

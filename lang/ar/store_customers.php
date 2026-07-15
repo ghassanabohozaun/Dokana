@@ -17,8 +17,10 @@ return [
 
     'no_store_customers_found' => 'لا يوجد عملاء حالياً !',
     
-    'total_debts' => 'إجمالي الديون (عليه)',
-    'total_payments' => 'إجمالي الدفعات (له)',
+    'total_debts' => 'إجمالي الديون (عليهم)',
+    'total_payments' => 'إجمالي التحصيلات (منهم)',
+    'net_balance' => 'الرصيد الصافي',
+    'total_customers_count' => 'إجمالي العملاء',
     'current_balance' => 'الرصيد الحالي',
     'financial_summary' => 'الملخص المالي',
     'customer_details' => 'تفاصيل العميل',

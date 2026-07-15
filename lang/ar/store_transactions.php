@@ -13,6 +13,11 @@ return [
     'date' => 'التاريخ',
     'no_store_transactions_found' => 'لا توجد حركات مضافة حالياً.',
     'choose_type' => 'اختر نوع الحركة',
+    'total_payments' => 'إجمالي التحصيلات',
+    'total_debts' => 'إجمالي الديون',
+    'net_balance' => 'الرصيد الصافي',
+    'total_transactions_count' => 'عدد الحركات',
+    'transaction' => 'حركة',
     
     // Validation
     'store_required' => 'يرجى اختيار الدكانة.',

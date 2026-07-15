@@ -203,3 +203,21 @@
         {!! $store_transactions->links() !!}
     </div>
 </div>
+
+@if(isset($metrics))
+<script>
+    // Update stats UI when the table reloads via AJAX
+    if (document.getElementById('ui_stats_total_payments')) {
+        document.getElementById('ui_stats_total_payments').innerText = '{!! number_format($metrics['total_payments'] ?? 0, 2) !!}';
+    }
+    if (document.getElementById('ui_stats_total_debts')) {
+        document.getElementById('ui_stats_total_debts').innerText = '{!! number_format($metrics['total_debts'] ?? 0, 2) !!}';
+    }
+    if (document.getElementById('ui_stats_net_balance')) {
+        document.getElementById('ui_stats_net_balance').innerText = '{!! number_format($metrics['net_balance'] ?? 0, 2) !!}';
+    }
+    if (document.getElementById('ui_stats_total_count')) {
+        document.getElementById('ui_stats_total_count').innerText = '{!! number_format($metrics['total_transactions_count'] ?? 0, 0) !!}';
+    }
+</script>
+@endif

@@ -34,11 +34,13 @@ class StoreCustomersController extends Controller
             $stores = $this->storeService->getActiveStoresForDropdown();
         }
 
+        $metrics = $this->storeCustomerService->getMetrics($request->keyword, $request->store_id);
+
         if ($request->ajax()) {
-            return view('dashboard.store_customers.partials._table', compact('store_customers', 'stores'))->render();
+            return view('dashboard.store_customers.partials._table', compact('store_customers', 'stores', 'metrics'))->render();
         }
 
-        return view('dashboard.store_customers.index', compact('title', 'store_customers', 'stores'));
+        return view('dashboard.store_customers.index', compact('title', 'store_customers', 'stores', 'metrics'));
     }
 
     public function store(StoreCustomerRequest $request)

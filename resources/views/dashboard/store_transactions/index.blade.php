@@ -40,6 +40,9 @@
                 </div>
             </div>
 
+            <!-- Statistics Cards -->
+            @include('dashboard.store_transactions.partials._stats')
+
             <!-- Search Filters (Moved standalone out) -->
             @include('dashboard.store_transactions.partials._search')
 

@@ -45,6 +45,33 @@ class StoreCustomerRepository
         return $this->applyAjaxPagination(request(), $query);
     }
 
+    public function getMetrics($keyword = null, $store_id = null)
+    {
+        $query = $this->model->filter(['keyword' => $keyword, 'store_id' => $store_id], ['name', 'phone'], ['store_id']);
+
+        $total_customers_count = (clone $query)->count();
+
+        // Calculate debts and payments by joining store_transactions
+        $total_debts = (clone $query)
+            ->join('store_transactions', 'store_customers.id', '=', 'store_transactions.store_customer_id')
+            ->where('store_transactions.type', 'debt')
+            ->sum('store_transactions.amount');
+
+        $total_payments = (clone $query)
+            ->join('store_transactions', 'store_customers.id', '=', 'store_transactions.store_customer_id')
+            ->where('store_transactions.type', 'payment')
+            ->sum('store_transactions.amount');
+
+        $net_balance = $total_payments - $total_debts;
+
+        return [
+            'total_customers_count' => $total_customers_count,
+            'total_debts' => $total_debts,
+            'total_payments' => $total_payments,
+            'net_balance' => $net_balance,
+        ];
+    }
+
     // create
     public function create($data)
     {

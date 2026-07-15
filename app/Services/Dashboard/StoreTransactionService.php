@@ -29,6 +29,20 @@ class StoreTransactionService
         );
     }
 
+    public function getMetrics($request)
+    {
+        return $this->storeTransactionRepository->getMetrics(
+            $request->keyword,
+            $request->store_id,
+            $request->type,
+            $request->specific_date,
+            $request->start_date,
+            $request->end_date,
+            $request->store_customer_id,
+            $request->store_bank_account_id
+        );
+    }
+
     // get one
     public function getOne($id)
     {
