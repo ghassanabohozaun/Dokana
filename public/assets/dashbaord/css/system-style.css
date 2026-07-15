@@ -203,6 +203,47 @@ th {
     transform: translateY(-2px) !important;
 }
 
+/* Responsive Custom Pagination */
+.custom-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-pagination .pagination {
+    flex-wrap: nowrap !important;
+    justify-content: center;
+    row-gap: 5px;
+}
+
+@media (max-width: 767.98px) {
+    .custom-pagination {
+        justify-content: center;
+        float: none !important;
+    }
+
+    /* Hide all page numbers except active, first, last, and prev/next on mobile to keep it in one line */
+    .custom-pagination .pagination .page-item:not(.active):not(:first-child):not(:last-child):not(:nth-child(2)):not(:nth-last-child(2)) {
+        display: none !important;
+    }
+
+    /* Revert wrap to nowrap to force single line always on mobile */
+    .custom-pagination .pagination {
+        flex-wrap: nowrap !important;
+    }
+
+    /* Reduce padding and margin between pagination items on mobile */
+    .custom-pagination .pagination .page-item {
+        margin: 0 1px !important;
+    }
+
+    .custom-pagination .pagination .page-link {
+        padding: 5px 9px !important;
+        margin: 0 !important;
+        font-size: 1rem !important;
+    }
+}
+
 
 .note-editor.is-invalid-summernote-editor {
     border: 1px solid #dc3545 !important;
@@ -11302,6 +11343,7 @@ html[dir='rtl'] .premium-card {
     border: 1px dashed #ffc107 !important;
     border-radius: 6px !important;
 }
+
 /* Premium Currency Addon */
 .premium-input-group .input-group-text {
     background: linear-gradient(145deg, #f8f9fa, #e9ecef) !important;
@@ -11310,7 +11352,7 @@ html[dir='rtl'] .premium-card {
     font-size: 0.95rem;
     border: 1px solid #ced4da;
     padding: 0.5rem 1.25rem !important;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
@@ -11337,8 +11379,8 @@ html[data-textdirection='ltr'] .premium-input-group .input-group-text {
 }
 
 /* Disabled/Readonly State */
-.premium-input-group input:disabled ~ .input-group-append .input-group-text,
-.premium-input-group input[readonly] ~ .input-group-append .input-group-text {
+.premium-input-group input:disabled~.input-group-append .input-group-text,
+.premium-input-group input[readonly]~.input-group-append .input-group-text {
     background: #e9ecef !important;
     color: #a0aec0 !important;
     border-color: #e2e8f0;
@@ -11347,16 +11389,67 @@ html[data-textdirection='ltr'] .premium-input-group .input-group-text {
 }
 
 /* Ultimate Override for Alignment */
-html body .app-content .maintenance-item-row .premium-file-upload-wrapper { margin-top: 2px !important; }
-html[dir="rtl"] body .app-content .maintenance-item-row .file-preview-container, html[dir="rtl"] body .app-content .maintenance-item-row > .col-md-5 > .premium-form-group > .d-flex > .btn-premium-action { margin-right: 5px !important; margin-top: 2px !important; }
-html[dir="ltr"] body .app-content .maintenance-item-row .file-preview-container, html[dir="ltr"] body .app-content .maintenance-item-row > .col-md-5 > .premium-form-group > .d-flex > .btn-premium-action { margin-left: 5px !important; margin-top: 2px !important; }
-html body .app-content .maintenance-item-row .premium-file-box { height: 42px !important; min-height: 42px !important; padding: 0 10px !important; }
-html body .app-content .maintenance-item-row .premium-file-box .file-icon-box { width: 24px !important; height: 24px !important; font-size: 0.9rem !important; }
-html body .app-content .maintenance-item-row .btn-premium-action { width: 42px !important; height: 42px !important; margin: 0 !important; transform: none !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; }
-html body .app-content .maintenance-item-row .action-btn-wrapper { min-height: 42px !important; height: 42px !important; margin-top: 0 !important; display: flex !important; align-items: center !important; }
-html body .app-content .maintenance-item-row .file-preview-container { height: 42px !important; display: flex !important; align-items: center !important; }
-html body .app-content .maintenance-item-row .d-flex.align-items-center.w-100 { height: 42px !important; }
-html body .app-content .maintenance-item-row .premium-form-group > label.premium-label { margin-bottom: 8px !important; height: 21px !important; display: block !important; }
+html body .app-content .maintenance-item-row .premium-file-upload-wrapper {
+    margin-top: 2px !important;
+}
+
+html[dir="rtl"] body .app-content .maintenance-item-row .file-preview-container,
+html[dir="rtl"] body .app-content .maintenance-item-row>.col-md-5>.premium-form-group>.d-flex>.btn-premium-action {
+    margin-right: 5px !important;
+    margin-top: 2px !important;
+}
+
+html[dir="ltr"] body .app-content .maintenance-item-row .file-preview-container,
+html[dir="ltr"] body .app-content .maintenance-item-row>.col-md-5>.premium-form-group>.d-flex>.btn-premium-action {
+    margin-left: 5px !important;
+    margin-top: 2px !important;
+}
+
+html body .app-content .maintenance-item-row .premium-file-box {
+    height: 42px !important;
+    min-height: 42px !important;
+    padding: 0 10px !important;
+}
+
+html body .app-content .maintenance-item-row .premium-file-box .file-icon-box {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 0.9rem !important;
+}
+
+html body .app-content .maintenance-item-row .btn-premium-action {
+    width: 42px !important;
+    height: 42px !important;
+    margin: 0 !important;
+    transform: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+html body .app-content .maintenance-item-row .action-btn-wrapper {
+    min-height: 42px !important;
+    height: 42px !important;
+    margin-top: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+html body .app-content .maintenance-item-row .file-preview-container {
+    height: 42px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+html body .app-content .maintenance-item-row .d-flex.align-items-center.w-100 {
+    height: 42px !important;
+}
+
+html body .app-content .maintenance-item-row .premium-form-group>label.premium-label {
+    margin-bottom: 8px !important;
+    height: 21px !important;
+    display: block !important;
+}
 
 /* Global fix for has-icon-left with premium-input */
 html[dir='rtl'] .has-icon-left .form-control.premium-input,
@@ -11389,6 +11482,7 @@ html[data-textdirection='ltr'] .has-icon-left .form-control.premium-input {
     padding: 0 !important;
     line-height: 1 !important;
 }
+
 .premium-icon-centered i {
     line-height: 1 !important;
     margin: 0 !important;
