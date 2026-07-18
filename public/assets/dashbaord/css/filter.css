@@ -3,6 +3,10 @@
     z-index: 99;
 }
 
+.query-bar-container.ptc-elevated {
+    z-index: 1060 !important;
+}
+
 .query-bar {
     display: flex;
     align-items: center;
@@ -91,36 +95,66 @@
 }
 
 .ptc-query-panel {
-    position: absolute;
-    top: calc(100% + 15px);
-    left: 0;
+    position: fixed !important;
+    top: auto !important;
+    bottom: -100% !important; /* Hidden initially */
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     background: #fff;
     border: none;
-    border-radius: 2px !important;
-    padding: 24px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.18);
-    z-index: 1000;
-    min-width: 340px;
-    display: none;
+    border-top: 1px solid #edf2f7 !important;
+    border-radius: 0 !important; /* Flat like Action Bar */
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15) !important;
+    padding: 35px 30px 30px !important; /* Extra padding top for handle */
+    z-index: 1055 !important;
+    transition: bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    animation: none !important;
+    display: block !important;
+    visibility: hidden; /* Prevent clicking when hidden */
     cursor: auto;
-    animation: ptcPanelIn 0.25s ease-out;
 }
 
 .ptc-query-panel.ptc-show {
-    display: block !important;
-    opacity: 1 !important;
+    bottom: 0 !important;
     visibility: visible !important;
+    opacity: 1 !important;
 }
 
-@keyframes ptcPanelIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Close Button for Filter Panel */
+.ptc-query-panel-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+    z-index: 10;
 }
 
-[data-textdirection="rtl"] .ptc-query-panel {
-    left: auto !important;
-    right: 0 !important;
+.ptc-query-panel-close:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    transform: scale(1.05);
 }
+
+[data-textdirection="rtl"] .ptc-query-panel-close {
+    right: auto;
+    left: 15px;
+}
+
+
 
 .ptc-query-panel .popover-actions {
     display: flex;
@@ -203,13 +237,6 @@
 
 
 /* Popover Content Alignment */
-[data-textdirection="rtl"] .ptc-query-panel {
-    text-align: right;
-}
-
-[data-textdirection="rtl"] .popover-actions {
-    justify-content: flex-start;
-}
 
 /* RTL Chip Spacing */
 [data-textdirection="rtl"] .filter-chip .badge {
@@ -246,22 +273,34 @@
         padding: 6px 14px;
         font-size: 13px;
     }
+    
+    /* Maximize width on mobile */
     .ptc-query-panel {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        width: 90% !important;
-        max-width: 360px !important;
-        margin: 0 !important;
-        animation: ptcPanelMobileIn 0.3s ease-out;
+        max-width: 100% !important;
+        padding: 35px 20px 30px !important; 
     }
 }
 
-@keyframes ptcPanelMobileIn {
-    from { opacity: 0; transform: translate(-50%, -40%); }
-    to { opacity: 1; transform: translate(-50%, -50%); }
+/* Dark Overlay for Bottom Sheet */
+.ptc-filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
 }
+
+.ptc-filter-overlay.ptc-show {
+    opacity: 1;
+    visibility: visible;
+}
+
 
 /* Select2 Clear Button Styling - Global Fix */
 .select2-container--default .select2-selection--single .select2-selection__clear,

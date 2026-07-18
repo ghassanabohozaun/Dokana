@@ -146,6 +146,19 @@ $(document).ready(function() {
     function initFilterSystem() {
         const $chips = $('.js-filter-chip');
         const $panels = $('.ptc-query-panel');
+        
+        // Ensure overlay exists
+        if ($('.ptc-filter-overlay').length === 0) {
+            $('body').append('<div class="ptc-filter-overlay"></div>');
+        }
+        const $overlay = $('.ptc-filter-overlay');
+        
+        // Inject close button into all panels
+        $panels.each(function() {
+            if ($(this).find('.ptc-query-panel-close').length === 0) {
+                $(this).prepend('<div class="ptc-query-panel-close"><i class="fas fa-times"></i></div>');
+            }
+        });
 
         initGeographicCascade();
         initPropertyFiltersCascade();
@@ -153,6 +166,9 @@ $(document).ready(function() {
         const closeAll = () => {
             $panels.removeClass('ptc-show').attr('data-is-open', 'false');
             $chips.removeClass('popover-open');
+            $overlay.removeClass('ptc-show');
+            $('body').removeClass('filter-sheet-open');
+            $('.query-bar-container').removeClass('ptc-elevated');
         };
 
         // MutationObserver to prevent external hiding
@@ -185,6 +201,11 @@ $(document).ready(function() {
                 closeAll();
                 $panel.addClass('ptc-show').attr('data-is-open', 'true');
                 $chip.addClass('popover-open');
+                
+                // Show overlay and elevate on all screens
+                $overlay.addClass('ptc-show');
+                $('body').addClass('filter-sheet-open');
+                $('.query-bar-container').addClass('ptc-elevated');
 
                 const $select = $panel.find('.js-select2');
                 if ($select.length && !$select.hasClass("select2-hidden-accessible")) {
@@ -228,6 +249,17 @@ $(document).ready(function() {
                 !$(e.target).closest('.select2-container').length) {
                 closeAll();
             }
+        });
+
+        // Close when clicking overlay or close button
+        $overlay.off('click').on('click', function() {
+            closeAll();
+        });
+        
+        $('.ptc-query-panel-close').off('click').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeAll();
         });
 
         $('.js-apply-filter').off('click').on('click', function(e) {
