@@ -30,11 +30,11 @@
                 <div class="content-header-right col-md-6 col-12 text-md-right">
                     <div class="mb-1">
                         @can('departments_create')
-                        <button type="button" class="btn btn-premium-add shadow-pulse" data-toggle="modal"
-                            data-target="#createDepartmentModal">
-                            <i class="fas fa-plus-circle"></i>
-                            {!! __('departments.create_new_department') !!}
-                        </button>
+                            <button type="button" class="btn btn-premium-add shadow-pulse" data-toggle="modal"
+                                data-target="#createDepartmentModal">
+                                <i class="fas fa-plus-circle"></i>
+                                {!! __('departments.create_new_department') !!}
+                            </button>
                         @endcan
                     </div>
                 </div>
@@ -88,11 +88,11 @@
     </div><!-- end: content app  -->
 
     @can('departments_create')
-    @include('dashboard.departments.modals.create')
+        @include('dashboard.departments.modals.create')
     @endcan
 
     @can('departments_update')
-    @include('dashboard.departments.modals.edit')
+        @include('dashboard.departments.modals.edit')
     @endcan
 
     @include('dashboard.departments.modals.details')
@@ -102,21 +102,27 @@
         <div class="bottom-action-bar-content container">
             <div class="d-flex align-items-center justify-content-between w-100 flex-column flex-md-row">
                 <div class="bottom-action-info d-flex align-items-center mb-1 mb-md-0 flex-grow-1">
-                    <div class="avatar-icon mr-2 bg-light-primary text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                    <div class="avatar-icon mr-2 bg-light-primary text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                        style="width: 40px; height: 40px;">
                         <i class="fas fa-sitemap font-18"></i>
                     </div>
                     <div class="d-flex flex-column ml-2">
-                        <span id="action-bar-title" class="font-15 font-weight-bold text-dark mb-25">{!! __('general.select_row') !!}</span>
-                        <div id="action-bar-subtitle" class="font-12 text-muted d-flex align-items-center flex-wrap" style="gap: 8px;">
+                        <span id="action-bar-title"
+                            class="font-15 font-weight-bold text-dark mb-25">{!! __('general.select_row') !!}</span>
+                        <div id="action-bar-subtitle" class="font-12 text-muted d-flex align-items-center flex-wrap"
+                            style="gap: 8px;">
                             <!-- Subtitle badges injected here -->
                         </div>
                     </div>
                 </div>
-                <div class="bottom-action-buttons d-flex align-items-center justify-content-center flex-wrap" id="action-bar-buttons">
+                <div class="bottom-action-buttons d-flex align-items-center justify-content-center flex-wrap"
+                    id="action-bar-buttons">
                     <!-- Buttons injected here via JS -->
                 </div>
-                <div class="bottom-action-close ml-md-3 mt-1 mt-md-0 position-absolute position-md-relative" style="top: -10px; right: 10px;">
-                    <button type="button" class="btn btn-sm btn-danger radius-10 shadow-sm" id="close-action-bar" title="{!! __('general.close') !!}">
+                <div class="bottom-action-close ml-md-3 mt-1 mt-md-0 position-absolute position-md-relative"
+                    style="top: -10px; right: 10px;">
+                    <button type="button" class="btn btn-sm btn-danger radius-10 shadow-sm" id="close-action-bar"
+                        title="{!! __('general.close') !!}">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -157,17 +163,17 @@
                 let actionsHtml = $(this).find('.row-actions-html').html();
                 let subtitleHtml = $(this).find('.row-subtitle-html').html();
 
-                if(actionsHtml && actionsHtml.trim() !== '') {
+                if (actionsHtml && actionsHtml.trim() !== '') {
                     // Populate and Show
                     $actionTitle.text(title);
                     $actionButtons.html(actionsHtml);
-                    
-                    if(subtitleHtml && subtitleHtml.trim() !== '') {
+
+                    if (subtitleHtml && subtitleHtml.trim() !== '') {
                         $('#action-bar-subtitle').html(subtitleHtml).show();
                     } else {
                         $('#action-bar-subtitle').hide();
                     }
-                    
+
                     $actionBar.addClass('show');
                 }
             });
@@ -244,5 +250,3 @@
         });
     </script>
 @endpush
-
-

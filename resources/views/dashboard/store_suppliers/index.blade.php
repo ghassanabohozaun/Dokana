@@ -95,6 +95,32 @@
 
     @include('dashboard.store_suppliers.modals.details')
 
+    <!-- Bottom Action Bar -->
+    <div id="bottom-action-bar" class="bottom-action-bar shadow-lg">
+        <div class="bottom-action-bar-content container">
+            <div class="d-flex align-items-center justify-content-between w-100 flex-column flex-md-row">
+                <div class="bottom-action-info d-flex align-items-center mb-1 mb-md-0 flex-grow-1">
+                    <div class="avatar-icon mr-2 bg-light-danger text-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                        <i class="fas fa-hand-holding-usd font-18"></i>
+                    </div>
+                    <div class="d-flex flex-column ml-2">
+                        <span id="action-bar-title" class="font-15 font-weight-bold text-dark mb-25">{!! __('general.select_row') !!}</span>
+                        <div id="action-bar-subtitle" class="font-12 text-muted d-flex align-items-center flex-wrap" style="gap: 8px;">
+                            <!-- Subtitle badges injected here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-action-buttons d-flex align-items-center justify-content-center flex-wrap" id="action-bar-buttons">
+                    <!-- Buttons injected here via JS -->
+                </div>
+                <div class="bottom-action-close ml-md-3 mt-1 mt-md-0 position-absolute position-md-relative" style="top: -10px; right: 10px;">
+                    <button type="button" class="btn btn-sm btn-danger radius-10 shadow-sm" id="close-action-bar" title="{!! __('general.close') !!}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -165,6 +191,58 @@
                 detailsModalBody: "#detailsStoreSupplierModalBody"
             });
         }
+
+        // --- Bottom Action Bar Logic ---
+        const $actionBar = $('#bottom-action-bar');
+        const $actionTitle = $('#action-bar-title');
+        const $actionButtons = $('#action-bar-buttons');
+
+        // Handle Row Click
+        $(document).on('click', '.premium-table-row', function(e) {
+            // Ignore clicks on existing links, buttons, or the details control icon
+            if ($(e.target).closest('a, button, .details-control, .select2, input, label').length) {
+                return;
+            }
+
+            // Manage row highlight
+            $('.premium-table-row').removeClass('selected-row-premium');
+            $(this).addClass('selected-row-premium');
+
+            // Get row data
+            let title = $(this).attr('data-row-title');
+            let actionsHtml = $(this).find('.row-actions-html').html();
+            let subtitleHtml = $(this).find('.row-subtitle-html').html();
+
+            if(actionsHtml && actionsHtml.trim() !== '') {
+                // Populate and Show
+                $actionTitle.text(title);
+                $actionButtons.html(actionsHtml);
+                
+                if(subtitleHtml && subtitleHtml.trim() !== '') {
+                    $('#action-bar-subtitle').html(subtitleHtml).show();
+                } else {
+                    $('#action-bar-subtitle').hide();
+                }
+                
+                $actionBar.addClass('show');
+            }
+        });
+
+        // Handle Close Bar Button
+        $('#close-action-bar').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $actionBar.removeClass('show');
+            $('.premium-table-row').removeClass('selected-row-premium');
+        });
+
+        // Hide when clicking completely outside the table and the bar
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.premium-table-row, #bottom-action-bar').length) {
+                $actionBar.removeClass('show');
+                $('.premium-table-row').removeClass('selected-row-premium');
+            }
+        });
     });
 </script>
 <script src="{{ asset('assets/dashboard/js/ajax-table.js') }}"></script>

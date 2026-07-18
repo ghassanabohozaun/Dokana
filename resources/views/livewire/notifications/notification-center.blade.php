@@ -53,38 +53,6 @@
                     </div>
                 </div>
 
-                <div class="card-header border-0 px-0 pt-0 mx-2 pb-2 text-center d-flex justify-content-center">
-                    <ul class="nav premium-nav-tabs" id="notificationTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link {{ $activeTab === 'all' ? 'active' : '' }}"
-                                data-text="{{ __('notifications.tab_all') }}" href="#"
-                                wire:click.prevent="setTab('all')">
-                                {{ __('notifications.tab_all') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $activeTab === 'financial' ? 'active' : '' }}"
-                                data-text="{{ __('notifications.tab_financial') }}" href="#"
-                                wire:click.prevent="setTab('financial')">
-                                <i class="fas fa-money-bill-wave"></i> {{ __('notifications.tab_financial') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $activeTab === 'contracts' ? 'active' : '' }}"
-                                data-text="{{ __('notifications.tab_contracts') }}" href="#"
-                                wire:click.prevent="setTab('contracts')">
-                                <i class="fas fa-file-contract"></i> {{ __('notifications.tab_contracts') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ $activeTab === 'system' ? 'active' : '' }}"
-                                data-text="{{ __('notifications.tab_system') }}" href="#"
-                                wire:click.prevent="setTab('system')">
-                                <i class="fas fa-server"></i> {{ __('notifications.tab_system') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
 
                 <div class="card-body p-0">
 
@@ -106,9 +74,7 @@
                                     <th class="border-top-0 text-center align-middle text-muted font-weight-bold" style="width: 150px; font-size: 0.95rem;">
                                         <i class="far fa-clock"></i> {{ __('general.date') ?? 'Date' }}
                                     </th>
-                                    <th class="border-top-0 text-center align-middle sticky-actions text-muted font-weight-bold" style="width: 150px; font-size: 0.95rem;">
-                                        <i class="fas fa-cog"></i> {{ __('general.actions') ?? 'Actions' }}
-                                    </th>
+                                    <!-- Actions Column Removed for Bottom Action Bar -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -137,7 +103,7 @@
                                         $level = $data['level'] ?? 'info';
                                         $url = $data['action_url'] ?? '#';
                                     @endphp
-                                    <tr class="{{ $bgClass }}" style="border-bottom: 1px solid #f1f1f1;">
+                                    <tr class="premium-table-row pointer {{ $bgClass }}" data-row-title="{{ $title }}" style="border-bottom: 1px solid #f1f1f1;">
                                         <td class="text-center align-middle">
                                             <div class="premium-checkbox-custom">
                                                 <input type="checkbox" id="chk_{{ $notification->id }}"
@@ -152,6 +118,41 @@
                                             </div>
                                         </td>
                                         <td class="align-middle">
+                                            <!-- Hidden Actions for Bottom Bar -->
+                                            <div class="row-actions-html d-none">
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    @if ($url && $url !== '#' && $url !== 'javascript:void(0)')
+                                                        <a href="{{ route('dashboard.notifications.redirect', $notification->id) }}"
+                                                            class="btn-premium-action btn-premium-action-edit mr-1"
+                                                            title="{{ __('notifications.view_details') }}">
+                                                            <i class="fas fa-external-link-alt"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if ($isUnread)
+                                                        <a href="#"
+                                                            wire:click.prevent="markAsRead('{{ $notification->id }}')"
+                                                            class="btn-premium-action btn-premium-action-success mr-1"
+                                                            title="{{ __('notifications.mark_as_read') }}">
+                                                            <i class="fas fa-check"></i>
+                                                        </a>
+                                                    @endif
+                                                    <a href="#"
+                                                        onclick="confirmDeleteSingle('{{ $notification->id }}'); return false;"
+                                                        class="btn-premium-action btn-premium-action-danger"
+                                                        title="{{ __('general.delete') }}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                            <!-- Hidden Subtitle for Bottom Bar -->
+                                            <div class="row-subtitle-html d-none">
+                                                <span class="badge badge-secondary"><i class="far fa-clock mr-25"></i> {{ $notification->created_at->diffForHumans() }}</span>
+                                                @if ($isUnread)
+                                                    <span class="badge badge-light-danger"><i class="fas fa-circle mr-25"></i> {{ __('notifications.new') }}</span>
+                                                @endif
+                                            </div>
+
                                             <h6
                                                 class="mb-0 {{ $isUnread ? 'font-weight-bold text-dark' : 'text-secondary' }}">
                                                 {{ $title }}
@@ -168,31 +169,7 @@
                                             <i class="far fa-clock"></i>
                                             {{ $notification->created_at->diffForHumans() }}
                                         </td>
-                                        <td width="150" class="text-center align-middle sticky-actions">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                @if ($url && $url !== '#' && $url !== 'javascript:void(0)')
-                                                    <a href="{{ route('dashboard.notifications.redirect', $notification->id) }}"
-                                                        class="btn-premium-action btn-premium-action-edit mr-1"
-                                                        title="{{ __('notifications.view_details') }}">
-                                                        <i class="fas fa-external-link-alt"></i>
-                                                    </a>
-                                                @endif
-                                                @if ($isUnread)
-                                                    <a href="#"
-                                                        wire:click.prevent="markAsRead('{{ $notification->id }}')"
-                                                        class="btn-premium-action btn-premium-action-success mr-1"
-                                                        title="{{ __('notifications.mark_as_read') }}">
-                                                        <i class="fas fa-check"></i>
-                                                    </a>
-                                                @endif
-                                                <a href="#"
-                                                    onclick="confirmDeleteSingle('{{ $notification->id }}'); return false;"
-                                                    class="btn-premium-action btn-premium-action-danger"
-                                                    title="{{ __('general.delete') }}">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <!-- Actions Column Removed -->
                                     </tr>
                                 @empty
                                     <tr>
@@ -213,6 +190,33 @@
                             {{ $notifications->links() }}
                         </div>
                     @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Action Bar -->
+    <div id="bottom-action-bar" class="bottom-action-bar shadow-lg">
+        <div class="bottom-action-bar-content container">
+            <div class="d-flex align-items-center justify-content-between w-100 flex-column flex-md-row">
+                <div class="bottom-action-info d-flex align-items-center mb-1 mb-md-0 flex-grow-1">
+                    <div class="avatar-icon mr-2 bg-light-danger text-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+                        <i class="fas fa-bell font-18"></i>
+                    </div>
+                    <div class="d-flex flex-column ml-2">
+                        <span id="action-bar-title" class="font-15 font-weight-bold text-dark mb-25">{!! __('general.select_row') !!}</span>
+                        <div id="action-bar-subtitle" class="font-12 text-muted d-flex align-items-center flex-wrap" style="gap: 8px;">
+                            <!-- Subtitle badges injected here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom-action-buttons d-flex align-items-center justify-content-center flex-wrap" id="action-bar-buttons">
+                    <!-- Buttons injected here via JS -->
+                </div>
+                <div class="bottom-action-close ml-md-3 mt-1 mt-md-0 position-absolute position-md-relative" style="top: -10px; right: 10px;">
+                    <button type="button" class="btn btn-sm btn-danger radius-10 shadow-sm" id="close-action-bar" title="{!! __('general.close') !!}">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -268,5 +272,69 @@
             }
         });
     }
+
+    $(document).ready(function() {
+        // --- Bottom Action Bar Logic ---
+        const $actionBar = $('#bottom-action-bar');
+        const $actionTitle = $('#action-bar-title');
+        const $actionButtons = $('#action-bar-buttons');
+
+        // Handle Row Click
+        $(document).on('click', '.premium-table-row', function(e) {
+            // Ignore clicks on existing links, buttons, or the details control icon
+            if ($(e.target).closest('a, button, .details-control, .select2, input, label').length) {
+                return;
+            }
+
+            // Manage row highlight
+            $('.premium-table-row').removeClass('selected-row-premium');
+            $(this).addClass('selected-row-premium');
+
+            // Get row data
+            let title = $(this).attr('data-row-title');
+            let actionsHtml = $(this).find('.row-actions-html').html();
+            let subtitleHtml = $(this).find('.row-subtitle-html').html();
+
+            if(actionsHtml && actionsHtml.trim() !== '') {
+                // Populate and Show
+                $actionTitle.text(title);
+                $actionButtons.html(actionsHtml);
+                
+                if(subtitleHtml && subtitleHtml.trim() !== '') {
+                    $('#action-bar-subtitle').html(subtitleHtml).show();
+                } else {
+                    $('#action-bar-subtitle').hide();
+                }
+                
+                $actionBar.addClass('show');
+            }
+        });
+
+        // Handle Close Bar Button
+        $('#close-action-bar').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $actionBar.removeClass('show');
+            $('.premium-table-row').removeClass('selected-row-premium');
+        });
+
+        // Hide when clicking completely outside the table and the bar
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.premium-table-row, #bottom-action-bar').length) {
+                $actionBar.removeClass('show');
+                $('.premium-table-row').removeClass('selected-row-premium');
+            }
+        });
+        
+        // Hide bar after Livewire update
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.hook('request', ({ component, options, payload, respond, fail }) => {
+                respond(({ status, response }) => {
+                    $actionBar.removeClass('show');
+                    $('.premium-table-row').removeClass('selected-row-premium');
+                })
+            })
+        });
+    });
 </script>
 @endpush

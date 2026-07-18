@@ -16,15 +16,12 @@
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.bank_name') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.account_number') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.date') !!}</th>
-                @if (auth()->user()->can('store_suppliers_update') || auth()->user()->can('store_suppliers_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
-                        {!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($suppliers as $supplier)
-                <tr id="row{{ $supplier->id }}">
+                <tr id="row{{ $supplier->id }}" class="premium-table-row pointer" data-row-title="{!! $supplier->name !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -165,6 +162,20 @@
 
                     <!-- Name -->
                     <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.store_suppliers.parts.actions', ['supplier' => $supplier])
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-secondary"><i class="fas fa-mobile-alt mr-25"></i> {!! $supplier->mobile !!}</span>
+                            <span class="badge badge-light-danger"><i class="fas fa-hand-holding-usd mr-25"></i> {!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}</span>
+                            @if (isset($stores) && $supplier->store_id)
+                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($supplier->store)->name !!}</span>
+                            @endif
+                        </div>
+
                         <span class="text-danger font-weight-bold">{!! $supplier->name !!}</span>
                     </td>
 
@@ -201,12 +212,7 @@
                     <!-- Date -->
                     <td class="text-center align-middle">{!! $supplier->created_at->format('Y-m-d') !!}</td>
 
-                    <!-- Actions -->
-                    @if (auth()->user()->can('store_suppliers_update') || auth()->user()->can('store_suppliers_delete'))
-                        <td class="text-center align-middle sticky-actions">
-                            @include('dashboard.store_suppliers.parts.actions', ['supplier' => $supplier])
-                        </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

@@ -19,15 +19,12 @@
                 @can('store_customers_update')
                 <th class="text-center align-middle py-3 border-top-0">{!! __('general.manage_status') !!}</th>
                 @endcan
-                @if (auth()->user()->can('store_customers_update') || auth()->user()->can('store_customers_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
-                        {!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($store_customers as $key=>$store_customer)
-                <tr id="row{{ $store_customer->id }}">
+                <tr id="row{{ $store_customer->id }}" class="premium-table-row pointer" data-row-title="{!! $store_customer->name !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -211,7 +208,22 @@
                     @endif
 
                     <!-- Name -->
-                    <td class="text-center align-middle font-weight-bold text-primary">{!! $store_customer->name !!}</td>
+                    <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.store_customers.parts.actions')
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-secondary"><i class="fas fa-phone mr-25"></i> {!! $store_customer->phone ?? '---' !!}</span>
+                            @if (isset($stores) && $store_customer->store_id)
+                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($store_customer->store)->name !!}</span>
+                            @endif
+                        </div>
+
+                        <span class="font-weight-bold text-primary">{!! $store_customer->name !!}</span>
+                    </td>
 
                     <!-- Phone -->
                     <td class="text-center align-middle">{!! $store_customer->phone ?? '---' !!}</td>
@@ -305,12 +317,7 @@
                     </td>
                     @endcan
 
-                    <!-- Actions -->
-                    @if (auth()->user()->can('store_customers_update') || auth()->user()->can('store_customers_delete'))
-                        <td class="text-center align-middle sticky-actions">
-                            @include('dashboard.store_customers.parts.actions')
-                        </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

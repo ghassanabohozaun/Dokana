@@ -15,15 +15,12 @@
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_supplier_invoices.remaining_amount') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_supplier_invoices.status') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_supplier_invoices.date') !!}</th>
-                @if (auth()->user()->can('store_supplier_invoices_update') || auth()->user()->can('store_supplier_invoices_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
-                        {!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($invoices as $invoice)
-                <tr id="row{{ $invoice->id }}">
+                <tr id="row{{ $invoice->id }}" class="premium-table-row pointer" data-row-title="{!! $invoice->invoice_number !!} - {!! optional($invoice->supplier)->name !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -163,8 +160,23 @@
                     @endif
 
                     <!-- Supplier -->
-                    <td class="text-center align-middle font-weight-bold text-primary">
-                        {!! optional($invoice->supplier)->name !!}
+                    <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.store_supplier_invoices.parts.actions', ['invoice' => $invoice])
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-secondary"><i class="fas fa-file-invoice mr-25"></i> {!! $invoice->invoice_number !!}</span>
+                            <span class="badge badge-light-danger"><i class="fas fa-money-bill-wave mr-25"></i> {!! number_format($invoice->total_amount, 2) !!}</span>
+                            <span class="badge badge-light-warning"><i class="fas fa-clock mr-25"></i> {!! number_format($invoice->remaining_amount, 2) !!}</span>
+                            @if (isset($stores) && $invoice->store_id)
+                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($invoice->store)->name !!}</span>
+                            @endif
+                        </div>
+
+                        <span class="font-weight-bold text-primary">{!! optional($invoice->supplier)->name !!}</span>
                     </td>
 
                     <!-- Invoice Number -->
@@ -195,12 +207,7 @@
                     <!-- Date -->
                     <td class="text-center align-middle">{!! $invoice->invoice_date ? \Carbon\Carbon::parse($invoice->invoice_date)->format('Y-m-d') : $invoice->created_at->format('Y-m-d') !!}</td>
 
-                    <!-- Actions -->
-                    @if (auth()->user()->can('store_supplier_invoices_update') || auth()->user()->can('store_supplier_invoices_delete'))
-                        <td class="text-center align-middle sticky-actions">
-                            @include('dashboard.store_supplier_invoices.parts.actions', ['invoice' => $invoice])
-                        </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

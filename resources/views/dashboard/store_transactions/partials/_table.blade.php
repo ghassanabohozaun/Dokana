@@ -13,15 +13,12 @@
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_transactions.amount') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_transactions.description') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_transactions.date') !!}</th>
-                @if (auth()->user()->can('store_transactions_update') || auth()->user()->can('store_transactions_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
-                        {!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($store_transactions as $key=>$store_transaction)
-                <tr id="row{{ $store_transaction->id }}">
+                <tr id="row{{ $store_transaction->id }}" class="premium-table-row pointer" data-row-title="{!! optional($store_transaction->customer)->name ?? '---' !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -149,7 +146,27 @@
                     @endif
 
                     <!-- Customer Name -->
-                    <td class="text-center align-middle font-weight-bold text-primary">{!! optional($store_transaction->customer)->name ?? '---' !!}</td>
+                    <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @if(!($store_transaction->type === 'debt' && $store_transaction->linked_transaction_id !== null))
+                                @include('dashboard.store_transactions.parts.actions')
+                            @endif
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            @if($store_transaction->type == 'debt')
+                                <span class="badge badge-danger"><i class="fas fa-arrow-down mr-25"></i> {!! __('store_transactions.debt') !!}</span>
+                            @else
+                                <span class="badge badge-success"><i class="fas fa-arrow-up mr-25"></i> {!! __('store_transactions.payment') !!}</span>
+                            @endif
+                            <span class="badge badge-secondary"><i class="fas fa-money-bill mr-25"></i> {!! $store_transaction->amount !!}</span>
+                            <span class="badge badge-light-primary"><i class="fas fa-calendar-alt mr-25"></i> {!! $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d') : $store_transaction->created_at->format('Y-m-d') !!}</span>
+                        </div>
+
+                        <span class="font-weight-bold text-primary">{!! optional($store_transaction->customer)->name ?? '---' !!}</span>
+                    </td>
 
                     <!-- Type -->
                     <td class="text-center align-middle">
@@ -180,14 +197,7 @@
                     <!-- Date -->
                     <td class="text-center align-middle" dir="ltr">{!! $store_transaction->transaction_date ? $store_transaction->transaction_date->format('Y-m-d h:i A') : $store_transaction->created_at->format('Y-m-d h:i A') !!}</td>
 
-                    <!-- Actions -->
-                    @if (auth()->user()->can('store_transactions_update') || auth()->user()->can('store_transactions_delete'))
-                        <td class="text-center align-middle sticky-actions">
-                            @if(!($store_transaction->type === 'debt' && $store_transaction->linked_transaction_id !== null))
-                                @include('dashboard.store_transactions.parts.actions')
-                            @endif
-                        </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

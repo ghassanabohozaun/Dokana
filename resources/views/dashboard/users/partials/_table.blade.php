@@ -18,15 +18,12 @@
                 <th class="text-center align-middle py-3 border-top-0" style="min-width: 120px;">{!! __('users.manage_status') !!}
                 </th>
                 @endcan
-                @if(auth()->user()->can('users_update') || auth()->user()->can('users_delete'))
-                <th class="text-center align-middle py-3 border-top-0 sticky-actions" style="min-width: 150px;">{!! __('general.actions') !!}
-                </th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($users as $key=>$user)
-                <tr id="row{{ $user->id }}">
+                <tr id="row{{ $user->id }}" class="premium-table-row pointer" data-row-title="{!! $user->name !!}">
                     <td class="text-center d-lg-none align-middle">
                         <span class="details-control pointer">
                             <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
@@ -143,6 +140,20 @@
                         </div>
                     </td>
                     <td class="align-middle property-info-td">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.users.parts.actions')
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-light-primary"><i class="fas fa-shield-alt mr-25"></i> {!! optional($user->role)->name !!}</span>
+                            <span class="badge badge-secondary"><i class="fas fa-envelope mr-25"></i> {!! $user->email !!}</span>
+                            @if(isset($stores) && $user->store)
+                                <span class="badge badge-light-info"><i class="fas fa-briefcase mr-25"></i> {!! optional($user->store)->name !!}</span>
+                            @endif
+                        </div>
+
                         <div class="user-info-cell">
                             <span class="user-name-text font-weight-bold">{!! $user->name !!}</span>
                             <span class="user-email-text">{!! $user->email !!}</span>
@@ -168,11 +179,7 @@
                         @include('dashboard.users.parts.manage_status')
                     </td>
                     @endcan
-                    @if(auth()->user()->can('users_update') || auth()->user()->can('users_delete'))
-                    <td class="text-center align-middle sticky-actions">
-                        @include('dashboard.users.parts.actions')
-                    </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>
