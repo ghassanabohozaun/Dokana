@@ -15,15 +15,12 @@
                 <th class="text-center align-middle py-3 border-top-0">{!! __('general.balance') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.is_default') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('departments.created_by') !!}</th>
-                @if (auth()->user()->can('bank_accounts_update') || auth()->user()->can('bank_accounts_delete'))
-                    <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">
-                        {!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse ($bankAccounts as $key=>$account)
-                <tr id="row{{ $account->id }}">
+                <tr id="row{{ $account->id }}" class="premium-table-row pointer" data-row-title="{!! $account->paymentEntity->name ?? '' !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -165,6 +162,20 @@
 
                     <!-- Account Details -->
                     <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.bank_accounts.parts.actions')
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $account->creator->name ?? '---' !!}</span>
+                            <span class="badge badge-light-primary"><i class="fas fa-hashtag mr-25"></i> {!! $account->account_number !!}</span>
+                            @if(isset($stores) && $account->store)
+                                <span class="badge badge-light-info"><i class="fas fa-briefcase mr-25"></i> {!! $account->store->name !!}</span>
+                            @endif
+                        </div>
+
                         <div class="d-flex flex-column align-items-center">
                             @if ($account->account_type == 'wallet')
                                 <span class="badge badge-light-info badge-pill font-weight-bold px-2 py-1 mb-1"><i class="fas fa-wallet mr-1"></i> {!! __('bank_accounts.type_wallet') !!}</span>
@@ -216,12 +227,7 @@
                         <span class="text-muted small">{!! $account->creator->name ?? '---' !!}</span>
                     </td>
 
-                    <!-- Actions -->
-                    @if (auth()->user()->can('bank_accounts_update') || auth()->user()->can('bank_accounts_delete'))
-                        <td class="text-center align-middle sticky-actions">
-                            @include('dashboard.bank_accounts.parts.actions')
-                        </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

@@ -126,7 +126,7 @@
 
                         <!-- Hidden Subtitle for Bottom Bar -->
                         <div class="row-subtitle-html d-none">
-                            <span class="badge badge-light-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $department->creator->name ?? '---' !!}</span>
+                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $department->creator->name ?? '---' !!}</span>
                             @if($department->store_id)
                                 <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($department->store)->name !!}</span>
                             @endif

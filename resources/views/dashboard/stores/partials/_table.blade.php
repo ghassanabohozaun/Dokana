@@ -99,7 +99,7 @@
                         <div class="row-subtitle-html d-none">
                             <span class="badge badge-light-primary"><i class="fas fa-envelope mr-25"></i> {!! $store->email ?? '---' !!}</span>
                             <span class="badge badge-light-info"><i class="fas fa-phone mr-25"></i> {!! $store->phone ?? '---' !!}</span>
-                            <span class="badge badge-light-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $store->creator->name ?? '---' !!}</span>
+                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $store->creator->name ?? '---' !!}</span>
                         </div>
 
                         <a href="javascript:void(0)" class="store-chip">
