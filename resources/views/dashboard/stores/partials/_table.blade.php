@@ -18,14 +18,12 @@
                 @can('stores_update')
                 <th class="text-center align-middle py-3 border-top-0">{!! __('stores.manage_status') !!}</th>
                 @endcan
-                @if(auth()->user()->can('stores_update') || auth()->user()->can('stores_delete'))
-                <th class="text-center align-middle py-3 border-top-0 min-w-140 sticky-actions">{!! __('general.actions') !!}</th>
-                @endif
+                <!-- Actions Column Removed for Bottom Action Bar -->
             </tr>
         </thead>
         <tbody>
             @forelse($stores as $store)
-                <tr id="row{{ $store->id }}">
+                <tr id="row{{ $store->id }}" class="premium-table-row pointer" data-row-title="{!! $store->name !!}">
                     <!-- Mobile Details Control -->
                     <td class="text-center align-middle d-lg-none">
                         <span class="details-control pointer">
@@ -92,6 +90,18 @@
 
                     <!-- Name -->
                     <td class="text-center align-middle">
+                        <!-- Hidden Actions for Bottom Bar -->
+                        <div class="row-actions-html d-none">
+                            @include('dashboard.stores.parts.actions')
+                        </div>
+
+                        <!-- Hidden Subtitle for Bottom Bar -->
+                        <div class="row-subtitle-html d-none">
+                            <span class="badge badge-light-primary"><i class="fas fa-envelope mr-25"></i> {!! $store->email ?? '---' !!}</span>
+                            <span class="badge badge-light-info"><i class="fas fa-phone mr-25"></i> {!! $store->phone ?? '---' !!}</span>
+                            <span class="badge badge-light-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $store->creator->name ?? '---' !!}</span>
+                        </div>
+
                         <a href="javascript:void(0)" class="store-chip">
                             <i class="fas fa-briefcase mr-1"></i>
                             {!! $store->name !!}
@@ -119,12 +129,7 @@
                     </td>
                     @endcan
 
-                    <!-- Actions -->
-                    @if(auth()->user()->can('stores_update') || auth()->user()->can('stores_delete'))
-                    <td class="text-center align-middle sticky-actions">
-                        @include('dashboard.stores.parts.actions')
-                    </td>
-                    @endif
+                    <!-- Actions Column Removed -->
                 </tr>
             @empty
                 <tr>

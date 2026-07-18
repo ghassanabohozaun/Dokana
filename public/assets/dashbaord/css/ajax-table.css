@@ -505,3 +505,44 @@ html[dir="rtl"] .table th {
     margin-right: 0 !important;
     margin-left: 0 !important;
 }
+
+/* 11. Premium Bottom Action Bar */
+.bottom-action-bar {
+    position: fixed;
+    bottom: -100px;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    z-index: 1050;
+    box-shadow: 0 -5px 25px rgba(0,0,0,0.08) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+    visibility: hidden;
+    padding: 12px 0;
+    border-top: 1px solid #edf2f7;
+}
+.bottom-action-bar.show {
+    bottom: 0;
+    opacity: 1;
+    visibility: visible;
+}
+.bottom-action-bar-content {
+    max-width: 100%;
+    padding: 0 20px;
+}
+.selected-row-premium {
+    background-color: rgba(31, 59, 179, 0.08) !important;
+    transition: background-color 0.3s ease;
+}
+.selected-row-premium td {
+    border-color: rgba(31, 59, 179, 0.1) !important;
+}
+[data-textdirection="rtl"] .selected-row-premium td:first-child,
+html[dir="rtl"] .selected-row-premium td:first-child {
+    border-right: 4px solid #1F3BB3 !important;
+}
+[data-textdirection="ltr"] .selected-row-premium td:first-child,
+html[dir="ltr"] .selected-row-premium td:first-child {
+    border-left: 4px solid #1F3BB3 !important;
+}
+.pointer { cursor: pointer !important; }
