@@ -36,7 +36,7 @@
         <!-- Bottom Stats (Totals) - Grid of 2 -->
         <div class="grid grid-cols-2 gap-3 mb-2">
             <!-- Total Debt Card -->
-            <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-[1.25rem] p-4 text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden transition-all duration-300 border border-emerald-400/20">
+            <div class="col-span-2 sm:col-span-1 bg-gradient-to-br from-rose-500 to-red-700 rounded-[1.25rem] p-4 text-white shadow-lg shadow-rose-500/20 relative overflow-hidden transition-all duration-300 border border-rose-400/20">
                 <div class="absolute top-0 end-0 p-3 opacity-10 pointer-events-none transform rtl:-scale-x-100">
                     <i class="ph-fill ph-wallet text-6xl -mt-2 -me-2 -rotate-12"></i>
                 </div>
