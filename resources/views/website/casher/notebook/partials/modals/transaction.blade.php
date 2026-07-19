@@ -39,6 +39,24 @@
                 </button>
             </div>
             
+            <!-- Customer Info Badge -->
+            <div x-show="activeCustomer" class="mb-6 flex items-center gap-3 p-3.5 bg-gray-50 dark:bg-gray-800/80 rounded-2xl border border-gray-100 dark:border-gray-700/50" x-cloak>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors"
+                     :class="(txType === 'debt') ? 'bg-red-50 text-red-500 dark:bg-red-500/10' : (txType === 'direct_sale' ? 'bg-blue-50 text-blue-500 dark:bg-blue-500/10' : 'bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10')">
+                    <i class="ph-bold ph-user text-xl"></i>
+                </div>
+                <div class="flex-1 overflow-hidden">
+                    <div class="text-[11px] font-bold text-gray-500 mb-0.5">{{ __('notebook.customer') ?? 'الزبون' }}</div>
+                    <div class="font-black text-gray-900 dark:text-white text-base truncate" x-text="activeCustomer?.name"></div>
+                </div>
+                <div x-show="activeCustomer?.phone" class="w-9 h-9 shrink-0 rounded-full bg-white dark:bg-gray-700 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-600">
+                    <a :href="'tel:' + activeCustomer?.phone" class="text-gray-400 hover:text-primary transition-colors">
+                        <i class="ph-fill ph-phone-call"></i>
+                    </a>
+                </div>
+            </div>
+
+            
             <form @submit.prevent="saveTransaction()" novalidate class="space-y-5 flex-1 flex flex-col">
                 <div>
                     <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.amount_currency') }} <span class="text-red-500">*</span></label>

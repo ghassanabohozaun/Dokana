@@ -9,6 +9,8 @@ use App\Models\StoreWithdrawal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class CasherNotebookController extends Controller
 {
@@ -521,5 +523,105 @@ class CasherNotebookController extends Controller
             'customer' => $customer,
             'message' => __('notebook.transaction_deleted'),
         ]);
+    }
+
+    /**
+     * API: Process AI Voice Command to extract transaction details.
+     */
+    public function processAIVoiceCommand(Request $request)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'text' => 'required|string|max:1000'
+        ]);
+
+        $text = $request->text;
+        $apiKey = env('GEMINI_API_KEY');
+
+        if (!$apiKey) {
+            return response()->json(['message' => 'Gemini API Key is missing from .env'], 500);
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key={$apiKey}", [
+                'contents' => [
+                    [
+                        'parts' => [
+                            [
+                                'text' => "أنت مساعد كاشير ذكي. قام الكاشير بنطق هذه الجملة: \"{$text}\". 
+الرجاء استخراج البيانات التالية:
+- customer_name: اسم الزبون.
+- amount: قيمة المبلغ كرقم فقط.
+- type: نوع الحركة (يجب أن يكون حصرياً إما 'debt' إذا كانت دين/شراء بالآجل، أو 'payment' إذا كانت دفعة/سداد).
+- notes: الأصناف والمشتريات التي أخذها الزبون (مثال: لحوم، شيبس). إذا لم تذكر اجعلها فارغة.
+أرجع النتيجة بصيغة JSON فقط. مثال: {\"customer_name\": \"محمد\", \"amount\": 50, \"type\": \"debt\", \"notes\": \"لحوم وشيبس\"}"
+                            ]
+                        ]
+                    ]
+                ],
+                'generationConfig' => [
+                    'temperature' => 0.1,
+                    'responseMimeType' => 'application/json',
+                ]
+            ]);
+
+            if (!$response->successful()) {
+                Log::error('Gemini API Error: ' . $response->body());
+                $errorMsg = $response->json('error.message') ?? 'خطأ غير معروف من جوجل';
+                return response()->json(['message' => 'خطأ من جوجل: ' . $errorMsg], 500);
+            }
+
+            $body = $response->json();
+            $aiText = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            
+            // Clean markdown formatting if Gemini returns ```json ... ```
+            $aiText = preg_replace('/```json\s*/', '', $aiText);
+            $aiText = preg_replace('/```\s*/', '', $aiText);
+            
+            $data = json_decode(trim($aiText), true);
+
+            if (!$data || !isset($data['customer_name']) || !isset($data['amount']) || !isset($data['type'])) {
+                return response()->json(['message' => 'لم يتمكن الذكاء الاصطناعي من فهم الجملة بوضوح'], 400);
+            }
+
+            // Fuzzy search for the customer
+            $search = $data['customer_name'];
+            $searchTerms = array_filter(explode(' ', trim($search)));
+            
+            $customerQuery = StoreCustomer::where('store_id', $this->getStoreId());
+            
+            if (!empty($searchTerms)) {
+                $customerQuery->where(function($q) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $termClean = str_replace(['أ', 'إ', 'آ'], 'ا', $term);
+                        $termClean = str_replace('ة', 'ه', $termClean);
+                        $termClean = str_replace('ى', 'ي', $termClean);
+                        
+                        $q->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا'), 'ة', 'ه'), 'ى', 'ي') LIKE ?", ['%' . $termClean . '%']);
+                    }
+                });
+            }
+
+            // Get the first matching customer
+            $customer = $customerQuery->first();
+
+            return response()->json([
+                'success' => true,
+                'customer' => $customer, // Can be null if not found
+                'parsed_name' => $data['customer_name'],
+                'amount' => $data['amount'],
+                'type' => $data['type'],
+                'notes' => $data['notes'] ?? ''
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('AI Voice Error: ' . $e->getMessage());
+            return response()->json(['message' => 'حدث خطأ في معالجة الصوت: ' . $e->getMessage()], 500);
+        }
     }
 }

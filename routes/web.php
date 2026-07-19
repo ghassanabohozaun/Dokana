@@ -43,6 +43,7 @@ Route::group(
                     Route::get('today-collections', [CasherNotebookController::class, 'getTodayCollections'])->name('today-collections');
                     Route::get('today-debts', [CasherNotebookController::class, 'getTodayDebts'])->name('today-debts');
                     Route::get('today-direct-sales', [CasherNotebookController::class, 'getTodayDirectSales'])->name('today-direct-sales');
+                    Route::post('voice-command', [CasherNotebookController::class, 'processAIVoiceCommand'])->name('voice-command');
                     Route::post('customers', [CasherNotebookController::class, 'storeCustomer'])->name('customers.store');
                     Route::put('customers/{customer}', [CasherNotebookController::class, 'updateCustomer'])->name('customers.update');
                     Route::get('customers/{customer}/transactions', [CasherNotebookController::class, 'getLedger'])->name('customers.ledger');

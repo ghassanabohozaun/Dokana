@@ -23,6 +23,21 @@
     @include('website.casher.notebook.partials.bottom-nav')
     </div> <!-- End notebook-main -->
 
+    <!-- AI Voice Command Floating Action Button -->
+    <div class="fixed {{ app()->getLocale() == 'ar' ? 'left-6' : 'right-6' }} bottom-24 z-40">
+        <button type="button" @click.prevent="startAIVoiceCommand()" 
+            class="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-purple-600 to-blue-500 text-white shadow-lg shadow-purple-500/30 hover:scale-105 transition-all focus:outline-none focus:ring-4 focus:ring-purple-300"
+            :class="isAIListening ? 'animate-pulse shadow-[0_0_0_8px_rgba(168,85,247,0.4)]' : ''"
+            title="تسجيل حركة بالذكاء الاصطناعي">
+            <template x-if="isAIListening">
+                <i class="ph-bold ph-spinner animate-spin text-2xl"></i>
+            </template>
+            <template x-if="!isAIListening">
+                <i class="ph-bold ph-microphone-stage text-2xl"></i>
+            </template>
+        </button>
+    </div>
+
     <!-- Drawers, Bottom Sheets, and Overlays -->
     @include('website.casher.notebook.partials.modals.add-customer')
     @include('website.casher.notebook.partials.modals.edit-customer')

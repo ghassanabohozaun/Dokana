@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () => {
         search: '',
         filter: 'all',
         isListening: false,
+        isAIListening: false,
         withdrawalFilter: 'all', // all, or bank account id
         perPage: 15,
         
@@ -314,6 +315,87 @@ document.addEventListener('alpine:init', () => {
                     alert('المتصفح منع الوصول للمايكروفون. يرجى التأكد من أن الموقع يعمل عبر HTTPS والسماح للمتصفح باستخدام المايكروفون.');
                 } else {
                     alert('حدث خطأ في المايكروفون: ' + event.error);
+                }
+            };
+            
+            recognition.start();
+        },
+        
+        startAIVoiceCommand() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                Toast.show('تنبيه', 'متصفحك لا يدعم البحث الصوتي', 'warning');
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.lang = 'ar-SA';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                this.isAIListening = true;
+            };
+            
+            recognition.onresult = async (event) => {
+                const speechResult = event.results[0][0].transcript;
+                
+                // Keep the loading spinner active until the API responds
+                try {
+                    const res = await fetch(`${this.apiBase}/voice-command`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': this.csrf,
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ text: speechResult })
+                    });
+                    
+                    const data = await res.json();
+                    this.isAIListening = false;
+                    
+                    if (res.ok && data.success) {
+                        if (data.customer) {
+                            // Pre-fill transaction data
+                            this.activeCustomer = data.customer;
+                            this.txType = data.type;
+                            this.txAmount = data.amount;
+                            this.txDescription = data.notes ? data.notes : (data.type === 'payment' ? 'دفعة مسجلة صوتياً' : 'مشتريات مسجلة صوتياً');
+                            this.txDate = config.todayDate;
+                            this.txBankAccountId = '';
+                            
+                            // Open modal
+                            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'transactionModal' } }));
+                            Toast.show('نجاح', 'تم تحليل الجملة، يرجى مراجعة البيانات والحفظ.', 'success');
+                        } else {
+                            Toast.show('تنبيه', `لم نعثر على عميل باسم مقارب لـ "${data.parsed_name}"`, 'warning');
+                        }
+                    } else {
+                        Toast.show('خطأ', data.message || 'حدث خطأ في فهم الجملة', 'error');
+                    }
+                } catch (e) {
+                    this.isAIListening = false;
+                    console.error(e);
+                    Toast.show('خطأ', 'تعذر الاتصال بالسيرفر', 'error');
+                }
+            };
+            
+            recognition.onspeechend = () => {
+                recognition.stop();
+            };
+            
+            recognition.onend = () => {
+                // Do not set isAIListening to false here because we need it to spin during the API call
+                // It's set to false after the API call finishes.
+            };
+            
+            recognition.onerror = (event) => {
+                this.isAIListening = false;
+                console.error('Speech recognition error: ' + event.error);
+                if (event.error === 'not-allowed') {
+                    Toast.show('خطأ', 'المتصفح منع المايكروفون. تأكد من HTTPS', 'error');
                 }
             };
             
