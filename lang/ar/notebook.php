@@ -145,5 +145,7 @@ return [
     'please_enter_amount' => 'الرجاء إدخال المبلغ',
     'please_select_date' => 'الرجاء تحديد التاريخ',
     'please_enter_reason' => 'الرجاء إدخال البيان / المستفيد',
+    'please_select_transaction_type' => 'الرجاء اختيار نوع الحركة',
+    'transaction' => 'حركة',
     'please_select_bank_account' => 'الرجاء اختيار الحساب البنكي / المحفظة',
 ];

@@ -33,6 +33,7 @@
     @include('website.casher.notebook.partials.modals.financial-summary')
     @include('website.casher.notebook.partials.modals.today-collections')
     @include('website.casher.notebook.partials.modals.today-debts')
+    @include('website.casher.notebook.partials.modals.today-direct-sales')
 
 </div>
 

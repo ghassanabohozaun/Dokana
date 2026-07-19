@@ -42,6 +42,7 @@ Route::group(
                     Route::get('financial-summary', [CasherNotebookController::class, 'getFinancialSummary'])->name('financial-summary');
                     Route::get('today-collections', [CasherNotebookController::class, 'getTodayCollections'])->name('today-collections');
                     Route::get('today-debts', [CasherNotebookController::class, 'getTodayDebts'])->name('today-debts');
+                    Route::get('today-direct-sales', [CasherNotebookController::class, 'getTodayDirectSales'])->name('today-direct-sales');
                     Route::post('customers', [CasherNotebookController::class, 'storeCustomer'])->name('customers.store');
                     Route::put('customers/{customer}', [CasherNotebookController::class, 'updateCustomer'])->name('customers.update');
                     Route::get('customers/{customer}/transactions', [CasherNotebookController::class, 'getLedger'])->name('customers.ledger');
@@ -56,17 +57,3 @@ Route::group(
         });
     },
 );
-
- 
-// Route::get('/run-migrations', function() {
-//     try {
-//         // نستخدم migrate فقط (بدون fresh) لكي لا نحذف أي بيانات موجودة
-//         \Illuminate\Support\Facades\Artisan::call('migrate', [
-//             '--force' => true 
-//         ]);
-        
-//         return 'تم عمل التهجير (Migration) بنجاح مع الحفاظ على البيانات: <br>' . \Illuminate\Support\Facades\Artisan::output();
-//     } catch (\Exception $e) {
-//         return 'حدث خطأ: ' . $e->getMessage();
-//     }
-// });

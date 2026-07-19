@@ -70,11 +70,18 @@ document.addEventListener('alpine:init', () => {
         totalTodayDebtsCount: 0,
         debtsPerPage: 20,
         isDebtsLoading: false,
+
+        // Today's Direct Sales Modal
+        todayDirectSalesList: [],
+        totalTodayDirectSalesCount: 0,
+        directSalesPerPage: 20,
+        isDirectSalesLoading: false,
         
         // Loading States for UX
         loadingCustomerId: null,
         isCollectionsCardLoading: false,
         isDebtsCardLoading: false,
+        isDirectSalesCardLoading: false,
         
         // APIs
         apiBase: config.apiBase,
@@ -439,6 +446,34 @@ document.addEventListener('alpine:init', () => {
             this.fetchTodayDebts();
         },
         
+        async openTodayDirectSales() {
+            this.directSalesPerPage = 20;
+            this.isDirectSalesCardLoading = true;
+            await this.fetchTodayDirectSales();
+            this.isDirectSalesCardLoading = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'todayDirectSalesModal' } }));
+        },
+        
+        async fetchTodayDirectSales() {
+            this.isDirectSalesLoading = true;
+            try {
+                const res = await fetch(`${this.apiBase}/today-direct-sales?per_page=${this.directSalesPerPage}`);
+                const data = await res.json();
+                if(res.ok) {
+                    this.todayDirectSalesList = data.transactions;
+                    this.totalTodayDirectSalesCount = data.total;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isDirectSalesLoading = false;
+        },
+        
+        loadMoreDirectSales() {
+            this.directSalesPerPage += 20;
+            this.fetchTodayDirectSales();
+        },
+        
         // Transactions
         openTxModal(type) {
             if(!this.activeCustomer) return;
@@ -531,6 +566,7 @@ document.addEventListener('alpine:init', () => {
                     }
                     this.fetchTodayCollections(); // Update today's collections if open
                     this.fetchTodayDebts(); // Update today's debts if open
+                    this.fetchTodayDirectSales(); // Update today's direct sales if open
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }
@@ -580,6 +616,7 @@ document.addEventListener('alpine:init', () => {
                     }
                     this.fetchTodayCollections();
                     this.fetchTodayDebts();
+                    this.fetchTodayDirectSales();
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }

@@ -143,5 +143,6 @@ return [
     'please_enter_amount' => 'Please enter the amount',
     'please_select_date' => 'Please select a date',
     'please_enter_reason' => 'Please enter a reason / beneficiary',
-    'please_select_bank_account' => 'Please select a bank account / wallet',
+    'please_select_transaction_type' => 'Please select the transaction type',
+    'transaction' => 'Transaction',
 ];
