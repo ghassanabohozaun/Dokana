@@ -130,26 +130,31 @@ class CasherNotebookController extends Controller
         $storeId = $this->getStoreId();
 
         $periods = [
-            'today' => Carbon::today(),
-            'week' => Carbon::now()->startOfWeek(),
-            'month' => Carbon::now()->startOfMonth(),
+            'today' => [Carbon::today(), Carbon::now()],
+            'week' => [Carbon::now()->startOfWeek(), Carbon::now()],
+            'month' => [Carbon::now()->startOfMonth(), Carbon::now()],
         ];
+
+        if ($request->has('custom_date')) {
+            $customDate = Carbon::parse($request->custom_date);
+            $periods['custom'] = [$customDate->startOfDay(), $customDate->copy()->endOfDay()];
+        }
 
         $summary = [];
 
-        foreach ($periods as $key => $startDate) {
+        foreach ($periods as $key => $dates) {
             $summary[$key] = [
                 'collections' => StoreTransaction::where('store_id', $storeId)
                     ->where('type', 'payment')
-                    ->where('created_at', '>=', $startDate)
+                    ->whereBetween('created_at', [$dates[0], $dates[1]])
                     ->sum('amount'),
                 'direct_sales' => StoreTransaction::where('store_id', $storeId)
                     ->where('type', 'direct_sale')
-                    ->where('created_at', '>=', $startDate)
+                    ->whereBetween('created_at', [$dates[0], $dates[1]])
                     ->sum('amount'),
                 'debts' => StoreTransaction::where('store_id', $storeId)
                     ->where('type', 'debt')
-                    ->where('created_at', '>=', $startDate)
+                    ->whereBetween('created_at', [$dates[0], $dates[1]])
                     ->sum('amount'),
             ];
         }

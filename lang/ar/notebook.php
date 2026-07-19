@@ -147,5 +147,7 @@ return [
     'please_enter_reason' => 'الرجاء إدخال البيان / المستفيد',
     'please_select_transaction_type' => 'الرجاء اختيار نوع الحركة',
     'transaction' => 'حركة',
+    'custom_date' => 'تاريخ محدد',
+    'select_date' => 'اختر التاريخ:',
     'please_select_bank_account' => 'الرجاء اختيار الحساب البنكي / المحفظة',
 ];

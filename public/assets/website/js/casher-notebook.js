@@ -24,6 +24,7 @@ document.addEventListener('alpine:init', () => {
         // Financial Summary
         summaryData: null,
         summaryTab: 'today',
+        summaryCustomDate: config.todayDate,
         isSummaryLoading: false,
         
         // New Customer form
@@ -223,6 +224,21 @@ document.addEventListener('alpine:init', () => {
                 const data = await res.json();
                 if (res.ok) {
                     this.summaryData = data.summary;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isSummaryLoading = false;
+        },
+        
+        async fetchCustomSummary() {
+            if (!this.summaryCustomDate) return;
+            this.isSummaryLoading = true;
+            try {
+                const res = await fetch(`${this.apiBase}/financial-summary?custom_date=${this.summaryCustomDate}`);
+                const data = await res.json();
+                if (res.ok && data.summary && data.summary.custom) {
+                    this.summaryData.custom = data.summary.custom;
                 }
             } catch (e) {
                 console.error(e);

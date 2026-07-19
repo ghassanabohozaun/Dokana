@@ -145,4 +145,6 @@ return [
     'please_enter_reason' => 'Please enter a reason / beneficiary',
     'please_select_transaction_type' => 'Please select the transaction type',
     'transaction' => 'Transaction',
+    'custom_date' => 'Custom Date',
+    'select_date' => 'Select Date:',
 ];

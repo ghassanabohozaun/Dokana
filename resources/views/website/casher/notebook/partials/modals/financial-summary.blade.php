@@ -53,10 +53,35 @@
                 <div class="space-y-6 pb-4">
                     
                     <!-- Tabs -->
-                    <div class="flex p-1 bg-gray-200 dark:bg-gray-800 rounded-xl">
-                        <button @click="summaryTab = 'today'" :class="summaryTab === 'today' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all">{{ __('notebook.today') ?? 'اليوم' }}</button>
-                        <button @click="summaryTab = 'week'" :class="summaryTab === 'week' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all">{{ __('notebook.this_week') ?? 'هذا الأسبوع' }}</button>
-                        <button @click="summaryTab = 'month'" :class="summaryTab === 'month' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 text-sm font-bold rounded-lg transition-all">{{ __('notebook.this_month') ?? 'هذا الشهر' }}</button>
+                    <div class="flex p-1 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-x-auto custom-scrollbar">
+                        <button @click="summaryTab = 'today'" :class="summaryTab === 'today' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap">{{ __('notebook.today') ?? 'اليوم' }}</button>
+                        <button @click="summaryTab = 'week'" :class="summaryTab === 'week' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap">{{ __('notebook.this_week') ?? 'هذا الأسبوع' }}</button>
+                        <button @click="summaryTab = 'month'" :class="summaryTab === 'month' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap">{{ __('notebook.this_month') ?? 'هذا الشهر' }}</button>
+                        <button @click="summaryTab = 'custom'; if(!summaryData.custom) fetchCustomSummary();" :class="summaryTab === 'custom' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'" class="flex-1 py-2 px-3 text-sm font-bold rounded-lg transition-all whitespace-nowrap">{{ __('notebook.custom_date') ?? 'تاريخ محدد' }}</button>
+                    </div>
+
+                    <!-- Custom Date Picker -->
+                    <div x-show="summaryTab === 'custom'" x-collapse>
+                        <div class="bg-gray-100 dark:bg-gray-800/50 p-3 rounded-xl flex items-center gap-3 mt-1 relative">
+                            <div class="absolute top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-primary text-xl {{ app()->getLocale() == 'ar' ? 'left-5' : 'right-5' }}">
+                                <i class="ph-bold ph-calendar"></i>
+                            </div>
+                            <label class="text-xs font-bold text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ __('notebook.select_date') ?? 'اختر التاريخ:' }}</label>
+                            <input type="text" 
+                                   x-model="summaryCustomDate" 
+                                   x-init="
+                                       flatpickr($el, {
+                                           dateFormat: 'Y-m-d',
+                                           locale: '{{ app()->getLocale() == 'ar' ? 'ar' : 'en' }}',
+                                           disableMobile: true,
+                                           onChange: function(selectedDates, dateStr, instance) {
+                                               summaryCustomDate = dateStr;
+                                               fetchCustomSummary();
+                                           }
+                                       });
+                                   "
+                                   class="flex-1 bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2">
+                        </div>
                     </div>
 
                     <!-- Stats Cards -->
