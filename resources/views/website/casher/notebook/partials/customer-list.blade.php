@@ -33,9 +33,12 @@
                 <div @click="openLedger(customer.id)" class="card-hover p-4 rounded-[1.25rem] border flex justify-between items-center cursor-pointer"
                      :class="customer.status == 0 ? 'bg-gray-50 dark:bg-[#0b1121] border-gray-200 dark:border-gray-800 opacity-60 grayscale-[50%]' : 'bg-white dark:bg-darkCard border-gray-100 dark:border-gray-800'">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shrink-0 shadow-sm"
-                             :class="customer.status == 0 ? 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'"
-                             x-text="customer.name ? customer.name.substring(0, 1) : '-'">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl shrink-0 shadow-sm relative overflow-hidden"
+                             :class="customer.status == 0 ? 'bg-gray-200 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'">
+                            <span x-show="loadingCustomerId !== customer.id" x-text="customer.name ? customer.name.substring(0, 1) : '-'"></span>
+                            <div x-show="loadingCustomerId === customer.id" class="absolute inset-0 bg-white/50 dark:bg-black/50 flex items-center justify-center" x-cloak>
+                                <i class="ph-bold ph-spinner-gap animate-spin"></i>
+                            </div>
                         </div>
                         <div>
                             <div class="flex items-center gap-2">

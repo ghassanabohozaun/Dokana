@@ -3,29 +3,31 @@
         <!-- Top Stats (Today) - Grid of 3 -->
         <div class="grid grid-cols-3 gap-2 mb-3">
             <!-- Today Collections -->
-            <div class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-emerald-300/50">
-                <div class="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100 dark:border-emerald-900/50">
-                    <i class="ph-bold ph-trend-up"></i>
+            <div x-on:click="openTodayCollections()" class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-emerald-300/50 cursor-pointer active:scale-95 group relative">
+                <div class="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 flex items-center justify-center shadow-sm border border-emerald-100 dark:border-emerald-900/50 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                    <i x-show="!isCollectionsCardLoading" class="ph-bold ph-trend-up"></i>
+                    <i x-show="isCollectionsCardLoading" class="ph-bold ph-spinner-gap animate-spin" x-cloak></i>
                 </div>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">تحصيلات اليوم</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">{{ __('notebook.collections') ?? 'تحصيلات اليوم' }}</p>
                 <h4 class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 leading-none" dir="ltr" x-text="Number(todayCollections).toFixed(1)"></h4>
             </div>
 
             <!-- Today Direct Sales -->
-            <div class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-blue-300/50">
+            <div class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-blue-300/50 relative">
                 <div class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-500 flex items-center justify-center shadow-sm border border-blue-100 dark:border-blue-900/50">
                     <i class="ph-bold ph-shopping-cart"></i>
                 </div>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">مبيعات فورية</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">{{ __('notebook.direct_sales_summary') ?? 'مبيعات فورية' }}</p>
                 <h4 class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 leading-none" dir="ltr" x-text="Number(todayDirectSales).toFixed(1)"></h4>
             </div>
 
             <!-- Today Debts -->
-            <div class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-red-300/50">
-                <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shadow-sm border border-red-100 dark:border-red-900/50">
-                    <i class="ph-bold ph-trend-down"></i>
+            <div x-on:click="openTodayDebts()" class="bg-white dark:bg-darkCard rounded-[1rem] p-3 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col items-center justify-center text-center gap-1.5 transition-colors hover:border-red-300/50 cursor-pointer active:scale-95 group relative">
+                <div class="w-8 h-8 rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 flex items-center justify-center shadow-sm border border-red-100 dark:border-red-900/50 group-hover:bg-red-500 group-hover:text-white transition-colors">
+                    <i x-show="!isDebtsCardLoading" class="ph-bold ph-trend-down"></i>
+                    <i x-show="isDebtsCardLoading" class="ph-bold ph-spinner-gap animate-spin" x-cloak></i>
                 </div>
-                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">ديون اليوم</p>
+                <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-0.5">{{ __('notebook.today_debts') ?? 'ديون اليوم' }}</p>
                 <h4 class="text-sm sm:text-base font-black text-gray-800 dark:text-gray-100 leading-none" dir="ltr" x-text="Number(todayDebts).toFixed(1)"></h4>
             </div>
         </div>

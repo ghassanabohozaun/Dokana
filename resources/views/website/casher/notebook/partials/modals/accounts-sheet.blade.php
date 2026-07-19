@@ -1,34 +1,37 @@
-<!-- Accounts Bottom Sheet -->
-<div x-show="showAccountsSheet" class="fixed inset-0 z-50 flex items-end justify-center pointer-events-none" style="display: none;">
+<!-- Accounts Drawer -->
+<div x-show="showAccountsSheet" 
+     class="fixed inset-0 z-[60] flex" 
+     style="display: none;" x-cloak>
+     
     <!-- Backdrop -->
     <div x-show="showAccountsSheet" 
-         x-transition:enter="transition-opacity ease-out duration-300"
+         x-transition:enter="transition-opacity ease-linear duration-300"
          x-transition:enter-start="opacity-0" 
          x-transition:enter-end="opacity-100"
-         x-transition:leave="transition-opacity ease-in duration-200" 
+         x-transition:leave="transition-opacity ease-linear duration-300" 
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0" 
          @click="showAccountsSheet = false" 
-         class="absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto">
+         class="drawer-backdrop pointer-events-auto">
     </div>
 
-    <!-- Sheet Panel -->
+    <!-- Drawer Panel -->
     <div x-show="showAccountsSheet" 
-         x-transition:enter="transition-transform ease-out duration-300"
-         x-transition:enter-start="translate-y-full" 
-         x-transition:enter-end="translate-y-0"
-         x-transition:leave="transition-transform ease-in duration-200" 
-         x-transition:leave-start="translate-y-0" 
-         x-transition:leave-end="translate-y-full"
-         class="w-full max-w-md bg-gray-50 dark:bg-darkCard rounded-t-3xl shadow-2xl relative z-10 pointer-events-auto flex flex-col max-h-[85vh]">
+         x-transition:enter="transition ease-in-out duration-300 transform"
+         x-transition:enter-start="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
+         x-transition:enter-end="translate-y-0 md:translate-x-0"
+         x-transition:leave="transition ease-in-out duration-300 transform"
+         x-transition:leave-start="translate-y-0 md:translate-x-0"
+         x-transition:leave-end="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
+         class="drawer-panel flex flex-col pointer-events-auto">
          
-        <!-- Handle -->
-        <div class="w-full flex justify-center pt-3 pb-2 cursor-pointer" @click="showAccountsSheet = false">
+        <!-- Handle for Mobile -->
+        <div class="w-full flex justify-center pt-3 pb-2 cursor-pointer md:hidden" @click="showAccountsSheet = false">
             <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full"></div>
         </div>
 
         <!-- Header -->
-        <div class="px-6 pb-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center shrink-0">
+        <div class="p-6 pb-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center shrink-0">
             <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">{{ Lang::has('notebook.store_accounts') ? __('notebook.store_accounts') : 'حسابات المتجر' }}</h3>
             <button @click="showAccountsSheet = false" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-red-500 transition-colors">
                 <i class="ph-bold ph-x"></i>

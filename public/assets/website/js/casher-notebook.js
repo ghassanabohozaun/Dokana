@@ -59,6 +59,23 @@ document.addEventListener('alpine:init', () => {
         withdrawalDate: config.todayDate,
         isSavingWithdrawal: false,
         
+        // Today's Collections Modal
+        todayCollectionsList: [],
+        totalTodayCollectionsCount: 0,
+        collectionsPerPage: 20,
+        isCollectionsLoading: false,
+        
+        // Today's Debts Modal
+        todayDebtsList: [],
+        totalTodayDebtsCount: 0,
+        debtsPerPage: 20,
+        isDebtsLoading: false,
+        
+        // Loading States for UX
+        loadingCustomerId: null,
+        isCollectionsCardLoading: false,
+        isDebtsCardLoading: false,
+        
         // APIs
         apiBase: config.apiBase,
         locale: config.locale || 'ar',
@@ -252,7 +269,10 @@ document.addEventListener('alpine:init', () => {
         
         async saveCustomer() {
             if(this.isSavingCustomer) return;
-            if(!this.newCustomerName) return;
+            if(!this.newCustomerName) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterCustomerName, 'warning');
+                return;
+            }
             this.isSavingCustomer = true;
             try {
                 const res = await fetch(`${this.apiBase}/customers`, {
@@ -331,7 +351,10 @@ document.addEventListener('alpine:init', () => {
         // Ledger
         async openLedger(customerId) {
             this.ledgerPerPage = 20;
+            this.activeCustomer = this.customers.find(c => c.id === customerId) || { id: customerId, name: '...', balance: 0 };
+            this.loadingCustomerId = customerId;
             await this.fetchLedger(customerId);
+            this.loadingCustomerId = null;
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'ledgerModal' } }));
         },
         
@@ -356,6 +379,64 @@ document.addEventListener('alpine:init', () => {
             if(this.activeCustomer) {
                 this.fetchLedger(this.activeCustomer.id);
             }
+        },
+        
+        // Today's Collections
+        async openTodayCollections() {
+            this.collectionsPerPage = 20;
+            this.isCollectionsCardLoading = true;
+            await this.fetchTodayCollections();
+            this.isCollectionsCardLoading = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'todayCollectionsModal' } }));
+        },
+        
+        async fetchTodayCollections() {
+            this.isCollectionsLoading = true;
+            try {
+                const res = await fetch(`${this.apiBase}/today-collections?per_page=${this.collectionsPerPage}`);
+                const data = await res.json();
+                if(res.ok) {
+                    this.todayCollectionsList = data.transactions;
+                    this.totalTodayCollectionsCount = data.total;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isCollectionsLoading = false;
+        },
+        
+        loadMoreCollections() {
+            this.collectionsPerPage += 20;
+            this.fetchTodayCollections();
+        },
+        
+        // Today's Debts
+        async openTodayDebts() {
+            this.debtsPerPage = 20;
+            this.isDebtsCardLoading = true;
+            await this.fetchTodayDebts();
+            this.isDebtsCardLoading = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'todayDebtsModal' } }));
+        },
+        
+        async fetchTodayDebts() {
+            this.isDebtsLoading = true;
+            try {
+                const res = await fetch(`${this.apiBase}/today-debts?per_page=${this.debtsPerPage}`);
+                const data = await res.json();
+                if(res.ok) {
+                    this.todayDebtsList = data.transactions;
+                    this.totalTodayDebtsCount = data.total;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+            this.isDebtsLoading = false;
+        },
+        
+        loadMoreDebts() {
+            this.debtsPerPage += 20;
+            this.fetchTodayDebts();
         },
         
         // Transactions
@@ -400,7 +481,21 @@ document.addEventListener('alpine:init', () => {
         
         async saveTransaction() {
             if(this.isSavingTransaction) return;
-            if(!this.txAmount || !this.txDate || !this.activeCustomer) return;
+            
+            if(!this.txAmount) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterAmount, 'warning');
+                return;
+            }
+            if(!this.txDate) {
+                Toast.show(config.translations.warning, config.translations.pleaseSelectDate, 'warning');
+                return;
+            }
+            if(!this.activeCustomer) return;
+            
+            if ((this.txType === 'payment' || this.txType === 'direct_sale') && !this.txBankAccountId) {
+                Toast.show(config.translations.warning, config.translations.selectAccount, 'warning');
+                return;
+            }
             
             const url = this.editingTxId 
                 ? `${this.apiBase}/transactions/${this.editingTxId}`
@@ -431,7 +526,11 @@ document.addEventListener('alpine:init', () => {
                     window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'transactionModal' } }));
                     Toast.show(config.translations.success, data.message, 'success');
                     this.fetchCustomers(); // Update balances
-                    this.fetchLedger(this.activeCustomer.id); // Update ledger
+                    if(this.activeCustomer) {
+                        this.fetchLedger(this.activeCustomer.id); // Update ledger
+                    }
+                    this.fetchTodayCollections(); // Update today's collections if open
+                    this.fetchTodayDebts(); // Update today's debts if open
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }
@@ -447,6 +546,8 @@ document.addEventListener('alpine:init', () => {
                 text: config.translations.confirmDeleteTx,
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
                 confirmButtonText: config.translations.yesDelete,
                 cancelButtonText: config.translations.cancel,
                 customClass: {
@@ -459,7 +560,7 @@ document.addEventListener('alpine:init', () => {
                 },
                 buttonsStyling: false
             });
-
+            
             if(!result.isConfirmed) return;
             
             try {
@@ -474,7 +575,11 @@ document.addEventListener('alpine:init', () => {
                 if(res.ok) {
                     Toast.show(config.translations.success, data.message, 'success');
                     this.fetchCustomers();
-                    this.fetchLedger(this.activeCustomer.id);
+                    if(this.activeCustomer) {
+                        this.fetchLedger(this.activeCustomer.id);
+                    }
+                    this.fetchTodayCollections();
+                    this.fetchTodayDebts();
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }
@@ -532,7 +637,25 @@ document.addEventListener('alpine:init', () => {
 
         async submitWithdrawal() {
             if(this.isSavingWithdrawal) return;
-            if (!this.withdrawalAmount || !this.withdrawalReason || !this.withdrawalBankAccountId || !this.withdrawalDate) return;
+            
+            if (!this.withdrawalAmount) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterAmount, 'warning');
+                return;
+            }
+            if (!this.withdrawalReason) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterReason, 'warning');
+                return;
+            }
+            if (!this.withdrawalDate) {
+                Toast.show(config.translations.warning, config.translations.pleaseSelectDate, 'warning');
+                return;
+            }
+            
+            if (!this.withdrawalBankAccountId) {
+                Toast.show(config.translations.warning, config.translations.selectAccount, 'warning');
+                return;
+            }
+            
             this.isSavingWithdrawal = true;
 
             const url = this.isEditingWithdrawal 

@@ -1,36 +1,43 @@
-    <!-- Customer Ledger Modal -->
+    <!-- Customer Ledger Overlay -->
     <div x-data="{ show: false }" 
          x-show="show" 
          x-on:open-modal.window="if ($event.detail.id === 'ledgerModal') show = true"
          x-on:close-modal.window="if ($event.detail.id === 'ledgerModal') show = false"
          style="display: none;"
-         class="fixed inset-0 z-40 flex flex-col items-center justify-end sm:justify-center">
-        <div x-show="show" x-transition.opacity class="fixed inset-0 bg-gray-900/75 dark:bg-black/85" x-on:click="show = false"></div>
-        <div x-show="show" x-transition.translate.y.bottom class="relative bg-gray-50 dark:bg-dark w-full max-w-md h-[92vh] sm:h-[85vh] rounded-t-[2rem] sm:rounded-3xl flex flex-col shadow-2xl overflow-hidden border border-white/10 z-10">
+         class="overlay-panel flex justify-center"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-95"
+         x-cloak>
+         
+        <div class="w-full md:max-w-3xl min-h-screen flex flex-col bg-gray-50 dark:bg-[#0b1121] shadow-2xl relative">
             <template x-if="activeCustomer">
-                <div class="flex flex-col h-full">
+                <div class="flex flex-col h-screen">
                     <!-- Header -->
-                    <div class="p-5 border-b dark:border-gray-800 flex justify-between items-center bg-white dark:bg-darkCard z-10 shrink-0">
+                    <div class="p-5 border-b dark:border-gray-800 flex justify-between items-center bg-white dark:bg-darkCard z-10 shrink-0 sticky top-0">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl">
+                            <button x-on:click="show = false" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300 mr-2 rtl:ml-2 rtl:mr-0 rtl:-scale-x-100">
+                                <i class="ph-bold ph-arrow-left text-xl"></i>
+                            </button>
+                            <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl shrink-0">
                                 <span x-text="activeCustomer.name.substring(0, 1)"></span>
                             </div>
                             <div>
-                                <h2 class="font-bold text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                                <h2 class="font-bold text-lg text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
                                     <span x-text="activeCustomer.name"></span>
-                                    <button @click="openEditCustomerModal()" class="text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors w-7 h-7 flex items-center justify-center rounded-full shadow-sm border border-blue-100 dark:border-blue-800/50">
+                                    <button @click="openEditCustomerModal()" class="text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors w-7 h-7 flex items-center justify-center rounded-full shadow-sm border border-blue-100 dark:border-blue-800/50 shrink-0">
                                         <i class="ph-bold ph-pencil-simple text-sm"></i>
                                     </button>
                                     <template x-if="activeCustomer.status == 0">
                                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">{{ __('notebook.disabled') ?? 'معطل' }}</span>
                                     </template>
                                 </h2>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium" x-html="activeCustomer.phone ? '<i class=\'ph-fill ph-phone text-xs\'></i> ' + activeCustomer.phone : '-'"></p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium flex items-center gap-1" x-html="activeCustomer.phone ? '<i class=\'ph-fill ph-phone text-xs\'></i> ' + activeCustomer.phone : '-'"></p>
                             </div>
                         </div>
-                        <button x-on:click="show = false" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors text-gray-600 dark:text-gray-300">
-                            <i class="ph-bold ph-x text-lg"></i>
-                        </button>
                     </div>
                     
                     <!-- Balance & Actions -->
@@ -67,7 +74,7 @@
                                     :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
                                     class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-2.5 rounded-xl font-bold transition-all border border-emerald-100 dark:border-emerald-900/30 text-sm">
                                     <i class="ph-bold ph-money text-lg"></i>
-                                    دفع 💵
+                                    {{ __('notebook.direct_payment') ?? 'دفع 💵' }}
                                 </button>
                             </div>
                         </template>
@@ -91,7 +98,7 @@
                                     :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group'"
                                     class="flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-blue-100 dark:border-blue-900/30 text-[12px] sm:text-[13px]">
                                     <i class="ph-bold ph-shopping-cart text-base"></i>
-                                    <span class="truncate">شراء فوري</span>
+                                    <span class="truncate">{{ __('notebook.direct_sale') ?? 'شراء فوري' }}</span>
                                 </button>
                             </div>
                         </template>
@@ -105,13 +112,13 @@
 
                     <!-- Transaction List -->
                     <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
-                        <div x-show="isLedgerLoading" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center rounded-xl backdrop-blur-sm" x-cloak>
+                        <div x-show="isLedgerLoading && ledgerTransactions.length === 0" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                             <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-primary"></i>
                         </div>
 
-                        <template x-if="ledgerTransactions.length === 0">
-                            <div class="flex flex-col items-center justify-center py-16 text-gray-400">
-                                <i class="ph-fill ph-receipt text-5xl mb-3 text-gray-300 dark:text-gray-600 opacity-50"></i>
+                        <template x-if="ledgerTransactions.length === 0 && !isLedgerLoading">
+                            <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+                                <i class="ph-fill ph-receipt text-6xl mb-4 text-gray-300 dark:text-gray-600 opacity-50"></i>
                                 <p class="text-sm font-bold">{{ __('notebook.no_registered_transactions') }}</p>
                             </div>
                         </template>
@@ -119,7 +126,7 @@
                         <template x-if="ledgerTransactions.length > 0">
                             <div>
                                 <template x-for="tx in ledgerTransactions" :key="tx.id">
-                                    <div class="bg-white dark:bg-darkCard p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col gap-3 mb-3">
+                                    <div class="bg-white dark:bg-darkCard p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col gap-3 mb-3 hover:shadow-md transition-shadow">
                                         <div class="flex justify-between items-center">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" :class="tx.type === 'debt' ? 'bg-red-50 text-red-500 dark:bg-red-900/20' : 'bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20'">
@@ -145,8 +152,8 @@
                                                     </template>
                                                 </div>
                                             </div>
-                                            <div class="text-left font-black shrink-0 text-lg" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
-                                                <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[10px] font-normal">₪</span>
+                                            <div class="text-left font-black shrink-0 text-xl" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
+                                                <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
                                             </div>
                                         </div>
                                         @if(auth('casher')->user()->hasAbility('notebook_update') || auth('casher')->user()->hasAbility('notebook_delete'))
@@ -171,10 +178,13 @@
                         </template>
 
                         <template x-if="totalLedgerTransactions > ledgerTransactions.length">
-                            <div class="mt-6 flex justify-center pb-2">
-                                <button @click="loadMoreLedger" class="group relative px-5 py-2.5 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-full transition-all duration-300 flex items-center justify-center gap-2 active:scale-95">
-                                    <span class="flex items-center gap-2">
+                            <div class="mt-6 flex justify-center pb-4">
+                                <button @click="loadMoreLedger" :disabled="isLedgerLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <span class="flex items-center gap-2" x-show="!isLedgerLoading">
                                         {{ __('notebook.show_older_transactions') }} <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
+                                    </span>
+                                    <span class="flex items-center gap-2" x-show="isLedgerLoading" style="display: none;">
+                                        <i class="ph-bold ph-spinner-gap animate-spin text-lg"></i> {{ __('notebook.loading') ?? 'جاري التحميل...' }}
                                     </span>
                                 </button>
                             </div>

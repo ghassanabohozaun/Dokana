@@ -1,9 +1,10 @@
 @extends('layouts.website.app')
 
 @section('content')
-<div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="max-w-md mx-auto min-h-screen relative pb-24 shadow-2xl bg-gray-50 dark:bg-[#0b1121] transition-colors duration-300 font-sans">
+<div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="notebook-container transition-colors duration-300 font-sans shadow-xl">
     
-    @include('website.casher.notebook.partials.header')
+    <div class="notebook-main min-h-screen relative pb-24">
+        @include('website.casher.notebook.partials.header')
     
     <template x-if="activeTab === 'customers'">
         <div class="animate-fade-in-up">
@@ -20,8 +21,9 @@
     </template>
 
     @include('website.casher.notebook.partials.bottom-nav')
+    </div> <!-- End notebook-main -->
 
-    <!-- Modals -->
+    <!-- Drawers, Bottom Sheets, and Overlays -->
     @include('website.casher.notebook.partials.modals.add-customer')
     @include('website.casher.notebook.partials.modals.edit-customer')
     @include('website.casher.notebook.partials.modals.add-withdrawal')
@@ -29,6 +31,8 @@
     @include('website.casher.notebook.partials.modals.transaction')
     @include('website.casher.notebook.partials.modals.accounts-sheet')
     @include('website.casher.notebook.partials.modals.financial-summary')
+    @include('website.casher.notebook.partials.modals.today-collections')
+    @include('website.casher.notebook.partials.modals.today-debts')
 
 </div>
 
@@ -68,7 +72,12 @@
             confirmDeleteTx: '{{ __("notebook.confirm_delete_transaction") }}',
             confirmDeleteWithdrawal: '{{ __("notebook.confirm_delete_withdrawal") }}',
             yesDelete: '{{ __("notebook.yes_delete") }}',
-            cancel: '{{ __("notebook.cancel") }}'
+            cancel: '{{ __("notebook.cancel") }}',
+            selectAccount: '{{ __("notebook.please_select_bank_account") }}',
+            pleaseEnterCustomerName: '{{ __("notebook.please_enter_customer_name") }}',
+            pleaseEnterAmount: '{{ __("notebook.please_enter_amount") }}',
+            pleaseSelectDate: '{{ __("notebook.please_select_date") }}',
+            pleaseEnterReason: '{{ __("notebook.please_enter_reason") }}'
         },
         bankBalances: {
             @foreach($storeBankAccounts as $account)

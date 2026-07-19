@@ -261,6 +261,75 @@ class CasherNotebookController extends Controller
     }
 
     /**
+     * API: Get today's collections (payments and direct sales).
+     */
+    public function getTodayCollections(Request $request)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $perPage = (int) $request->query('per_page', 20);
+
+        $transactions = StoreTransaction::with(['customer', 'createdBy', 'bankAccount.paymentEntity'])
+            ->where('store_id', $this->getStoreId())
+            ->whereIn('type', ['payment', 'direct_sale'])
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+
+        // Map data similarly to ledger
+        $transactions->getCollection()->transform(function ($tx) {
+            $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
+            
+            if (($tx->type === 'payment' || $tx->type === 'direct_sale') && $tx->store_bank_account_id && $tx->bankAccount) {
+                $entityName = optional($tx->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($tx->bankAccount->paymentEntity)->getTranslation('name', 'ar');
+                $tx->bank_account_name = $tx->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $tx->bankAccount->account_number;
+            } else {
+                $tx->bank_account_name = null;
+            }
+            
+            return $tx;
+        });
+
+        return response()->json([
+            'transactions' => $transactions->items(),
+            'total' => $transactions->total(),
+            'hasMore' => $transactions->hasMorePages()
+        ]);
+    }
+
+    /**
+     * API: Get today's debts.
+     */
+    public function getTodayDebts(Request $request)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $perPage = (int) $request->query('per_page', 20);
+
+        $transactions = StoreTransaction::with(['customer', 'createdBy'])
+            ->where('store_id', $this->getStoreId())
+            ->where('type', 'debt')
+            ->whereDate('created_at', Carbon::today())
+            ->orderBy('id', 'desc')
+            ->paginate($perPage);
+
+        // Map data similarly to ledger
+        $transactions->getCollection()->transform(function ($tx) {
+            $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
+            return $tx;
+        });
+
+        return response()->json([
+            'transactions' => $transactions->items(),
+            'total' => $transactions->total(),
+            'hasMore' => $transactions->hasMorePages()
+        ]);
+    }
+
+    /**
      * API: Store a new transaction.
      */
     public function storeTransaction(Request $request, $customerId)

@@ -1,3 +1,30 @@
+/* Custom Tajawal Font */
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/tajawal/tajawal-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/tajawal/tajawal-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Tajawal';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/tajawal/tajawal-700.ttf') format('truetype');
+}
+
+body {
+  font-family: 'Tajawal', sans-serif !important;
+}
+
 /* Enhanced UI / UX for Casher Notebook */
 .glass-header {
     background: rgba(255, 255, 255, 0.85);
@@ -120,4 +147,93 @@
 }
 .dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg {
     fill: #ef4444 !important;
+}
+/* Casher Notebook Layout & Responsive Classes */
+.notebook-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    min-height: 100vh;
+    background-color: #fafafa;
+    color: #111827;
+}
+.dark .notebook-container {
+    background-color: #0b1121;
+    color: #f3f4f6;
+}
+@media (min-width: 768px) {
+    .notebook-container {
+        max-width: 1000px; /* Wider for tablets/desktops */
+        border-left: 1px solid rgba(0,0,0,0.05);
+        border-right: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+    }
+    .dark .notebook-container {
+        border-color: rgba(255,255,255,0.05);
+    }
+}
+
+/* Drawers & Bottom Sheets */
+.drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 50;
+}
+.drawer-panel {
+    position: fixed;
+    z-index: 60;
+    background: white;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+.dark .drawer-panel {
+    background: #1e293b;
+}
+
+/* Mobile: Bottom Sheet */
+@media (max-width: 767px) {
+    .drawer-panel {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 90vh;
+        height: auto;
+        border-top-left-radius: 1.5rem;
+        border-top-right-radius: 1.5rem;
+    }
+}
+
+/* Desktop: Side Drawer */
+@media (min-width: 768px) {
+    .drawer-panel {
+        top: 0;
+        bottom: 0;
+        width: 400px;
+        max-height: 100vh;
+    }
+    /* RTL Support */
+    html[dir="rtl"] .drawer-panel {
+        left: 0;
+        border-right: 1px solid rgba(0,0,0,0.05);
+    }
+    html[dir="ltr"] .drawer-panel {
+        right: 0;
+        border-left: 1px solid rgba(0,0,0,0.05);
+    }
+}
+
+/* Full Screen Overlay */
+.overlay-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: #f8fafc;
+    overflow-y: auto;
+}
+.dark .overlay-panel {
+    background: #0f172a;
 }

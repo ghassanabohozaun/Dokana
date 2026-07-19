@@ -153,10 +153,16 @@ $(document).ready(function() {
         }
         const $overlay = $('.ptc-filter-overlay');
         
-        // Inject close button into all panels
+        // Inject close button into all panels like the action bar
         $panels.each(function() {
             if ($(this).find('.ptc-query-panel-close').length === 0) {
-                $(this).prepend('<div class="ptc-query-panel-close"><i class="fas fa-times"></i></div>');
+                $(this).prepend(`
+                    <div class="bottom-action-close position-absolute ptc-query-panel-close" style="top: -15px; right: 15px; z-index: 1060;">
+                        <button type="button" class="btn btn-sm btn-danger radius-10 shadow-sm" title="إغلاق">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `);
             }
         });
 
