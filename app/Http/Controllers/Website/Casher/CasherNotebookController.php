@@ -63,7 +63,12 @@ class CasherNotebookController extends Controller
             $query->where(function($q) use ($search, $filter) {
                 $q->where(function($subQ) use ($search, $filter) {
                     if ($search) {
-                        $subQ->where('name', 'like', '%' . $search . '%');
+                        $searchTerms = array_filter(explode(' ', trim($search)));
+                        $subQ->where(function($termQ) use ($searchTerms) {
+                            foreach ($searchTerms as $term) {
+                                $termQ->where('name', 'like', '%' . $term . '%');
+                            }
+                        });
                     }
                     if ($filter === 'debt' || $filter === 'highest_debt') {
                         $subQ->where('balance', '>', 0);

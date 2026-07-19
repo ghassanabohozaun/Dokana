@@ -147,4 +147,5 @@ return [
     'transaction' => 'Transaction',
     'custom_date' => 'Custom Date',
     'select_date' => 'Select Date:',
+    'overdue_debt' => 'Warning: Debt is overdue for more than a month',
 ];

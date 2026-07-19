@@ -1,18 +1,20 @@
     <!-- Search & Filters -->
     <div class="px-4 mb-4">
-        <div class="relative group mb-3">
+        <div class="relative group mb-3 flex items-center">
             <i class="ph-bold ph-magnifying-glass absolute {{ app()->getLocale() == 'ar' ? 'right-4' : 'left-4' }} top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-primary transition-colors"></i>
-            <input x-model="search" type="text" placeholder="{{ __('notebook.search_customer') }}" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl py-3.5 px-11 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all text-gray-800 dark:text-gray-100 shadow-sm placeholder-gray-400">
-            <button x-show="search.length > 0" @click="search = ''" style="display: none;" 
-                x-transition:enter="transition-opacity duration-150"
-                x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100"
-                x-transition:leave="transition-opacity duration-150"
-                x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0"
-                class="absolute {{ app()->getLocale() == 'ar' ? 'left-4' : 'right-4' }} top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition-colors w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
-                <i class="ph-bold ph-x text-sm"></i>
-            </button>
+            <input x-model="search" type="text" placeholder="{{ __('notebook.search_customer') }}" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl py-3.5 px-11 rtl:pl-20 ltr:pr-20 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all text-gray-800 dark:text-gray-100 shadow-sm placeholder-gray-400">
+            <div class="absolute {{ app()->getLocale() == 'ar' ? 'left-2' : 'right-2' }} flex items-center gap-1.5">
+                <button x-show="search.length > 0" @click="search = ''" style="display: none;" 
+                    x-transition
+                    class="text-gray-400 hover:text-red-500 transition-colors w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700">
+                    <i class="ph-bold ph-x text-sm"></i>
+                </button>
+                <button type="button" @click.prevent="startVoiceSearch()" 
+                    class="w-9 h-9 flex items-center justify-center rounded-full transition-all"
+                    :class="isListening ? 'bg-red-50 text-red-500 shadow-[0_0_0_4px_rgba(239,68,68,0.2)] animate-pulse' : 'bg-blue-50 text-blue-500 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400'">
+                    <i class="ph-bold ph-microphone" :class="isListening ? 'text-lg' : 'text-base'"></i>
+                </button>
+            </div>
         </div>
         <div class="flex gap-2 overflow-x-auto hide-scrollbar whitespace-nowrap pb-1">
             <button @click="setFilter('all')" class="whitespace-nowrap px-4 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 text-sm font-bold" :class="filter === 'all' ? 'bg-primary text-white' : 'text-gray-600 dark:text-gray-300 bg-white dark:bg-darkCard'">{{ __('notebook.filter_all') }}</button>

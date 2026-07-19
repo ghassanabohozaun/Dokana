@@ -149,5 +149,6 @@ return [
     'transaction' => 'حركة',
     'custom_date' => 'تاريخ محدد',
     'select_date' => 'اختر التاريخ:',
+    'overdue_debt' => 'تنبيه: دين متأخر منذ أكثر من شهر',
     'please_select_bank_account' => 'الرجاء اختيار الحساب البنكي / المحفظة',
 ];

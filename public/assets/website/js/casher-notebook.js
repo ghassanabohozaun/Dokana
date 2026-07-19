@@ -15,6 +15,7 @@ document.addEventListener('alpine:init', () => {
         
         search: '',
         filter: 'all',
+        isListening: false,
         withdrawalFilter: 'all', // all, or bank account id
         perPage: 15,
         
@@ -274,6 +275,49 @@ document.addEventListener('alpine:init', () => {
         
         setFilter(f) {
             this.filter = f;
+        },
+        
+        startVoiceSearch() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('عذراً، متصفحك لا يدعم البحث الصوتي.');
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+            
+            recognition.lang = 'ar-SA';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            
+            recognition.onstart = () => {
+                this.isListening = true;
+            };
+            
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript;
+                this.search = speechResult;
+            };
+            
+            recognition.onspeechend = () => {
+                recognition.stop();
+            };
+            
+            recognition.onend = () => {
+                this.isListening = false;
+            };
+            
+            recognition.onerror = (event) => {
+                this.isListening = false;
+                console.error('Speech recognition error detected: ' + event.error);
+                if (event.error === 'not-allowed') {
+                    alert('المتصفح منع الوصول للمايكروفون. يرجى التأكد من أن الموقع يعمل عبر HTTPS والسماح للمتصفح باستخدام المايكروفون.');
+                } else {
+                    alert('حدث خطأ في المايكروفون: ' + event.error);
+                }
+            };
+            
+            recognition.start();
         },
         
         loadMoreCustomers() {

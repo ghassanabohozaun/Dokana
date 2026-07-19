@@ -28,6 +28,9 @@
                             <div>
                                 <h2 class="font-bold text-lg text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
                                     <span x-text="activeCustomer.name"></span>
+                                    <template x-if="activeCustomer.debt_age >= 30 && activeCustomer.balance > 0">
+                                        <i class="ph-fill ph-warning-circle text-red-500 animate-pulse text-lg" :title="'{{ __('notebook.overdue_debt') ?? 'دين متأخر' }}'"></i>
+                                    </template>
                                     <button @click="openEditCustomerModal()" class="text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors w-7 h-7 flex items-center justify-center rounded-full shadow-sm border border-blue-100 dark:border-blue-800/50 shrink-0">
                                         <i class="ph-bold ph-pencil-simple text-sm"></i>
                                     </button>
@@ -56,9 +59,8 @@
                                 <template x-if="activeCustomer.balance > 0 && activeCustomer.debt_age !== null">
                                     <div class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all duration-300"
                                          :class="activeCustomer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
-                                                 (activeCustomer.debt_age <= 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
-                                                 (activeCustomer.debt_age <= 60 ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/20 dark:text-amber-400 border-amber-100 dark:border-amber-900/30' : 
-                                                 'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse'))">
+                                                 (activeCustomer.debt_age < 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
+                                                 'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse')">
                                         <i class="ph-fill ph-clock"></i>
                                         <span x-text="activeCustomer.debt_age === 0 ? '{{ __('notebook.today') }}' : activeCustomer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
                                     </div>
