@@ -66,7 +66,11 @@ class CasherNotebookController extends Controller
                         $searchTerms = array_filter(explode(' ', trim($search)));
                         $subQ->where(function($termQ) use ($searchTerms) {
                             foreach ($searchTerms as $term) {
-                                $termQ->where('name', 'like', '%' . $term . '%');
+                                $termClean = str_replace(['أ', 'إ', 'آ'], 'ا', $term);
+                                $termClean = str_replace('ة', 'ه', $termClean);
+                                $termClean = str_replace('ى', 'ي', $termClean);
+                                
+                                $termQ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا'), 'ة', 'ه'), 'ى', 'ي') LIKE ?", ['%' . $termClean . '%']);
                             }
                         });
                     }
