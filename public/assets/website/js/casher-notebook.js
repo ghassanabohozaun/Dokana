@@ -263,10 +263,10 @@ document.addEventListener('alpine:init', () => {
                 if (res.ok) {
                     this.customers = data.customers;
                     this.totalCustomers = data.totalCustomers;
-                    this.totalDebt = data.totalDebt;
-                    this.todayCollections = data.todayCollections;
-                    this.todayDirectSales = data.todayDirectSales;
-                    this.todayDebts = data.todayDebts;
+                    if (data.totalDebt !== undefined) this.totalDebt = data.totalDebt;
+                    if (data.todayCollections !== undefined) this.todayCollections = data.todayCollections;
+                    if (data.todayDirectSales !== undefined) this.todayDirectSales = data.todayDirectSales;
+                    if (data.todayDebts !== undefined) this.todayDebts = data.todayDebts;
                 }
             } catch (e) {
                 console.error(e);
@@ -702,13 +702,16 @@ document.addEventListener('alpine:init', () => {
                 if(res.ok) {
                     window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'transactionModal' } }));
                     Toast.show(config.translations.success, data.message, 'success');
-                    this.fetchCustomers(); // Update balances
-                    if(this.activeCustomer) {
-                        this.fetchLedger(this.activeCustomer.id); // Update ledger
+                    
+                    // Optimistically update the customer's balance and re-fetch to ensure sync
+                    this.fetchCustomers(); 
+                    
+                    // Only update the ledger if the ledger modal is currently open and active
+                    if(this.activeCustomer && document.getElementById('ledgerModal')?.style.display !== 'none') {
+                        this.fetchLedger(this.activeCustomer.id);
                     }
-                    this.fetchTodayCollections(); // Update today's collections if open
-                    this.fetchTodayDebts(); // Update today's debts if open
-                    this.fetchTodayDirectSales(); // Update today's direct sales if open
+                    // No need to fetch today's collections/debts/sales unless their specific modals are open, 
+                    // which we don't need to do here because they fetch when opened.
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }
@@ -753,12 +756,10 @@ document.addEventListener('alpine:init', () => {
                 if(res.ok) {
                     Toast.show(config.translations.success, data.message, 'success');
                     this.fetchCustomers();
-                    if(this.activeCustomer) {
+                    
+                    if(this.activeCustomer && document.getElementById('ledgerModal')?.style.display !== 'none') {
                         this.fetchLedger(this.activeCustomer.id);
                     }
-                    this.fetchTodayCollections();
-                    this.fetchTodayDebts();
-                    this.fetchTodayDirectSales();
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
                 }

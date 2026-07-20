@@ -8,10 +8,10 @@
          
         <!-- Backdrop -->
         <div x-show="show" 
-             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter="transition-opacity ease-linear duration-75"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave="transition-opacity ease-linear duration-75"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              class="drawer-backdrop" 
@@ -19,10 +19,10 @@
 
         <!-- Drawer Panel -->
         <div x-show="show" 
-             x-transition:enter="transition ease-in-out duration-300 transform"
+             x-transition:enter="transition ease-in-out duration-75 transform"
              x-transition:enter-start="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
              x-transition:enter-end="translate-y-0 md:translate-x-0"
-             x-transition:leave="transition ease-in-out duration-300 transform"
+             x-transition:leave="transition ease-in-out duration-75 transform"
              x-transition:leave-start="translate-y-0 md:translate-x-0"
              x-transition:leave-end="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
              class="drawer-panel p-6 overflow-y-auto">
@@ -71,7 +71,7 @@
                     <div class="relative">
                         <!-- Icon -->
                         <div class="absolute top-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center text-gray-400 text-lg {{ app()->getLocale() == 'ar' ? 'left-4' : 'right-4' }}">
-                            <i class="ph-bold ph-caret-down transition-transform duration-300" :class="openBankSelect ? 'rotate-180 text-primary' : ''"></i>
+                            <i class="ph-bold ph-caret-down transition-transform duration-75" :class="openBankSelect ? 'rotate-180 text-primary' : ''"></i>
                         </div>
                         
                         <!-- Custom Select Trigger -->

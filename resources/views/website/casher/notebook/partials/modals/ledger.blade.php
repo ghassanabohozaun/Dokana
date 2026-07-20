@@ -5,7 +5,7 @@
          x-on:close-modal.window="if ($event.detail.id === 'ledgerModal') show = false"
          style="display: none;"
          class="overlay-panel flex justify-center"
-         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter="transition ease-out duration-75"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-200"
@@ -57,7 +57,7 @@
                                     <span x-text="activeCustomer.balance > 0 ? '{{ __('notebook.owes_debt') }}' : (activeCustomer.balance < 0 ? '{{ __('notebook.has_credit') }}' : '{{ __('notebook.paid') }}')"></span>
                                 </div>
                                 <template x-if="activeCustomer.balance > 0 && activeCustomer.debt_age !== null">
-                                    <div class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all duration-300"
+                                    <div class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all duration-75"
                                          :class="activeCustomer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
                                                  (activeCustomer.debt_age < 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
                                                  'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse')">
@@ -181,7 +181,7 @@
 
                         <template x-if="totalLedgerTransactions > ledgerTransactions.length">
                             <div class="mt-6 flex justify-center pb-4">
-                                <button @click="loadMoreLedger" :disabled="isLedgerLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <button @click="loadMoreLedger" :disabled="isLedgerLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-75 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                     <span class="flex items-center gap-2" x-show="!isLedgerLoading">
                                         {{ __('notebook.show_older_transactions') }} <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
                                     </span>

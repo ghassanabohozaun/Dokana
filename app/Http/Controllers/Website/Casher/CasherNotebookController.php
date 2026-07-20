@@ -105,28 +105,36 @@ class CasherNotebookController extends Controller
             $customers = $query->orderByDesc('is_walk_in')->latest()->take($perPage)->get();
         }
 
-        $totalDebt = StoreCustomer::where('store_id', $this->getStoreId())->where('balance', '>', 0)->sum('balance');
-        $todayCollections = StoreTransaction::where('store_id', $this->getStoreId())
-            ->where('type', 'payment')
-            ->whereDate('created_at', Carbon::today())
-            ->sum('amount');
-        $todayDirectSales = StoreTransaction::where('store_id', $this->getStoreId())
-            ->where('type', 'direct_sale')
-            ->whereDate('created_at', Carbon::today())
-            ->sum('amount');
-        $todayDebts = StoreTransaction::where('store_id', $this->getStoreId())
-            ->where('type', 'debt')
-            ->whereDate('created_at', Carbon::today())
-            ->sum('amount');
-
-        return response()->json([
+        $response = [
             'customers' => $customers,
             'totalCustomers' => $totalCustomers,
-            'totalDebt' => $totalDebt,
-            'todayCollections' => $todayCollections,
-            'todayDirectSales' => $todayDirectSales,
-            'todayDebts' => $todayDebts,
-        ]);
+        ];
+
+        // Only calculate heavy stats if there is no search query (e.g. initial load)
+        if (empty($search)) {
+            $totalDebt = StoreCustomer::where('store_id', $this->getStoreId())->where('balance', '>', 0)->sum('balance');
+            $todayCollections = StoreTransaction::where('store_id', $this->getStoreId())
+                ->where('type', 'payment')
+                ->whereDate('created_at', Carbon::today())
+                ->sum('amount');
+            $todayDirectSales = StoreTransaction::where('store_id', $this->getStoreId())
+                ->where('type', 'direct_sale')
+                ->whereDate('created_at', Carbon::today())
+                ->sum('amount');
+            $todayDebts = StoreTransaction::where('store_id', $this->getStoreId())
+                ->where('type', 'debt')
+                ->whereDate('created_at', Carbon::today())
+                ->sum('amount');
+
+            $response = array_merge($response, [
+                'totalDebt' => $totalDebt,
+                'todayCollections' => $todayCollections,
+                'todayDirectSales' => $todayDirectSales,
+                'todayDebts' => $todayDebts,
+            ]);
+        }
+
+        return response()->json($response);
     }
 
     /**

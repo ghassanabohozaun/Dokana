@@ -5,10 +5,10 @@
      
     <!-- Backdrop -->
     <div x-show="showAccountsSheet" 
-         x-transition:enter="transition-opacity ease-linear duration-300"
+         x-transition:enter="transition-opacity ease-linear duration-75"
          x-transition:enter-start="opacity-0" 
          x-transition:enter-end="opacity-100"
-         x-transition:leave="transition-opacity ease-linear duration-300" 
+         x-transition:leave="transition-opacity ease-linear duration-75" 
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0" 
          @click="showAccountsSheet = false" 
@@ -17,10 +17,10 @@
 
     <!-- Drawer Panel -->
     <div x-show="showAccountsSheet" 
-         x-transition:enter="transition ease-in-out duration-300 transform"
+         x-transition:enter="transition ease-in-out duration-75 transform"
          x-transition:enter-start="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
          x-transition:enter-end="translate-y-0 md:translate-x-0"
-         x-transition:leave="transition ease-in-out duration-300 transform"
+         x-transition:leave="transition ease-in-out duration-75 transform"
          x-transition:leave-start="translate-y-0 md:translate-x-0"
          x-transition:leave-end="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
          class="drawer-panel flex flex-col pointer-events-auto">

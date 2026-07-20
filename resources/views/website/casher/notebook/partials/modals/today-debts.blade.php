@@ -5,7 +5,7 @@
          x-on:close-modal.window="if ($event.detail.id === 'todayDebtsModal') show = false"
          style="display: none;"
          class="overlay-panel flex justify-center"
-         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter="transition ease-out duration-75"
          x-transition:enter-start="opacity-0 scale-95"
          x-transition:enter-end="opacity-100 scale-100"
          x-transition:leave="transition ease-in duration-200"
@@ -111,7 +111,7 @@
 
                     <template x-if="totalTodayDebtsCount > todayDebtsList.length">
                         <div class="mt-6 flex justify-center pb-4">
-                            <button @click="loadMoreDebts" :disabled="isDebtsLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <button @click="loadMoreDebts" :disabled="isDebtsLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-75 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
                                 <span class="flex items-center gap-2" x-show="!isDebtsLoading">
                                     {{ __('notebook.show_older_transactions') ?? 'عرض المزيد من العمليات' }} <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
                                 </span>

@@ -1,5 +1,5 @@
     <!-- Header -->
-    <header class="p-4 flex items-center justify-between border-b dark:border-gray-800 glass-effect sticky top-0 z-10 transition-colors duration-300">
+    <header class="p-4 flex items-center justify-between border-b dark:border-gray-800 glass-effect sticky top-0 z-10 transition-colors duration-75">
         <h1 class="text-xl font-bold text-primary flex items-center gap-2">
             <img src="{!! setting()->logo ? asset('uploads/settings/' . setting()->logo) : asset('logo/dokkana-logo.png') !!}" alt="Logo" class="h-8 w-auto rounded shadow-sm">
             {{ auth('casher')->user() && auth('casher')->user()->store ? auth('casher')->user()->store->name : __('notebook.store_notebook') }}

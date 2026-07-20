@@ -1,7 +1,7 @@
 @extends('layouts.website.app')
 
 @section('content')
-<div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="notebook-container transition-colors duration-300 font-sans shadow-xl">
+<div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="notebook-container transition-colors duration-75 font-sans shadow-xl">
     
     <div class="notebook-main min-h-screen relative pb-24">
         @include('website.casher.notebook.partials.header')

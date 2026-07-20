@@ -56,7 +56,7 @@
                                 <i class="ph-fill ph-phone text-xs"></i> <span x-text="customer.phone || '{{ __('notebook.no_phone') }}'"></span>
                             </p>
                             <template x-if="customer.balance > 0 && customer.debt_age !== null">
-                                <div class="flex items-center gap-1 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit transition-all duration-300 border"
+                                <div class="flex items-center gap-1 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit transition-all duration-75 border"
                                      :class="customer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
                                              (customer.debt_age < 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
                                              'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse')">
@@ -85,7 +85,7 @@
             <!-- Load More -->
             <template x-if="totalCustomers > customers.length">
                 <div class="mt-8 mb-4 flex justify-center">
-                    <button @click="loadMoreCustomers" class="group relative px-6 py-3 text-sm font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white dark:bg-emerald-500/10 dark:hover:bg-emerald-500 dark:text-emerald-400 dark:hover:text-white rounded-full transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/20 active:scale-95">
+                    <button @click="loadMoreCustomers" class="group relative px-6 py-3 text-sm font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white dark:bg-emerald-500/10 dark:hover:bg-emerald-500 dark:text-emerald-400 dark:hover:text-white rounded-full transition-all duration-75 flex items-center justify-center gap-2 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/20 active:scale-95">
                         <span class="flex items-center gap-2">
                             {{ __('notebook.load_more_customers') }} 
                             <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
