@@ -408,9 +408,9 @@ class CasherNotebookController extends Controller
             'is_direct_sale' => 'nullable|boolean',
         ]);
 
-        if ($request->type === 'debt' && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 10) {
+        if ($request->type === 'debt' && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 30) {
             return response()->json([
-                'message' => __('notebook.debt_age_exceeded_limit', ['days' => $customer->debt_age]) ?? "لا يمكن تسجيل دين جديد لهذا العميل لوجود دين مستحق منذ أكثر من 10 أيام (عمر الدين الحالي: {$customer->debt_age} يوماً)."
+                'message' => __('notebook.debt_age_exceeded_limit', ['days' => $customer->debt_age]) ?? "لا يمكن تسجيل دين جديد لهذا العميل لوجود دين مستحق منذ أكثر من 30 يوماً (عمر الدين الحالي: {$customer->debt_age} يوماً)."
             ], 422);
         }
 
