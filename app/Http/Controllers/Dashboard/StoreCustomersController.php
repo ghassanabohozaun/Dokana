@@ -48,7 +48,7 @@ class StoreCustomersController extends Controller
         Gate::authorize('store_customers_create');
 
         try {
-            $data = $request->only(['name', 'phone', 'store_id']);
+            $data = $request->only(['name', 'phone', 'store_id', 'max_debt_limit']);
             $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
             $customer = $this->storeCustomerService->create($data);
             
@@ -107,7 +107,7 @@ class StoreCustomersController extends Controller
         Gate::authorize('store_customers_update');
 
         try {
-            $data = $request->only(['id', 'name', 'phone', 'store_id']);
+            $data = $request->only(['id', 'name', 'phone', 'store_id', 'max_debt_limit']);
             $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
             $this->storeCustomerService->update($data);
             return response()->json([

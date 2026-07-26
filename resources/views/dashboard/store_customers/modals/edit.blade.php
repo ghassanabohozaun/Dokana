@@ -66,6 +66,19 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <!-- Max Debt Limit -->
+                        <div class="col-md-12 mb-2">
+                            <div class="premium-form-group">
+                                <label class="premium-label" for="max_debt_limit_edit">{!! __('store_customers.max_debt_limit') !!}</label>
+                                <input type="number" step="0.01" min="0" id="max_debt_limit_edit" name="max_debt_limit"
+                                    class="form-control premium-input shadow-none" autocomplete="off"
+                                    placeholder="{!! __('general.unlimited') !!}">
+                                <span class="text-danger error-text max_debt_limit_error"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row" id="bypass_debt_limit_row_edit">
                         <div class="col-md-12 mt-2 mb-2">
                             <label for="bypass_debt_limit_edit" class="premium-switch-container"
@@ -123,12 +136,14 @@
                 let store_customer_store_id = $(this).attr('store_customer-store-id');
                 let store_customer_store_name = $(this).attr('store_customer-store-name');
                 let store_customer_bypass_debt_limit = $(this).attr('store_customer-bypass-debt-limit') == '1';
+                let store_customer_max_debt_limit = $(this).attr('store_customer-max-debt-limit');
                 let store_customer_is_walk_in = $(this).attr('store_customer-is-walk-in') == '1';
 
                 // Populate form fields
                 $('#id_edit').val(store_customer_id);
                 $('#name_edit').val(store_customer_name);
                 $('#phone_edit').val(store_customer_phone);
+                $('#max_debt_limit_edit').val(store_customer_max_debt_limit);
                 $('#bypass_debt_limit_edit').prop('checked', store_customer_bypass_debt_limit);
 
                 if (store_customer_is_walk_in) {

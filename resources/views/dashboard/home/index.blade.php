@@ -177,7 +177,7 @@
                                                     <tr>
                                                         <th>{{ __('store_customers.name') }}</th>
                                                         <th>{{ __('store_customers.balance') }}</th>
-                                                        <th>{{ __('store_customers.debt_age') }}</th>
+                                                        <th>{{ __('store_customers.max_debt_limit') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -193,26 +193,12 @@
                                                             </td>
                                                             <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
                                                             <td>
-                                                                @if($customer->debt_age !== null)
-                                                                    @if($customer->debt_age == 0)
-                                                                        <span class="badge badge-light-success border-0">
-                                                                            {{ __('store_customers.today') }}
-                                                                        </span>
-                                                                    @elseif($customer->debt_age <= 30)
-                                                                        <span class="badge badge-light-info border-0">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @elseif($customer->debt_age <= 60)
-                                                                        <span class="badge badge-light-warning border-0">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @else
-                                                                        <span class="badge badge-light-danger border-0 font-weight-bold">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @endif
+                                                                @if($customer->max_debt_limit !== null)
+                                                                    <span class="text-primary font-weight-bold">{{ $customer->max_debt_limit }}</span>
                                                                 @else
-                                                                    <span class="text-muted">---</span>
+                                                                    <span class="badge badge-light-secondary border-0 text-muted">
+                                                                        {{ __('general.unlimited') }}
+                                                                    </span>
                                                                 @endif
                                                             </td>
                                                         </tr>
@@ -318,7 +304,7 @@
                                                     <tr>
                                                         <th>{{ __('store_customers.name') }}</th>
                                                         <th>{{ __('store_customers.balance') }}</th>
-                                                        <th>{{ __('store_customers.debt_age') }}</th>
+                                                        <th>{{ __('store_customers.max_debt_limit') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -327,26 +313,12 @@
                                                             <td><h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6></td>
                                                             <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
                                                             <td>
-                                                                @if($customer->debt_age !== null)
-                                                                    @if($customer->debt_age == 0)
-                                                                        <span class="badge badge-light-success border-0">
-                                                                            {{ __('store_customers.today') }}
-                                                                        </span>
-                                                                    @elseif($customer->debt_age <= 30)
-                                                                        <span class="badge badge-light-info border-0">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @elseif($customer->debt_age <= 60)
-                                                                        <span class="badge badge-light-warning border-0">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @else
-                                                                        <span class="badge badge-light-danger border-0 font-weight-bold">
-                                                                            {{ $customer->debt_age }} {{ __('store_customers.days') }}
-                                                                        </span>
-                                                                    @endif
+                                                                @if($customer->max_debt_limit !== null)
+                                                                    <span class="text-primary font-weight-bold">{{ $customer->max_debt_limit }}</span>
                                                                 @else
-                                                                    <span class="text-muted">---</span>
+                                                                    <span class="badge badge-light-secondary border-0 text-muted">
+                                                                        {{ __('general.unlimited') }}
+                                                                    </span>
                                                                 @endif
                                                             </td>
                                                         </tr>

@@ -44,9 +44,7 @@
                             <div class="flex items-center gap-2">
                                 <h4 class="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight flex items-center gap-1.5">
                                     <span x-text="customer.name"></span>
-                                    <template x-if="customer.debt_age >= 30 && customer.balance > 0">
-                                        <i class="ph-fill ph-warning-circle text-red-500 animate-pulse text-lg" :title="'{{ __('notebook.overdue_debt') ?? 'دين متأخر' }}'"></i>
-                                    </template>
+
                                 </h4>
                                 <template x-if="customer.status == 0">
                                     <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">{{ __('notebook.disabled') ?? 'معطل' }}</span>
@@ -55,16 +53,25 @@
                             <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
                                 <i class="ph-fill ph-phone text-xs"></i> <span x-text="customer.phone || '{{ __('notebook.no_phone') }}'"></span>
                             </p>
-                            <template x-if="customer.balance > 0 && customer.debt_age !== null">
-                                <div class="flex items-center gap-1 mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full w-fit transition-all duration-75 border"
-                                     :class="customer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
-                                             (customer.debt_age < 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
-                                             'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse')">
-                                    <i class="ph-fill ph-clock text-[11px]"></i>
-                                    <span>
-                                        {{ __('notebook.debt_age') }}: 
-                                        <span x-text="customer.debt_age === 0 ? '{{ __('notebook.today') }}' : customer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
-                                    </span>
+                            <template x-if="customer.max_debt_limit !== null">
+                                <div class="mt-2 w-full pr-1">
+                                    <div class="flex justify-between items-center text-[10px] mb-1.5 gap-2">
+                                        <span class="text-gray-500 font-semibold whitespace-nowrap">{{ __('notebook.limit') }}: <span x-text="customer.max_debt_limit"></span></span>
+                                        <span x-show="customer.balance > customer.max_debt_limit" 
+                                              class="font-bold text-[9px] px-1.5 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 whitespace-nowrap" 
+                                              x-text="'{{ __('notebook.exceeded_by') }} ' + (customer.balance - customer.max_debt_limit).toFixed(1)">
+                                        </span>
+                                        <span x-show="customer.balance <= customer.max_debt_limit" 
+                                              class="font-bold text-[9px] px-1.5 py-0.5 rounded bg-blue-50 text-primary dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap" 
+                                              x-text="'{{ __('notebook.remaining') }}: ' + Math.max(0, customer.max_debt_limit - Math.max(0, customer.balance)).toFixed(1)">
+                                        </span>
+                                    </div>
+                                    <div class="h-1.5 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                        <div class="h-full transition-all duration-300 rounded-full" 
+                                             :class="(customer.balance >= customer.max_debt_limit) ? 'bg-red-500' : ((Math.max(0, customer.balance) / customer.max_debt_limit) > 0.8 ? 'bg-orange-400' : 'bg-primary')"
+                                             :style="`width: ${Math.min(100, Math.max(0, (Math.max(0, customer.balance) / customer.max_debt_limit) * 100))}%`">
+                                        </div>
+                                    </div>
                                 </div>
                             </template>
                         </div>

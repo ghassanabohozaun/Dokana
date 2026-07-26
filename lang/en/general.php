@@ -137,8 +137,8 @@ return [
 
     'internal_server_error_message' => 'Sorry, Internal server Error ',
     'try_catch_error_message' => 'Sorry, There is an error, please try again later',
-    'error_message' => 'Sorry, There is an error',
     'cancelled_message' => 'Sorry, You  canceled the order',
+    'unlimited' => 'Unlimited',
     'error' => 'Error',
     'warning' => 'Warning',
     'success' => 'Success',

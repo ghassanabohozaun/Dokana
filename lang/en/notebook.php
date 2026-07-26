@@ -56,6 +56,7 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'confirm_delete_transaction' => 'Are you sure you want to delete this transaction?',
+    'confirm_delete_tx' => 'Are you sure you want to delete this transaction? This action cannot be undone.',
     'show_older_transactions' => 'Show older transactions',
     'edit_debt' => 'Edit Debt',
     'edit_payment' => 'Edit Payment / Transfer',
@@ -148,4 +149,8 @@ return [
     'custom_date' => 'Custom Date',
     'select_date' => 'Select Date:',
     'overdue_debt' => 'Warning: Debt is overdue for more than a month',
+    'limit' => 'Debt Limit',
+    'remaining' => 'Remaining',
+    'exceeded_by' => 'Exceeded by',
+    'balance_after' => 'Balance After:',
 ];

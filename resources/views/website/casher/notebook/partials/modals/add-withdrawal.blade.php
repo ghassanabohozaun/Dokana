@@ -8,10 +8,10 @@
      
     <!-- Backdrop -->
     <div x-show="show" 
-         x-transition:enter="transition-opacity ease-linear duration-75"
+         x-transition:enter="transition-opacity ease-out duration-200"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
-         x-transition:leave="transition-opacity ease-linear duration-75"
+         x-transition:leave="transition-opacity ease-in duration-150"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          class="drawer-backdrop" 
@@ -19,12 +19,12 @@
          
     <!-- Drawer Panel -->
     <div x-show="show" 
-         x-transition:enter="transition ease-in-out duration-75 transform"
-         x-transition:enter-start="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
-         x-transition:enter-end="translate-y-0 md:translate-x-0"
-         x-transition:leave="transition ease-in-out duration-75 transform"
-         x-transition:leave-start="translate-y-0 md:translate-x-0"
-         x-transition:leave-end="translate-y-full md:translate-y-0 md:translate-x-full rtl:md:-translate-x-full"
+         x-transition:enter="transform transition ease-out duration-200"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transform transition ease-in duration-150"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
          class="drawer-panel p-6 overflow-y-auto">
          
         <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 md:hidden"></div>

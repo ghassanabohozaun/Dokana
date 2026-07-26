@@ -27,4 +27,5 @@ return [
     'date_invalid' => 'The date format is invalid.',
     'customer_is_disabled' => 'You cannot add transactions to a disabled customer.',
     'debt_age_exceeded_limit' => 'Cannot add new debt. This customer has an outstanding debt older than 10 days (Current debt age: :days days).',
+    'debt_limit_exceeded' => 'Cannot add debt, the customer debt limit is :limit and their debt will reach :expected.',
 ];

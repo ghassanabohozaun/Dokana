@@ -254,6 +254,7 @@ class CasherNotebookController extends Controller
         $perPage = (int) $request->query('per_page', 5);
 
         $transactions = $customer->transactions()
+            ->selectRaw("store_transactions.*, SUM(CASE WHEN type = 'debt' THEN amount ELSE -amount END) OVER (PARTITION BY store_customer_id ORDER BY transaction_date ASC, id ASC) as running_balance")
             ->with(['createdBy', 'bankAccount.paymentEntity'])
             ->reorder()
             ->orderBy('transaction_date', 'desc')
@@ -403,8 +404,8 @@ class CasherNotebookController extends Controller
 
         $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($customerId);
 
-        if ($customer->status == 0 && ($request->type === 'debt' || $request->boolean('is_direct_sale'))) {
-            return response()->json(['message' => __('notebook.customer_disabled_cannot_add_debt') ?? 'العميل معطل، لا يمكن إضافة ديون أو مبيعات له، يُسمح بتسديد الدفعات فقط.'], 403);
+        if ($customer->status == 0 && $request->type === 'debt' && !$request->boolean('is_direct_sale')) {
+            return response()->json(['message' => __('notebook.customer_disabled_cannot_add_debt') ?? 'العميل معطل، لا يمكن إضافة ديون، يُسمح بتسديد الدفعات والشراء المباشر فقط.'], 403);
         }
 
         $request->validate([
@@ -416,15 +417,11 @@ class CasherNotebookController extends Controller
             'is_direct_sale' => 'nullable|boolean',
         ]);
 
-        if ($request->type === 'debt' && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 30) {
-            return response()->json([
-                'message' => __('notebook.debt_age_exceeded_limit', ['days' => $customer->debt_age]) ?? "لا يمكن تسجيل دين جديد لهذا العميل لوجود دين مستحق منذ أكثر من 30 يوماً (عمر الدين الحالي: {$customer->debt_age} يوماً)."
-            ], 422);
-        }
+        // Note: Validation for debt limit is now handled by StoreTransactionObserver creating event
 
         if ($request->boolean('is_direct_sale')) {
             // Direct POS sale: record debt then immediate payment
-            $debtTx = StoreTransaction::create([
+            $debtTx = new StoreTransaction([
                 'store_id' => $this->getStoreId(),
                 'store_customer_id' => $customer->id,
                 'type' => 'debt',
@@ -433,6 +430,8 @@ class CasherNotebookController extends Controller
                 'description' => $request->description ?: 'مبيعات',
                 'created_by' => Auth::guard('casher')->id(),
             ]);
+            $debtTx->skip_limit_check = true;
+            $debtTx->save();
 
             $tx = StoreTransaction::create([
                 'store_id' => $this->getStoreId(),

@@ -65,9 +65,7 @@ class StoreTransactionService
 
         if ($data['type'] === 'debt') {
             $customer = \App\Models\StoreCustomer::find($data['store_customer_id']);
-            if ($customer && !$customer->bypass_debt_limit && $customer->debt_age !== null && $customer->debt_age > 10) {
-                throw new \Exception(__('store_transactions.debt_age_exceeded_limit', ['days' => $customer->debt_age]) ?? "لا يمكن تسجيل دين جديد لهذا العميل لوجود دين مستحق منذ أكثر من 10 أيام.");
-            }
+            // Validation is now handled by StoreTransactionObserver creating event
         }
 
         if ($customer && $customer->is_walk_in) {

@@ -16,6 +16,8 @@ class StoreTransaction extends Model implements MustBelongToStore
 {
     use HasFactory, BelongsToStore, Filterable, HasCreatedBy;
 
+    public bool $skip_limit_check = false;
+
     protected $fillable = ['store_id', 'store_customer_id', 'store_bank_account_id', 'type', 'amount', 'transaction_date', 'description', 'linked_transaction_id', 'created_by'];
 
     protected $casts = [

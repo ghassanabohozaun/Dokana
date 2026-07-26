@@ -3,7 +3,7 @@
 @section('content')
 <div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="notebook-container transition-colors duration-75 font-sans shadow-xl">
     
-    <div class="notebook-main min-h-screen relative pb-24">
+    <div class="notebook-main min-h-screen relative pb-36">
         @include('website.casher.notebook.partials.header')
     
     <template x-if="activeTab === 'customers'">
@@ -49,6 +49,7 @@
     @include('website.casher.notebook.partials.modals.today-collections')
     @include('website.casher.notebook.partials.modals.today-debts')
     @include('website.casher.notebook.partials.modals.today-direct-sales')
+    @include('website.casher.notebook.partials.modals.delete-confirmation')
 
 </div>
 

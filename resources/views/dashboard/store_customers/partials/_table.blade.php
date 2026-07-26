@@ -13,7 +13,7 @@
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.total_debts') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.total_payments') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.current_balance') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.debt_age') !!}</th>
+                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.max_debt_limit') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.bypass_debt_limit') !!}</th>
                 <th class="text-center align-middle py-3 border-top-0">{!! __('general.status') !!}</th>
                 @can('store_customers_update')
@@ -132,33 +132,23 @@
                                         </div>
                                     </div>
 
-                                    @if($store_customer->debt_age !== null)
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-clock text-warning"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('store_customers.debt_age') !!}</span>
-                                                <span class="detail-info-value">
-                                                    @if($store_customer->debt_age == 0)
-                                                        <span class="badge badge-light-success border-0">
-                                                            {!! __('store_customers.today') !!}
-                                                        </span>
-                                                    @elseif($store_customer->debt_age <= 30)
-                                                        <span class="badge badge-light-info border-0">
-                                                            {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                                        </span>
-                                                    @elseif($store_customer->debt_age <= 60)
-                                                        <span class="badge badge-light-warning border-0">
-                                                            {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                                        </span>
-                                                    @else
-                                                        <span class="badge badge-light-danger border-0 font-weight-bold">
-                                                            {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                                        </span>
-                                                    @endif
-                                                </span>
-                                            </div>
+                                    <div class="detail-item-modern">
+                                        <div class="icon-circle"><i class="fas fa-hand-holding-usd text-warning"></i></div>
+                                        <div class="detail-info-box text-left">
+                                            <span class="detail-info-label">{!! __('store_customers.max_debt_limit') !!}</span>
+                                            <span class="detail-info-value">
+                                                @if($store_customer->max_debt_limit !== null)
+                                                    <span class="badge badge-light-primary border-0 font-weight-bold">
+                                                        {!! $store_customer->max_debt_limit !!}
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-light-secondary border-0">
+                                                        {!! __('general.unlimited') !!}
+                                                    </span>
+                                                @endif
+                                            </span>
                                         </div>
-                                    @endif
+                                    </div>
 
                                     <div class="detail-item-modern">
                                         <div class="icon-circle"><i class="fas fa-user-shield text-success"></i></div>
@@ -259,28 +249,16 @@
                         @endif
                     </td>
 
-                    <!-- Debt Age -->
+                    <!-- Max Debt Limit -->
                     <td class="text-center align-middle">
-                        @if($store_customer->debt_age !== null)
-                            @if($store_customer->debt_age == 0)
-                                <span class="badge badge-light-success border-0">
-                                    {!! __('store_customers.today') !!}
-                                </span>
-                            @elseif($store_customer->debt_age <= 30)
-                                <span class="badge badge-light-info border-0">
-                                    {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                </span>
-                            @elseif($store_customer->debt_age <= 60)
-                                <span class="badge badge-light-warning border-0">
-                                    {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                </span>
-                            @else
-                                <span class="badge badge-light-danger border-0 font-weight-bold">
-                                    {!! $store_customer->debt_age !!} {!! __('store_customers.days') !!}
-                                </span>
-                            @endif
+                        @if($store_customer->max_debt_limit !== null)
+                            <span class="badge badge-light-primary border-0 font-weight-bold">
+                                {!! $store_customer->max_debt_limit !!}
+                            </span>
                         @else
-                            <span class="text-muted">---</span>
+                            <span class="badge badge-light-secondary border-0 text-muted">
+                                {!! __('general.unlimited') !!}
+                            </span>
                         @endif
                     </td>
 

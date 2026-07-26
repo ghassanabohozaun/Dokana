@@ -56,6 +56,7 @@ return [
     'edit' => 'تعديل',
     'delete' => 'حذف',
     'confirm_delete_transaction' => 'هل أنت متأكد من حذف هذه الحركة؟',
+    'confirm_delete_tx' => 'هل أنت متأكد من حذف هذه الحركة؟ لا يمكن التراجع عن هذا الإجراء.',
     'show_older_transactions' => 'عرض حركات أقدم',
     'edit_debt' => 'تعديل دين',
     'edit_payment' => 'تعديل دفعة / حوالة',
@@ -151,4 +152,8 @@ return [
     'select_date' => 'اختر التاريخ:',
     'overdue_debt' => 'تنبيه: دين متأخر منذ أكثر من شهر',
     'please_select_bank_account' => 'الرجاء اختيار الحساب البنكي / المحفظة',
+    'limit' => 'سقف الدين',
+    'remaining' => 'المتبقي',
+    'exceeded_by' => 'متجاوز بـ',
+    'balance_after' => 'الرصيد بعدها:',
 ];

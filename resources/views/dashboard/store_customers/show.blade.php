@@ -120,16 +120,26 @@
                                     <div class="detail-box-value">{!! $store_customer->created_at->format('Y-m-d') !!}</div>
                                 </div>
                                 <div class="detail-box">
-                                    <div class="detail-box-label"><i class="fas fa-chart-line text-warning mr-1"></i> إجمالي الحركات</div>
-                                    <div class="detail-box-value text-primary" style="font-size: 15px;">{!! $transactions->total() !!} حركة</div>
+                                    <div class="detail-box-label"><i class="fas fa-chart-line text-warning mr-1"></i> {!! __('store_transactions.total_transactions_count') !!}</div>
+                                    <div class="detail-box-value text-primary" style="font-size: 15px;">{!! $transactions->total() !!} {!! __('store_transactions.transaction') !!}</div>
                                 </div>
                                 <div class="detail-box">
-                                    <div class="detail-box-label"><i class="fas fa-shield-alt text-danger mr-1"></i> تجاوز حد الدين</div>
+                                    <div class="detail-box-label"><i class="fas fa-shield-alt text-danger mr-1"></i> {!! __('store_customers.bypass_debt_limit') !!}</div>
                                     <div class="detail-box-value">
                                         @if($store_customer->bypass_debt_limit)
-                                            <span class="badge badge-success shadow-sm" style="font-size: 12px; padding: 4px 10px;">مسموح</span>
+                                            <span class="badge badge-success shadow-sm" style="font-size: 12px; padding: 4px 10px;">{!! __('general.enable') !!}</span>
                                         @else
-                                            <span class="badge badge-secondary shadow-sm" style="font-size: 12px; padding: 4px 10px;">غير مسموح</span>
+                                            <span class="badge badge-secondary shadow-sm" style="font-size: 12px; padding: 4px 10px;">{!! __('general.disabled') !!}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="detail-box">
+                                    <div class="detail-box-label"><i class="fas fa-hand-holding-usd text-primary mr-1"></i> {!! __('store_customers.max_debt_limit') !!}</div>
+                                    <div class="detail-box-value">
+                                        @if($store_customer->max_debt_limit !== null)
+                                            <span class="text-primary font-weight-bold" style="font-size: 15px;">{!! $store_customer->max_debt_limit !!}</span>
+                                        @else
+                                            <span class="text-muted" style="font-size: 14px;">{!! __('general.unlimited') !!}</span>
                                         @endif
                                     </div>
                                 </div>

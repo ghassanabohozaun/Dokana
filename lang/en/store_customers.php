@@ -30,4 +30,6 @@ return [
     'phone_invalid' => 'The mobile number must be exactly 10 digits.',
     'bypass_debt_limit' => 'Bypass Overdue Debt Limit',
     'bypass_debt_limit_desc' => 'Allow customer to buy on credit even if they have overdue debt',
+    'max_debt_limit' => 'Max Debt Limit',
+    'opening_balance' => 'Opening Balance',
 ];

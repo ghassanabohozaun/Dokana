@@ -25,6 +25,7 @@ class StoreCustomerRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'regex:/^[0-9]{10}$/'],
             'bypass_debt_limit' => ['nullable', 'boolean'],
+            'max_debt_limit' => ['nullable', 'numeric', 'min:0'],
             'opening_balance' => ['nullable', 'numeric', 'min:0'],
         ];
 

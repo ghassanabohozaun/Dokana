@@ -53,7 +53,7 @@
                         </div>
 
                         <!-- Phone -->
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-6 mb-2">
                             <div class="premium-form-group">
                                 <label class="premium-label" for="phone_create">{!! __('store_customers.phone') !!}</label>
                                 <input type="text" id="phone_create" name="phone"
@@ -65,13 +65,24 @@
                         </div>
 
                         <!-- Opening Balance -->
-                        <div class="col-md-4 mb-2">
+                        <div class="col-md-6 mb-2">
                             <div class="premium-form-group">
                                 <label class="premium-label" for="opening_balance_create">{!! __('store_customers.opening_balance') ?? 'الرصيد الافتتاحي' !!}</label>
                                 <input type="number" step="0.01" min="0" id="opening_balance_create" name="opening_balance"
                                     class="form-control premium-input shadow-none" autocomplete="off"
                                     placeholder="0.00">
                                 <span class="text-danger error-text opening_balance_error"></span>
+                            </div>
+                        </div>
+
+                        <!-- Max Debt Limit -->
+                        <div class="col-md-6 mb-2">
+                            <div class="premium-form-group">
+                                <label class="premium-label" for="max_debt_limit_create">{!! __('store_customers.max_debt_limit') !!}</label>
+                                <input type="number" step="0.01" min="0" id="max_debt_limit_create" name="max_debt_limit"
+                                    class="form-control premium-input shadow-none" autocomplete="off"
+                                    placeholder="{!! __('general.unlimited') !!}">
+                                <span class="text-danger error-text max_debt_limit_error"></span>
                             </div>
                         </div>
                     </div>

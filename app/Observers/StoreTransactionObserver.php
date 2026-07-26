@@ -6,6 +6,24 @@ use App\Models\StoreTransaction;
 
 class StoreTransactionObserver
 {
+    public function creating(StoreTransaction $transaction): void
+    {
+        if ($transaction->type === 'debt' && !$transaction->skip_limit_check) {
+            $customer = $transaction->customer;
+            if ($customer && $customer->max_debt_limit !== null && !$customer->bypass_debt_limit) {
+                // Calculate expected balance
+                $expectedBalance = $customer->balance + $transaction->amount;
+                
+                if ($expectedBalance > $customer->max_debt_limit) {
+                    throw new \Exception(__('store_transactions.debt_limit_exceeded', [
+                        'limit' => $customer->max_debt_limit,
+                        'expected' => $expectedBalance
+                    ]));
+                }
+            }
+        }
+    }
+
     public function created(StoreTransaction $transaction): void
     {
         $this->recalculateBalance($transaction->customer);

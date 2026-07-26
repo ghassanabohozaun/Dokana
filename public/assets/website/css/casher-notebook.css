@@ -1,28 +1,30 @@
-/* Custom Tajawal Font */
+﻿/* Custom Tajawal Font */
 @font-face {
-  font-family: 'Tajawal';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/tajawal/tajawal-400.ttf') format('truetype');
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-400.ttf') format('truetype');
 }
+
 @font-face {
-  font-family: 'Tajawal';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/tajawal/tajawal-500.ttf') format('truetype');
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-500.ttf') format('truetype');
 }
+
 @font-face {
-  font-family: 'Tajawal';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/tajawal/tajawal-700.ttf') format('truetype');
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-700.ttf') format('truetype');
 }
 
 body {
-  font-family: 'Tajawal', sans-serif !important;
+    font-family: 'Tajawal', sans-serif !important;
 }
 
 /* Enhanced UI / UX for Casher Notebook */
@@ -30,65 +32,89 @@ body {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
+
 .dark .glass-header {
     background: rgba(15, 23, 42, 0.85);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .btn-gradient-primary {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     transition: all 0.3s ease;
 }
+
 .btn-gradient-primary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
+
 .btn-gradient-success {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     transition: all 0.3s ease;
 }
+
 .btn-gradient-success:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
+
 .card-hover {
     transition: all 0.2s ease-in-out;
 }
+
 .card-hover:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     border-color: rgba(59, 130, 246, 0.3);
 }
+
 .smooth-enter {
     animation: fadeIn 0.3s ease-out;
 }
+
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Custom Cashier Notebook Styles */
-[x-cloak] { display: none !important; }
+[x-cloak] {
+    display: none !important;
+}
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
+
 ::-webkit-scrollbar-track {
     background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 10px;
 }
+
 .dark ::-webkit-scrollbar-thumb {
     background: #475569;
 }
+
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
 .hide-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -103,51 +129,85 @@ body {
     padding: 5px !important;
     width: 325px !important;
 }
+
 .dark .flatpickr-calendar {
     background: #1f2937 !important;
     border-color: #374151 !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
 }
-.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.startRange.inRange,
+.flatpickr-day.endRange.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.startRange:focus,
+.flatpickr-day.endRange:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.startRange.prevMonthDay,
+.flatpickr-day.endRange.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay,
+.flatpickr-day.startRange.nextMonthDay,
+.flatpickr-day.endRange.nextMonthDay {
     background: #ef4444 !important;
     border-color: #ef4444 !important;
     font-weight: bold;
 }
+
 .flatpickr-day.today {
     border-color: #ef4444 !important;
 }
+
 .dark .flatpickr-day {
     color: #f3f4f6 !important;
 }
+
 .dark .flatpickr-day.flatpickr-disabled {
     color: #4b5563 !important;
 }
-.dark .flatpickr-day:hover, .dark .flatpickr-day:focus {
+
+.dark .flatpickr-day:hover,
+.dark .flatpickr-day:focus {
     background: #374151 !important;
     border-color: #374151 !important;
 }
+
 .flatpickr-weekday {
     color: #ef4444 !important;
     font-weight: 800 !important;
     font-size: 0.85rem !important;
 }
+
 .flatpickr-current-month .flatpickr-monthDropdown-months {
     font-weight: 800 !important;
     font-size: 1rem !important;
 }
+
 .flatpickr-current-month input.cur-year {
     font-weight: 800 !important;
     font-size: 1rem !important;
 }
-.dark .flatpickr-current-month .flatpickr-monthDropdown-months, .dark .flatpickr-current-month input.cur-year {
+
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months,
+.dark .flatpickr-current-month input.cur-year {
     color: #fff !important;
 }
-.dark .flatpickr-prev-month svg, .dark .flatpickr-next-month svg {
+
+.dark .flatpickr-prev-month svg,
+.dark .flatpickr-next-month svg {
     fill: #fff !important;
 }
-.dark .flatpickr-prev-month:hover svg, .dark .flatpickr-next-month:hover svg {
+
+.dark .flatpickr-prev-month:hover svg,
+.dark .flatpickr-next-month:hover svg {
     fill: #ef4444 !important;
 }
+
 /* Casher Notebook Layout & Responsive Classes */
 .notebook-container {
     width: 100%;
@@ -158,19 +218,23 @@ body {
     background-color: #fafafa;
     color: #111827;
 }
+
 .dark .notebook-container {
     background-color: #0b1121;
     color: #f3f4f6;
 }
+
 @media (min-width: 768px) {
     .notebook-container {
-        max-width: 1000px; /* Wider for tablets/desktops */
-        border-left: 1px solid rgba(0,0,0,0.05);
-        border-right: 1px solid rgba(0,0,0,0.05);
+        max-width: 1000px;
+        /* Wider for tablets/desktops */
+        border-left: 1px solid rgba(0, 0, 0, 0.05);
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
     }
+
     .dark .notebook-container {
-        border-color: rgba(255,255,255,0.05);
+        border-color: rgba(255, 255, 255, 0.05);
     }
 }
 
@@ -178,18 +242,20 @@ body {
 .drawer-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
     z-index: 50;
 }
+
 .drawer-panel {
     position: fixed;
     z-index: 60;
     background: white;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
 }
+
 .dark .drawer-panel {
     background: #1e293b;
 }
@@ -215,14 +281,16 @@ body {
         width: 400px;
         max-height: 100vh;
     }
+
     /* RTL Support */
     html[dir="rtl"] .drawer-panel {
         left: 0;
-        border-right: 1px solid rgba(0,0,0,0.05);
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
     }
+
     html[dir="ltr"] .drawer-panel {
         right: 0;
-        border-left: 1px solid rgba(0,0,0,0.05);
+        border-left: 1px solid rgba(0, 0, 0, 0.05);
     }
 }
 
@@ -234,6 +302,140 @@ body {
     background: #f8fafc;
     overflow-y: auto;
 }
+
 .dark .overlay-panel {
     background: #0f172a;
+}
+
+.modal-highest-z {
+    z-index: 110 !important;
+}
+
+/* Cashier Notebook - Modern Glassmorphism */
+.dashboard-container {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    overflow: hidden;
+    color: #1a1a1a;
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* Dark Mode */
+.dark .dashboard-container {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #e2e8f0;
+}
+
+/* Glass Header */
+.glass-header-modern {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-header-modern {
+    background: rgba(30, 41, 59, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Card Styles */
+.stat-card-modern {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+    transition: all 0.3s ease;
+}
+
+.stat-card-modern:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.dark .stat-card-modern {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dark .stat-card-modern:hover {
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Main Section */
+.main-section-modern {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(31, 38, 135, 0.1);
+    border-radius: 24px;
+}
+
+.dark .main-section-modern {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons */
+.btn-modern {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+    border: none;
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
+}
+
+/* Charts */
+.chart-container-modern {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(31, 38, 135, 0.08);
+}
+
+.dark .chart-container-modern {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Animations */
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-slide-in {
+    animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-delay-1 {
+    animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+}
+
+.animate-slide-in-delay-2 {
+    animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+}
+
+.animate-slide-in-delay-3 {
+    animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+}
+
+.animate-slide-in-delay-4 {
+    animation: slideInFromBottom 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.4s backwards;
 }

@@ -5,12 +5,12 @@
          x-on:close-modal.window="if ($event.detail.id === 'ledgerModal') show = false"
          style="display: none;"
          class="overlay-panel flex justify-center"
-         x-transition:enter="transition ease-out duration-75"
-         x-transition:enter-start="opacity-0 scale-95"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-95"
+         x-transition:enter="transform transition ease-out duration-200"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transform transition ease-in duration-150"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
          x-cloak>
          
         <div class="w-full md:max-w-3xl min-h-screen flex flex-col bg-gray-50 dark:bg-[#0b1121] shadow-2xl relative">
@@ -28,9 +28,7 @@
                             <div>
                                 <h2 class="font-bold text-lg text-gray-900 dark:text-white flex flex-wrap items-center gap-2">
                                     <span x-text="activeCustomer.name"></span>
-                                    <template x-if="activeCustomer.debt_age >= 30 && activeCustomer.balance > 0">
-                                        <i class="ph-fill ph-warning-circle text-red-500 animate-pulse text-lg" :title="'{{ __('notebook.overdue_debt') ?? 'دين متأخر' }}'"></i>
-                                    </template>
+
                                     <button @click="openEditCustomerModal()" class="text-blue-500 hover:text-blue-600 bg-blue-50 hover:bg-blue-100 dark:text-blue-400 dark:bg-blue-900/30 dark:hover:bg-blue-900/50 transition-colors w-7 h-7 flex items-center justify-center rounded-full shadow-sm border border-blue-100 dark:border-blue-800/50 shrink-0">
                                         <i class="ph-bold ph-pencil-simple text-sm"></i>
                                     </button>
@@ -56,25 +54,38 @@
                                 <div class="text-[11px] font-bold px-2.5 py-1 rounded-md" :class="activeCustomer.balance > 0 ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : (activeCustomer.balance < 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
                                     <span x-text="activeCustomer.balance > 0 ? '{{ __('notebook.owes_debt') }}' : (activeCustomer.balance < 0 ? '{{ __('notebook.has_credit') }}' : '{{ __('notebook.paid') }}')"></span>
                                 </div>
-                                <template x-if="activeCustomer.balance > 0 && activeCustomer.debt_age !== null">
-                                    <div class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-md border transition-all duration-75"
-                                         :class="activeCustomer.debt_age === 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/30' : 
-                                                 (activeCustomer.debt_age < 30 ? 'bg-blue-50 text-blue-600 dark:bg-blue-950/20 dark:text-blue-400 border-blue-100 dark:border-blue-900/30' : 
-                                                 'bg-red-50 text-red-600 dark:bg-red-950/20 dark:text-red-400 border-red-100 dark:border-red-900/30 animate-pulse')">
-                                        <i class="ph-fill ph-clock"></i>
-                                        <span x-text="activeCustomer.debt_age === 0 ? '{{ __('notebook.today') }}' : activeCustomer.debt_age + ' ' + '{{ __('notebook.days') }}'"></span>
-                                    </div>
-                                </template>
+
                             </div>
                         </div>
+
+                        <!-- Max Debt Limit Progress Bar -->
+                        <template x-if="activeCustomer.max_debt_limit !== null && activeCustomer.max_debt_limit > 0">
+                            <div class="mb-4">
+                                <div class="flex justify-between items-center text-[11px] mb-2 gap-2">
+                                    <span class="text-gray-500 font-bold whitespace-nowrap">{{ __('notebook.limit') }}: <span x-text="activeCustomer.max_debt_limit"></span></span>
+                                    <span x-show="activeCustomer.balance > activeCustomer.max_debt_limit" 
+                                          class="font-bold px-2 py-0.5 rounded bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 whitespace-nowrap" 
+                                          x-text="'{{ __('notebook.exceeded_by') }} ' + (activeCustomer.balance - activeCustomer.max_debt_limit).toFixed(1)">
+                                    </span>
+                                    <span x-show="activeCustomer.balance <= activeCustomer.max_debt_limit" 
+                                          class="font-bold px-2 py-0.5 rounded bg-blue-50 text-primary dark:bg-blue-900/30 dark:text-blue-400 whitespace-nowrap" 
+                                          x-text="'{{ __('notebook.remaining') }}: ' + Math.max(0, activeCustomer.max_debt_limit - Math.max(0, activeCustomer.balance)).toFixed(1)">
+                                    </span>
+                                </div>
+                                <div class="h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full transition-all duration-300 rounded-full" 
+                                         :class="(activeCustomer.balance >= activeCustomer.max_debt_limit) ? 'bg-gradient-to-r from-red-500 to-rose-500' : ((Math.max(0, activeCustomer.balance) / activeCustomer.max_debt_limit) > 0.8 ? 'bg-gradient-to-r from-orange-400 to-red-400' : 'bg-gradient-to-r from-blue-400 to-primary')"
+                                         :style="`width: ${Math.min(100, Math.max(0, (Math.max(0, activeCustomer.balance) / activeCustomer.max_debt_limit) * 100))}%`">
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
 
                         @if(auth('casher')->user()->hasAbility('notebook_create'))
                         <template x-if="activeCustomer.is_walk_in">
                             <div class="grid grid-cols-1 gap-2">
-                                <button @click="if(activeCustomer.status != 0) openTxModal('direct_sale')"
-                                    :disabled="activeCustomer.status == 0"
-                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group'"
-                                    class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-2.5 rounded-xl font-bold transition-all border border-emerald-100 dark:border-emerald-900/30 text-sm">
+                                <button @click="openTxModal('direct_sale')"
+                                    class="flex items-center justify-center gap-2 bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 py-2.5 rounded-xl font-bold transition-all border border-emerald-100 dark:border-emerald-900/30 text-sm hover:bg-emerald-100 dark:hover:bg-emerald-900/40 active:scale-95 group">
                                     <i class="ph-bold ph-money text-lg"></i>
                                     {{ __('notebook.direct_payment') ?? 'دفع 💵' }}
                                 </button>
@@ -95,10 +106,8 @@
                                     <i class="ph-bold ph-plus text-base"></i>
                                     <span class="truncate">{{ __('notebook.payment_transfer') }}</span>
                                 </button>
-                                <button @click="if(activeCustomer.status != 0) openTxModal('direct_sale')"
-                                    :disabled="activeCustomer.status == 0"
-                                    :class="activeCustomer.status == 0 ? 'opacity-40 cursor-not-allowed grayscale' : 'hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group'"
-                                    class="flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-blue-100 dark:border-blue-900/30 text-[12px] sm:text-[13px]">
+                                <button @click="openTxModal('direct_sale')"
+                                    class="flex items-center justify-center gap-1 bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400 py-2.5 px-1 rounded-xl font-bold transition-all border border-blue-100 dark:border-blue-900/30 text-[12px] sm:text-[13px] hover:bg-blue-100 dark:hover:bg-blue-900/40 active:scale-95 group">
                                     <i class="ph-bold ph-shopping-cart text-base"></i>
                                     <span class="truncate">{{ __('notebook.direct_sale') ?? 'شراء فوري' }}</span>
                                 </button>
@@ -154,8 +163,16 @@
                                                     </template>
                                                 </div>
                                             </div>
-                                            <div class="text-left font-black shrink-0 text-xl" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
-                                                <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
+                                            <div class="text-left flex flex-col items-end shrink-0">
+                                                <div class="font-black text-xl" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
+                                                    <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
+                                                </div>
+                                                <template x-if="tx.running_balance !== undefined && tx.running_balance !== null">
+                                                    <div class="text-[10px] font-bold mt-1 px-2 py-0.5 rounded-md" 
+                                                         :class="Number(tx.running_balance) > 0 ? 'bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400' : (Number(tx.running_balance) < 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
+                                                        {{ __('notebook.balance_after') ?? 'الرصيد بعدها:' }} <span x-text="Math.abs(Number(tx.running_balance)).toFixed(1)"></span> ₪
+                                                    </div>
+                                                </template>
                                             </div>
                                         </div>
                                         @if(auth('casher')->user()->hasAbility('notebook_update') || auth('casher')->user()->hasAbility('notebook_delete'))

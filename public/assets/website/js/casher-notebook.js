@@ -721,28 +721,17 @@ document.addEventListener('alpine:init', () => {
             this.isSavingTransaction = false;
         },
         
+        txToDelete: null,
+        
         async deleteTransaction(txId) {
-            const result = await Swal.fire({
-                title: config.translations.areYouSure,
-                text: config.translations.confirmDeleteTx,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: config.translations.yesDelete,
-                cancelButtonText: config.translations.cancel,
-                customClass: {
-                    popup: 'rounded-[2rem] p-4 w-[320px] max-w-[90vw] dark:bg-darkCard',
-                    title: 'text-lg font-bold text-gray-900 dark:text-white pt-2',
-                    htmlContainer: 'text-sm font-medium text-gray-500 dark:text-gray-400 m-0 mt-2',
-                    actions: 'mt-5 w-full flex gap-3 px-2',
-                    confirmButton: 'flex-1 btn-gradient-primary !bg-gradient-to-r !from-red-500 !to-rose-600 text-white font-bold rounded-xl py-3 shadow-lg shadow-red-500/30 border-0 m-0 text-sm',
-                    cancelButton: 'flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl py-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border-0 m-0 text-sm'
-                },
-                buttonsStyling: false
-            });
+            this.txToDelete = txId;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'deleteConfirmModal' } }));
+        },
+        
+        async confirmDelete() {
+            if(!this.txToDelete) return;
             
-            if(!result.isConfirmed) return;
+            const txId = this.txToDelete;
             
             try {
                 const res = await fetch(`${this.apiBase}/transactions/${txId}`, {
@@ -765,6 +754,9 @@ document.addEventListener('alpine:init', () => {
                 }
             } catch(e) {
                 console.error(e);
+            } finally {
+                this.txToDelete = null;
+                window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'deleteConfirmModal' } }));
             }
         },
 

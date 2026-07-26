@@ -5,12 +5,12 @@
          x-on:close-modal.window="if ($event.detail.id === 'todayDirectSalesModal') show = false"
          style="display: none;"
          class="overlay-panel flex justify-center"
-         x-transition:enter="transition ease-out duration-75"
-         x-transition:enter-start="opacity-0 scale-95"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-95"
+         x-transition:enter="transform transition ease-out duration-200"
+         x-transition:enter-start="-translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transform transition ease-in duration-150"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="-translate-x-full"
          x-cloak>
          
         <div class="w-full md:max-w-3xl min-h-screen flex flex-col bg-gray-50 dark:bg-[#0b1121] shadow-2xl relative">
@@ -63,7 +63,9 @@
                                             </div>
                                             <div>
                                                 <!-- Customer Name -->
-                                                <p class="font-black text-sm text-gray-900 dark:text-gray-100 flex items-center gap-1">
+                                                <p @click="if(tx.customer) { activeCustomer = tx.customer; openLedger(tx.customer.id); $dispatch('close-modal', {id: 'todayDirectSalesModal'}); }" 
+                                                   class="font-black text-sm text-gray-900 dark:text-gray-100 flex items-center gap-1"
+                                                   :class="tx.customer ? 'cursor-pointer hover:text-primary transition-colors' : ''">
                                                     <i class="ph-fill ph-user text-xs text-primary/70"></i> 
                                                     <span x-text="tx.customer ? tx.customer.name : '{{ __('notebook.customer_deleted') ?? 'زبون محذوف' }}'"></span>
                                                 </p>
