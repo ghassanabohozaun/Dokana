@@ -18,7 +18,13 @@ return [
     'no_store_customers_found' => 'No customers found!',
     
     'total_debts' => 'Total Debts',
+    'total_outstanding_debts' => 'Outstanding Debts',
     'total_payments' => 'Total Payments',
+    'total_creditor_balances' => 'Creditor Balances',
+    'total_lifetime_debts' => 'Total Debts (Lifetime)',
+    'total_lifetime_payments' => 'Total Payments (Lifetime)',
+    'net_balance' => 'Net Balance',
+    'total_customers_count' => 'Total Customers',
     'current_balance' => 'Current Balance',
     'financial_summary' => 'Financial Summary',
     'customer_details' => 'Customer Details',

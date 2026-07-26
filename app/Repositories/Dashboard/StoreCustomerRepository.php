@@ -60,24 +60,38 @@ class StoreCustomerRepository
 
         $total_customers_count = (clone $query)->count();
 
-        // Calculate debts and payments by joining store_transactions
+        // Total Outstanding Debts: sum of balances where balance > 0 (Customers owe the store)
         $total_debts = (clone $query)
+            ->where('balance', '>', 0)
+            ->sum('balance');
+
+        // Total Creditor Balances: sum of absolute balances where balance < 0 (Store owes customers)
+        $total_creditor_balances = (clone $query)
+            ->where('balance', '<', 0)
+            ->sum('balance');
+        $total_creditor_balances = abs($total_creditor_balances); // Make it positive for display
+
+        // Net Balance: Outstanding Debts - Creditor Balances
+        $net_balance = $total_debts - $total_creditor_balances;
+
+        // Calculate lifetime historical volume
+        $total_lifetime_debts = (clone $query)
             ->join('store_transactions', 'store_customers.id', '=', 'store_transactions.store_customer_id')
             ->where('store_transactions.type', 'debt')
             ->sum('store_transactions.amount');
 
-        $total_payments = (clone $query)
+        $total_lifetime_payments = (clone $query)
             ->join('store_transactions', 'store_customers.id', '=', 'store_transactions.store_customer_id')
             ->where('store_transactions.type', 'payment')
             ->sum('store_transactions.amount');
 
-        $net_balance = $total_payments - $total_debts;
-
         return [
             'total_customers_count' => $total_customers_count,
             'total_debts' => $total_debts,
-            'total_payments' => $total_payments,
+            'total_creditor_balances' => $total_creditor_balances,
             'net_balance' => $net_balance,
+            'total_lifetime_debts' => $total_lifetime_debts,
+            'total_lifetime_payments' => $total_lifetime_payments,
         ];
     }
 

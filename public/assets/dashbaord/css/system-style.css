@@ -11494,3 +11494,13 @@ html[data-textdirection='rtl'] .premium-icon-centered {
     left: 0;
     right: auto;
 }
+/* Historical Stats Cards */
+.stat-card-premium.sc-history-debts { background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff; }
+.stat-card-premium.sc-history-debts .stat-icon-wrapper { background-color: rgba(255,255,255,0.1); color: #cbd5e1; }
+.stat-card-premium.sc-history-debts .stat-title { color: #cbd5e1 !important; }
+.stat-card-premium.sc-history-debts .stat-value, .stat-card-premium.sc-history-debts .stat-currency, .stat-card-premium.sc-history-debts span[id^='ui_stats'] { color: #ffffff !important; }
+
+.stat-card-premium.sc-history-payments { background: linear-gradient(135deg, #334155, #1e293b); color: #fff; }
+.stat-card-premium.sc-history-payments .stat-icon-wrapper { background-color: rgba(255,255,255,0.1); color: #cbd5e1; }
+.stat-card-premium.sc-history-payments .stat-title { color: #cbd5e1 !important; }
+.stat-card-premium.sc-history-payments .stat-value, .stat-card-premium.sc-history-payments .stat-currency, .stat-card-premium.sc-history-payments span[id^='ui_stats'] { color: #ffffff !important; }

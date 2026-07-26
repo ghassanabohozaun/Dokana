@@ -256,7 +256,7 @@ return [
     'quick_tips' => 'توجيهات سريعة',
     'system' => 'النظام',
     'view_all' => 'عرض الكل',
-    'currency' => 'ريال',
+    'currency' => 'شيكل',
     'qatari_riyal' => 'ريال قطري',
     'dirham' => 'درهم',
     'usage_summary' => 'ملخص الاستخدام',

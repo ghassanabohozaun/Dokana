@@ -19,7 +19,11 @@ return [
     'no_store_customers_found' => 'لا يوجد عملاء حالياً !',
     
     'total_debts' => 'إجمالي الديون (عليهم)',
+    'total_outstanding_debts' => 'الديون المستحقة (عليهم)',
     'total_payments' => 'إجمالي التحصيلات (منهم)',
+    'total_creditor_balances' => 'أرصدة دائنة للعملاء (لهم)',
+    'total_lifetime_debts' => 'إجمالي حجم الديون (تاريخياً)',
+    'total_lifetime_payments' => 'إجمالي حجم التحصيلات (تاريخياً)',
     'net_balance' => 'الرصيد الصافي',
     'total_customers_count' => 'إجمالي العملاء',
     'highest_debts' => 'الأعلى ديوناً',

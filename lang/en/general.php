@@ -249,7 +249,7 @@ return [
     'quick_tips' => 'Quick Tips',
     'system' => 'System',
     'view_all' => 'View All',
-    'currency' => 'SAR',
+    'currency' => 'ILS',
     'qatari_riyal' => 'Qatari Riyal',
     'dirham' => 'Dirham',
     'usage_summary' => 'Usage Summary',

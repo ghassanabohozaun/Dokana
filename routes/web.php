@@ -56,7 +56,7 @@ Route::group(
                     Route::delete('withdrawals/{withdrawal}', [CasherWithdrawalController::class, 'destroy'])->name('withdrawals.destroy');
                 });
         });
-    },
+    }
 );
 
 // TODO: Remove this temporary route after running migrations on the server
