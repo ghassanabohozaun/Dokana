@@ -2,16 +2,16 @@
     
     <!-- Total Lifetime Debts -->
     <div class="col-md-6 col-sm-6 mb-3 mb-md-0">
-        <div class="stat-card-premium sc-history-debts opacity-90">
+        <div class="stat-card-premium sc-debts opacity-90" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #fff;">
             <div class="bg-shape"></div>
-            <div class="stat-icon-wrapper">
+            <div class="stat-icon-wrapper" style="background-color: rgba(255,255,255,0.1); color: #cbd5e1;">
                 <i class="fas fa-history"></i>
             </div>
             <div class="stat-content text-left">
-                <span class="stat-title">{!! __('store_customers.total_lifetime_debts') ?? 'حجم الديون (تاريخياً)' !!}</span>
-                <h4 class="stat-value" style="direction: ltr; justify-content: flex-end;">
-                    <span class="stat-currency">{!! __('general.currency') ?? 'شيكل' !!}</span>
-                    <span id="ui_stats_total_lifetime_debts">{!! number_format($metrics['total_lifetime_debts'] ?? 0, 2) !!}</span>
+                <span class="stat-title" style="color: #cbd5e1 !important;">{!! __('store_customers.total_lifetime_debts') ?? 'حجم الديون (تاريخياً)' !!}</span>
+                <h4 class="stat-value" style="direction: ltr; justify-content: flex-end; color: #ffffff !important;">
+                    <span class="stat-currency" style="color: #ffffff !important;">{!! __('general.currency') ?? 'شيكل' !!}</span>
+                    <span id="ui_stats_total_lifetime_debts" style="color: #ffffff !important;">{!! number_format($metrics['total_lifetime_debts'] ?? 0, 2) !!}</span>
                 </h4>
             </div>
         </div>
@@ -19,16 +19,16 @@
 
     <!-- Total Lifetime Payments -->
     <div class="col-md-6 col-sm-6 mb-3 mb-md-0">
-        <div class="stat-card-premium sc-history-payments opacity-90">
+        <div class="stat-card-premium sc-payments opacity-90" style="background: linear-gradient(135deg, #334155, #1e293b); color: #fff;">
             <div class="bg-shape"></div>
-            <div class="stat-icon-wrapper">
+            <div class="stat-icon-wrapper" style="background-color: rgba(255,255,255,0.1); color: #cbd5e1;">
                 <i class="fas fa-archive"></i>
             </div>
             <div class="stat-content text-left">
-                <span class="stat-title">{!! __('store_customers.total_lifetime_payments') ?? 'حجم التحصيلات (تاريخياً)' !!}</span>
-                <h4 class="stat-value" style="direction: ltr; justify-content: flex-end;">
-                    <span class="stat-currency">{!! __('general.currency') ?? 'شيكل' !!}</span>
-                    <span id="ui_stats_total_lifetime_payments">{!! number_format($metrics['total_lifetime_payments'] ?? 0, 2) !!}</span>
+                <span class="stat-title" style="color: #cbd5e1 !important;">{!! __('store_customers.total_lifetime_payments') ?? 'حجم التحصيلات (تاريخياً)' !!}</span>
+                <h4 class="stat-value" style="direction: ltr; justify-content: flex-end; color: #ffffff !important;">
+                    <span class="stat-currency" style="color: #ffffff !important;">{!! __('general.currency') ?? 'شيكل' !!}</span>
+                    <span id="ui_stats_total_lifetime_payments" style="color: #ffffff !important;">{!! number_format($metrics['total_lifetime_payments'] ?? 0, 2) !!}</span>
                 </h4>
             </div>
         </div>
