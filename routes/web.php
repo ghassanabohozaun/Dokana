@@ -58,3 +58,15 @@ Route::group(
         });
     },
 );
+
+// TODO: Remove this temporary route after running migrations on the server
+Route::get('/run-my-migrations-secretly', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', [
+            '--force' => true
+        ]);
+        return 'تم تشغيل المايجريشن بنجاح: <br>' . nl2br(\Illuminate\Support\Facades\Artisan::output());
+    } catch (\Exception $e) {
+        return 'حدث خطأ: ' . $e->getMessage();
+    }
+});
