@@ -69,7 +69,7 @@
                         <label class="form-label-modern">{!! __('auth.enter_you_email') !!}</label>
                         <div class="input-container-modern">
                             <input type="text" class="form-control-modern @error('email') is-invalid @enderror"
-                                name="email" id="email" placeholder="email@example.com" autofocus
+                                name="email" id="email" value="{{ old('email') }}" placeholder="email@example.com" autofocus
                                 autocomplete="off">
                             <i class="fas fa-envelope input-icon-modern"></i>
                         </div>
@@ -81,10 +81,13 @@
                     <!-- Password -->
                     <div class="premium-form-group">
                         <label class="form-label-modern">{!! __('auth.enter_you_password') !!}</label>
-                        <div class="input-container-modern">
+                        <div class="input-container-modern" style="position: relative;">
                             <input type="password" class="form-control-modern @error('password') is-invalid @enderror"
                                 name="password" id="password" placeholder="••••••••" autocomplete="new-password">
                             <i class="fas fa-lock input-icon-modern"></i>
+                            <button type="button" onclick="const p=document.getElementById('password'),i=document.getElementById('togglePasswordIcon'); if(p.type==='password'){p.type='text'; i.classList.remove('fa-eye'); i.classList.add('fa-eye-slash');}else{p.type='password'; i.classList.remove('fa-eye-slash'); i.classList.add('fa-eye');}" style="position: absolute; {{ Config::get('app.locale') == 'ar' ? 'left: 14px;' : 'right: 14px;' }} top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 6px; z-index: 10;" title="إظهار / إخفاء كلمة المرور">
+                                <i class="fas fa-eye" id="togglePasswordIcon"></i>
+                            </button>
                         </div>
                         @error('password')
                             <span class="text-danger error-text">{{ $message }}</span>
@@ -110,6 +113,12 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+// Scripts ready
+</script>
+@endpush
 
 
 

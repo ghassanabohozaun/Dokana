@@ -10,11 +10,29 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <style>
+        /* Instant Critical CSS to eliminate dark mode / reload flicker */
+        html.dark, html.dark body {
+            background-color: #070d19 !important;
+            color: #f1f5f9 !important;
+        }
+        html:not(.dark), html:not(.dark) body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+        }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'الكاشير')</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>@yield('title', __('dashboard.casher'))</title>
+
+    <!-- Font & Icon Preloads to eliminate FOUT / Icon Blinking -->
+    <link rel="preload" href="{{ asset('assets/website/vendor/phosphor/Phosphor.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/website/vendor/phosphor/Phosphor-Bold.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/website/vendor/phosphor/Phosphor-Fill.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('assets/website/fonts/tajawal/tajawal-700.ttf') }}" as="font" type="font/ttf" crossorigin>
+
+    <!-- Tailwind CSS (Local) -->
+    <script src="{{ asset('assets/website/vendor/tailwind/tailwind.min.js') }}"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -26,8 +44,8 @@
                     colors: {
                         primary: '#10b981', // emerald-500
                         secondary: '#3b82f6', // blue-500
-                        dark: '#0f172a', // slate-900
-                        darkCard: '#1e293b', // slate-800
+                        dark: '#070d19', // dark slate
+                        darkCard: '#0f172a', // slate-900
                     },
                     keyframes: {
                         warningPop: {
@@ -62,10 +80,10 @@
             }
         }
     </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Tajawal Font (Local) -->
+    <link rel="stylesheet" href="{{ asset('assets/website/fonts/tajawal/tajawal.css') }}?v={{ time() }}">
+    <!-- Phosphor Icons (Local) -->
+    <link rel="stylesheet" href="{{ asset('assets/website/vendor/phosphor/phosphor.css') }}?v={{ time() }}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('assets/website/css/style.css') }}?v={{ time() }}">
     <link rel="stylesheet" href="{{ asset('assets/website/css/toast.css') }}?v={{ time() }}">
@@ -75,7 +93,7 @@
     @livewireStyles
 </head>
 
-<body class="bg-gray-50 text-gray-800 dark:bg-dark dark:text-gray-100 transition-colors duration-300 antialiased">
+<body class="bg-[#f8fafc] text-gray-800 dark:bg-[#070d19] dark:text-gray-100 antialiased">
 
     @isset($slot)
         {{ $slot }}

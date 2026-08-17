@@ -3,15 +3,21 @@
 namespace App\Observers;
 
 use App\Models\StoreTransaction;
+use App\Models\StoreCustomer;
+use App\Models\StoreBankAccount;
 
 class StoreTransactionObserver
 {
+    /**
+     * Prevent infinite recursion during linked transaction updates.
+     */
+    protected static array $syncing = [];
+
     public function creating(StoreTransaction $transaction): void
     {
         if ($transaction->type === 'debt' && !$transaction->skip_limit_check) {
             $customer = $transaction->customer;
             if ($customer && $customer->max_debt_limit !== null && !$customer->bypass_debt_limit) {
-                // Calculate expected balance
                 $expectedBalance = $customer->balance + $transaction->amount;
                 
                 if ($expectedBalance > $customer->max_debt_limit) {
@@ -26,52 +32,114 @@ class StoreTransactionObserver
 
     public function created(StoreTransaction $transaction): void
     {
-        $this->recalculateBalance($transaction->customer);
-        $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+        $this->applyTransactionDelta($transaction, 'add');
     }
 
     public function updated(StoreTransaction $transaction): void
     {
         $this->syncLinkedTransaction($transaction, 'update');
-        
-        if ($transaction->isDirty('store_customer_id')) {
-            $oldCustomer = \App\Models\StoreCustomer::find($transaction->getOriginal('store_customer_id'));
-            $this->recalculateBalance($oldCustomer);
-        }
-        $this->recalculateBalance($transaction->customer);
-        
-        if ($transaction->isDirty('store_bank_account_id')) {
-            $this->recalculateBankAccountBalance($transaction->getOriginal('store_bank_account_id'));
-        }
-        $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+
+        // Revert old values
+        $oldCustomerId = $transaction->getOriginal('store_customer_id');
+        $oldBankAccountId = $transaction->getOriginal('store_bank_account_id');
+        $oldType = $transaction->getOriginal('type');
+        $oldAmount = $transaction->getOriginal('amount');
+
+        // Create a dummy representation of old transaction to subtract its impact
+        $oldTx = new StoreTransaction([
+            'store_customer_id' => $oldCustomerId,
+            'store_bank_account_id' => $oldBankAccountId,
+            'type' => $oldType,
+            'amount' => $oldAmount
+        ]);
+
+        $this->applyTransactionDelta($oldTx, 'subtract');
+        $this->applyTransactionDelta($transaction, 'add');
     }
 
     public function deleted(StoreTransaction $transaction): void
     {
         $this->syncLinkedTransaction($transaction, 'delete');
-        $this->recalculateBalance($transaction->customer);
-        $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+        $this->applyTransactionDelta($transaction, 'subtract');
     }
 
     public function restored(StoreTransaction $transaction): void
     {
-        $this->recalculateBalance($transaction->customer);
-        $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+        $this->applyTransactionDelta($transaction, 'add');
     }
 
     public function forceDeleted(StoreTransaction $transaction): void
     {
         $this->syncLinkedTransaction($transaction, 'forceDelete');
-        $this->recalculateBalance($transaction->customer);
-        $this->recalculateBankAccountBalance($transaction->store_bank_account_id);
+        $this->applyTransactionDelta($transaction, 'subtract');
     }
 
-    protected function syncLinkedTransaction(StoreTransaction $transaction, $action)
+    /**
+     * Apply O(1) atomic delta updates to Customer balance and Bank Account current balance.
+     */
+    protected function applyTransactionDelta(StoreTransaction $transaction, string $mode): void
     {
-        if ($transaction->linked_transaction_id && !session()->has('syncing_tx_'.$transaction->id)) {
-            session()->put('syncing_tx_'.$transaction->linked_transaction_id, true);
-            
-            $linked = \App\Models\StoreTransaction::find($transaction->linked_transaction_id);
+        // 1. Customer balance adjustment
+        if ($transaction->store_customer_id) {
+            $customer = StoreCustomer::find($transaction->store_customer_id);
+            if ($customer) {
+                // For debt: add increases balance, subtract decreases balance
+                // For payment: add decreases balance, subtract increases balance
+                $amount = (float) $transaction->amount;
+                $change = ($transaction->type === 'debt') ? $amount : -$amount;
+                if ($mode === 'subtract') {
+                    $change = -$change;
+                }
+
+                if ($change != 0) {
+                    if ($change > 0) {
+                        $customer->increment('balance', abs($change));
+                    } else {
+                        $customer->decrement('balance', abs($change));
+                    }
+                }
+            }
+        }
+
+        // 2. Bank Account balance adjustment (only for payments)
+        if ($transaction->store_bank_account_id && $transaction->type === 'payment') {
+            $bankAccount = StoreBankAccount::find($transaction->store_bank_account_id);
+            if ($bankAccount) {
+                $amount = (float) $transaction->amount;
+                // Add payment increases bank balance, subtract payment decreases bank balance
+                $change = ($mode === 'add') ? $amount : -$amount;
+
+                if ($change != 0) {
+                    if ($change > 0) {
+                        $bankAccount->increment('current_balance', abs($change));
+                    } else {
+                        $bankAccount->decrement('current_balance', abs($change));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Sync linked transaction safely without session dependencies or recursion bugs.
+     */
+    protected function syncLinkedTransaction(StoreTransaction $transaction, string $action): void
+    {
+        if (!$transaction->linked_transaction_id) {
+            return;
+        }
+
+        $linkedId = $transaction->linked_transaction_id;
+
+        if (isset(static::$syncing[$transaction->id]) || isset(static::$syncing[$linkedId])) {
+            return;
+        }
+
+        static::$syncing[$transaction->id] = true;
+        static::$syncing[$linkedId] = true;
+
+        try {
+            $linked = StoreTransaction::find($linkedId);
             if ($linked) {
                 if ($action === 'update') {
                     $linked->update([
@@ -84,40 +152,8 @@ class StoreTransactionObserver
                     $linked->forceDelete();
                 }
             }
-            
-            session()->forget('syncing_tx_'.$transaction->linked_transaction_id);
+        } finally {
+            unset(static::$syncing[$transaction->id], static::$syncing[$linkedId]);
         }
-    }
-
-    protected function recalculateBalance($customer)
-    {
-        if (!$customer) return;
-
-        $debts = $customer->transactions()->where('type', 'debt')->sum('amount');
-        $payments = $customer->transactions()->where('type', 'payment')->sum('amount');
-        
-        $customer->updateQuietly(['balance' => $debts - $payments]);
-    }
-
-    protected function recalculateBankAccountBalance($bankAccountId)
-    {
-        if (!$bankAccountId) return;
-        
-        $bankAccount = \App\Models\StoreBankAccount::find($bankAccountId);
-        if (!$bankAccount) return;
-
-        $opening = $bankAccount->opening_balance ?? 0;
-
-        $totalPayments = \App\Models\StoreTransaction::where('store_bank_account_id', $bankAccountId)
-            ->where('type', 'payment')
-            ->sum('amount');
-        
-        $totalWithdrawals = \App\Models\StoreWithdrawal::where('store_bank_account_id', $bankAccountId)
-            ->sum('amount');
-            
-        $totalAdjustments = \App\Models\StoreBankAccountAdjustment::where('store_bank_account_id', $bankAccountId)
-            ->sum('amount');
-            
-        $bankAccount->updateQuietly(['current_balance' => $opening + $totalPayments + $totalAdjustments - $totalWithdrawals]);
     }
 }

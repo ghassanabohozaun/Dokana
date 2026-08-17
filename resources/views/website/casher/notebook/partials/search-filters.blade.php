@@ -1,7 +1,9 @@
     <!-- Search & Filters -->
     <div class="px-4 mb-4">
         <div class="relative group mb-3 flex items-center">
-            <i class="ph-bold ph-magnifying-glass absolute {{ app()->getLocale() == 'ar' ? 'right-4' : 'left-4' }} top-1/2 -translate-y-1/2 text-gray-400 text-lg group-focus-within:text-primary transition-colors"></i>
+            <div class="absolute inset-y-0 {{ app()->getLocale() == 'ar' ? 'right-0 pr-4' : 'left-0 pl-4' }} flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary transition-colors">
+                <i class="ph-bold ph-magnifying-glass text-lg"></i>
+            </div>
             <input x-model="search" type="text" placeholder="{{ __('notebook.search_customer') }}" class="w-full bg-white dark:bg-darkCard border border-gray-200 dark:border-gray-800 rounded-2xl py-3.5 px-11 rtl:pl-20 ltr:pr-20 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all text-gray-800 dark:text-gray-100 shadow-sm placeholder-gray-400">
             <div class="absolute {{ app()->getLocale() == 'ar' ? 'left-2' : 'right-2' }} flex items-center gap-1.5">
                 <button x-show="search.length > 0" @click="search = ''" style="display: none;" 

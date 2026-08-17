@@ -1,7 +1,9 @@
-document.addEventListener('alpine:init', () => {
-    Alpine.data('casherNotebook', (config) => ({
+function casherNotebook(passedConfig = {}) {
+    const config = (typeof passedConfig === 'object' && passedConfig !== null) ? passedConfig : (window.casherConfig || {});
+    config.translations = config.translations || {};
+    return {
         // State
-        activeTab: 'customers', // customers, withdrawals
+        activeTab: 'customers', // customers, suppliers, withdrawals
         
         customers: [],
         totalCustomers: 0,
@@ -10,88 +12,166 @@ document.addEventListener('alpine:init', () => {
         todayDirectSales: 0,
         todayDebts: 0,
         
+        // Suppliers State (Overall Totals & Financial Position)
+        suppliers: [],
+        totalSuppliers: 0,
+        totalActiveSuppliers: 0,
+        suppliersWithDueCount: 0,
+        totalPurchases: 0,
+        totalInvoicesCount: 0,
+        totalPaid: 0,
+        totalPaymentsCount: 0,
+        totalPendingDues: 0,
+        pendingInvoicesCount: 0,
+        totalSupplierDue: 0,
+        supplierSearch: '',
+        supplierFilter: 'all',
+        isSuppliersLoading: false,
+        loadingSupplierId: null,
+
+        // Supplier Modals (Invoices & Payments Registers)
+        allSupplierInvoicesList: [],
+        invoicesModalFilter: 'all',
+        invoicesModalSearch: '',
+        isAllSupplierInvoicesLoading: false,
+        isAllSupplierInvoicesCardLoading: false,
+
+        allSupplierPaymentsList: [],
+        paymentsModalSearch: '',
+        isAllSupplierPaymentsLoading: false,
+        isAllSupplierPaymentsCardLoading: false,
+
+        // New Supplier Form
+        newSupplierName: '',
+        newSupplierPhone: '',
+        newSupplierBankName: '',
+        newSupplierAccountNumber: '',
+        newSupplierAddress: '',
+        isSavingSupplier: false,
+
+        // Edit Supplier Form
+        editSupplierId: null,
+        editSupplierName: '',
+        editSupplierPhone: '',
+        editSupplierBankName: '',
+        editSupplierAccountNumber: '',
+        editSupplierAddress: '',
+
+        // Supplier Ledger & Details
+        activeSupplier: null,
+        supplierLedgerInvoices: [],
+        supplierLedgerPayments: [],
+        supplierUnpaidInvoices: [],
+        supplierLedgerSummary: null,
+        isSupplierLedgerLoading: false,
+
+        // Supplier Invoice Form
+        newSupplierInvoiceNumber: '',
+        newSupplierInvoiceAmount: '',
+        newSupplierInvoiceDate: config.todayDate || new Date().toISOString().substring(0, 10),
+        newSupplierInvoiceNotes: '',
+        isSavingSupplierInvoice: false,
+
+        // Supplier Payment Form
+        supplierPaymentAmount: '',
+        supplierPaymentBankAccountId: '',
+        supplierPaymentInvoiceId: '',
+        supplierPaymentDate: config.todayDate || new Date().toISOString().substring(0, 10),
+        supplierPaymentNotes: '',
+        isSavingSupplierPayment: false,
+
         todayWithdrawals: [],
         totalTodayWithdrawals: 0,
-        
-        search: '',
-        filter: 'all',
-        isListening: false,
-        isAIListening: false,
-        withdrawalFilter: 'all', // all, or bank account id
-        perPage: 15,
-        
-        isLoading: false,
-        showAccountsSheet: false,
-        
-        // Financial Summary
-        summaryData: null,
-        summaryTab: 'today',
-        summaryCustomDate: config.todayDate,
-        isSummaryLoading: false,
-        
-        // New Customer form
-        newCustomerName: '',
-        newCustomerPhone: '',
-        newCustomerOpeningBalance: '',
-        
-        // Edit Customer form
-        editCustomerName: '',
-        editCustomerPhone: '',
-        isSavingCustomer: false,
-        
-        // Ledger state
-        activeCustomer: null,
-        ledgerTransactions: [],
-        totalLedgerTransactions: 0,
-        ledgerPerPage: 20,
-        isLedgerLoading: false,
-        
-        // Transaction form
-        txType: 'debt',
-        txAmount: '',
-        txDescription: '',
-        txDate: config.todayDate,
-        txBankAccountId: '',
-        editingTxId: null,
-        isSavingTransaction: false,
+                
+                search: '',
+                filter: 'all',
+                isListening: false,
+                isAIListening: false,
+                withdrawalFilter: 'all', // all, or bank account id
+                perPage: 15,
+                
+                isLoading: false,
+                showAccountsSheet: false,
+                
+                // Financial Summary
+                summaryData: null,
+                summaryTab: 'today',
+                summaryCustomDate: config.todayDate || new Date().toISOString().substring(0, 10),
+                isSummaryLoading: false,
+                
+                // New Customer form
+                newCustomerName: '',
+                newCustomerPhone: '',
+                newCustomerOpeningBalance: '',
+                
+                // Edit Customer form
+                editCustomerName: '',
+                editCustomerPhone: '',
+                isSavingCustomer: false,
+                
+                // Ledger state
+                activeCustomer: null,
+                ledgerTransactions: [],
+                totalLedgerTransactions: 0,
+                ledgerPerPage: 20,
+                isLedgerLoading: false,
+                
+                // Transaction form
+                txType: 'debt',
+                txAmount: '',
+                txDescription: '',
+                txDate: config.todayDate || new Date().toISOString().substring(0, 10),
+                txBankAccountId: '',
+                editingTxId: null,
+                isSavingTransaction: false,
 
-        // Withdrawal form
-        withdrawalAmount: '',
-        withdrawalReason: '',
-        withdrawalBankAccountId: '',
-        withdrawalDate: config.todayDate,
-        isSavingWithdrawal: false,
-        
-        // Today's Collections Modal
-        todayCollectionsList: [],
-        totalTodayCollectionsCount: 0,
-        collectionsPerPage: 20,
-        isCollectionsLoading: false,
-        
-        // Today's Debts Modal
-        todayDebtsList: [],
-        totalTodayDebtsCount: 0,
-        debtsPerPage: 20,
-        isDebtsLoading: false,
+                // Universal Delete Confirmation Modal State
+                deleteType: 'transaction',
+                deleteId: null,
+                deleteModalTitle: '',
+                deleteModalMessage: '',
+                isDeletingItem: false,
 
-        // Today's Direct Sales Modal
-        todayDirectSalesList: [],
-        totalTodayDirectSalesCount: 0,
-        directSalesPerPage: 20,
-        isDirectSalesLoading: false,
-        
-        // Loading States for UX
-        loadingCustomerId: null,
-        isCollectionsCardLoading: false,
-        isDebtsCardLoading: false,
-        isDirectSalesCardLoading: false,
-        
-        // APIs
-        apiBase: config.apiBase,
-        locale: config.locale || 'ar',
-        csrf: config.csrf,
-        bankBalances: config.bankBalances || {},
-        storeAccounts: config.storeAccounts || [],
+                // Withdrawal form
+                withdrawalAmount: '',
+                withdrawalReason: '',
+                withdrawalBankAccountId: '',
+                withdrawalDate: config.todayDate || new Date().toISOString().substring(0, 10),
+                isSavingWithdrawal: false,
+                isEditingWithdrawal: false,
+                editingWithdrawalId: null,
+                
+                // Today's Collections Modal
+                todayCollectionsList: [],
+                totalTodayCollectionsCount: 0,
+                collectionsPerPage: 20,
+                isCollectionsLoading: false,
+                
+                // Today's Debts Modal
+                todayDebtsList: [],
+                totalTodayDebtsCount: 0,
+                debtsPerPage: 20,
+                isDebtsLoading: false,
+
+                // Today's Direct Sales Modal
+                todayDirectSalesList: [],
+                totalTodayDirectSalesCount: 0,
+                todayDirectSalesTotalCount: 0,
+                directSalesPerPage: 20,
+                isDirectSalesLoading: false,
+                
+                // Loading States for UX
+                loadingCustomerId: null,
+                isCollectionsCardLoading: false,
+                isDebtsCardLoading: false,
+                isDirectSalesCardLoading: false,
+                
+                // APIs
+                apiBase: config.apiBase || '',
+                locale: config.locale || 'ar',
+                csrf: config.csrf || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                bankBalances: config.bankBalances || {},
+                storeAccounts: config.storeAccounts || [],
 
         // Computed
         get selectedBankBalance() {
@@ -133,12 +213,21 @@ document.addEventListener('alpine:init', () => {
             return this.filteredWithdrawals.reduce((sum, w) => sum + Number(w.amount), 0);
         },
 
+        get selectedSupplierInvoice() {
+            if (!this.supplierPaymentInvoiceId || !this.supplierUnpaidInvoices) return null;
+            return this.supplierUnpaidInvoices.find(inv => inv.id == this.supplierPaymentInvoiceId) || null;
+        },
+
+        get selectedInvoiceRemaining() {
+            return this.selectedSupplierInvoice ? Number(this.selectedSupplierInvoice.remaining_amount) : null;
+        },
+
         formatDateTime(dateStr) {
             if (!dateStr) return '';
             try {
                 const date = new Date(dateStr);
                 if (isNaN(date.getTime())) return dateStr.substring(0, 10);
-                return date.toLocaleDateString(this.locale === 'ar' ? 'ar-EG' : 'en-US', {
+                return date.toLocaleDateString(this.locale === 'ar' ? 'ar-u-nu-latn' : 'en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'numeric',
@@ -151,8 +240,29 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
+        // Universal Input Normalizers for Arabic Numbers and Digits
+        normalizeArabicNumbers(val) {
+            if (val === null || val === undefined) return '';
+            let s = String(val);
+            s = s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+            s = s.replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+            s = s.replace(/[\u060C,]/g, '.');
+            return s;
+        },
+
+        sanitizeAmountInput(val) {
+            let normalized = this.normalizeArabicNumbers(val);
+            normalized = normalized.replace(/[^0-9.]/g, '');
+            const parts = normalized.split('.');
+            if (parts.length > 2) {
+                normalized = parts[0] + '.' + parts.slice(1).join('');
+            }
+            return normalized;
+        },
+
         init() {
             this.fetchCustomers();
+            this.fetchSuppliers();
             this.fetchWithdrawals();
             
             // Watchers
@@ -165,6 +275,15 @@ document.addEventListener('alpine:init', () => {
                 }, 500);
             });
             this.$watch('filter', () => { this.perPage = 15; this.fetchCustomers(); });
+
+            let supplierSearchTimeout;
+            this.$watch('supplierSearch', () => {
+                clearTimeout(supplierSearchTimeout);
+                supplierSearchTimeout = setTimeout(() => {
+                    this.fetchSuppliers();
+                }, 500);
+            });
+            this.$watch('supplierFilter', () => { this.fetchSuppliers(); });
             
             // Drag to scroll for filters
             this.$nextTick(() => {
@@ -214,6 +333,8 @@ document.addEventListener('alpine:init', () => {
             this.activeTab = tab;
             if (tab === 'withdrawals') {
                 this.fetchWithdrawals();
+            } else if (tab === 'suppliers') {
+                this.fetchSuppliers();
             }
         },
 
@@ -604,6 +725,7 @@ document.addEventListener('alpine:init', () => {
                 if(res.ok) {
                     this.todayDirectSalesList = data.transactions;
                     this.totalTodayDirectSalesCount = data.total;
+                    this.todayDirectSalesTotalCount = data.total;
                 }
             } catch (e) {
                 console.error(e);
@@ -721,43 +843,92 @@ document.addEventListener('alpine:init', () => {
             this.isSavingTransaction = false;
         },
         
-        txToDelete: null,
-        
-        async deleteTransaction(txId) {
-            this.txToDelete = txId;
+        openDeleteModal(type, id, title = null, message = null) {
+            this.deleteType = type;
+            this.deleteId = id;
+            
+            if (type === 'transaction') {
+                this.deleteModalTitle = config.translations.areYouSure || 'هل أنت متأكد؟';
+                this.deleteModalMessage = config.translations.confirmDeleteTx || 'هل أنت متأكد من حذف هذه الحركة؟ لا يمكن التراجع عن هذا الإجراء.';
+            } else if (type === 'withdrawal') {
+                this.deleteModalTitle = config.translations.areYouSure || 'هل أنت متأكد؟';
+                this.deleteModalMessage = config.translations.confirmDeleteWithdrawal || 'هل أنت متأكد من حذف هذا السحب؟ سيتم استرجاع المبلغ للخزينة.';
+            } else if (type === 'supplier_invoice') {
+                this.deleteModalTitle = config.translations.areYouSure || 'هل أنت متأكد؟';
+                this.deleteModalMessage = config.translations.confirmDeleteInvoice || 'هل أنت متأكد من حذف هذه الفاتورة؟';
+            } else if (type === 'supplier_payment') {
+                this.deleteModalTitle = config.translations.areYouSure || 'هل أنت متأكد؟';
+                this.deleteModalMessage = config.translations.confirmDeleteSupplierPayment || 'هل أنت متأكد من حذف هذه الدفعة؟ سيتم استرجاع المبلغ للخزينة.';
+            }
+            
+            if (title) this.deleteModalTitle = title;
+            if (message) this.deleteModalMessage = message;
+            
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'deleteConfirmModal' } }));
         },
-        
-        async confirmDelete() {
-            if(!this.txToDelete) return;
-            
-            const txId = this.txToDelete;
+
+        async executeDelete() {
+            if (!this.deleteId || !this.deleteType || this.isDeletingItem) return;
+            this.isDeletingItem = true;
             
             try {
-                const res = await fetch(`${this.apiBase}/transactions/${txId}`, {
+                let url = '';
+                if (this.deleteType === 'transaction') {
+                    url = `${this.apiBase}/transactions/${this.deleteId}`;
+                } else if (this.deleteType === 'withdrawal') {
+                    url = `${this.apiBase}/withdrawals/${this.deleteId}`;
+                } else if (this.deleteType === 'supplier_invoice') {
+                    url = `${this.apiBase}/invoices/${this.deleteId}`;
+                } else if (this.deleteType === 'supplier_payment') {
+                    url = `${this.apiBase}/payments/${this.deleteId}`;
+                }
+                
+                const res = await fetch(url, {
                     method: 'DELETE',
                     headers: {
                         'X-CSRF-TOKEN': this.csrf,
                         'Accept': 'application/json'
                     }
                 });
+                
                 const data = await res.json();
-                if(res.ok) {
-                    Toast.show(config.translations.success, data.message, 'success');
-                    this.fetchCustomers();
+                
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'deleteConfirmModal' } }));
+                    Toast.show(config.translations.success, data.message || 'تم الحذف بنجاح', 'success');
                     
-                    if(this.activeCustomer && document.getElementById('ledgerModal')?.style.display !== 'none') {
-                        this.fetchLedger(this.activeCustomer.id);
+                    if (this.deleteType === 'transaction') {
+                        this.fetchCustomers();
+                        if (this.activeCustomer && document.getElementById('ledgerModal')?.style.display !== 'none') {
+                            this.fetchLedger(this.activeCustomer.id);
+                        }
+                    } else if (this.deleteType === 'withdrawal') {
+                        this.fetchWithdrawals();
+                    } else if (this.deleteType === 'supplier_invoice') {
+                        if (this.activeSupplier) {
+                            this.fetchSupplierLedger(this.activeSupplier.id);
+                        }
+                        this.fetchSuppliers();
+                    } else if (this.deleteType === 'supplier_payment') {
+                        if (this.activeSupplier) {
+                            this.fetchSupplierLedger(this.activeSupplier.id);
+                        }
+                        this.fetchSuppliers();
+                        this.fetchWithdrawals(); // refresh bank balances & withdrawals
                     }
                 } else {
-                    Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
+                    Toast.show(config.translations.warning, data.message || 'حدث خطأ أثناء الحذف', 'error');
                 }
-            } catch(e) {
-                console.error(e);
+            } catch (e) {
+                console.error('Error in executeDelete:', e);
             } finally {
-                this.txToDelete = null;
-                window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'deleteConfirmModal' } }));
+                this.isDeletingItem = false;
+                this.deleteId = null;
             }
+        },
+
+        deleteTransaction(id) {
+            this.openDeleteModal('transaction', id);
         },
 
         // Withdrawals API
@@ -866,45 +1037,484 @@ document.addEventListener('alpine:init', () => {
             this.isSavingWithdrawal = false;
         },
 
-        async deleteWithdrawal(id) {
-            Swal.fire({
-                title: config.translations.areYouSure || 'هل أنت متأكد؟',
-                text: config.translations.confirmDeleteWithdrawal || 'هل أنت متأكد من حذف هذا السحب؟',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: config.translations.yesDelete || 'نعم، احذف',
-                cancelButtonText: config.translations.cancel || 'إلغاء',
-                customClass: {
-                    popup: 'rounded-[2rem] p-4 w-[320px] max-w-[90vw] dark:bg-darkCard',
-                    title: 'text-lg font-bold text-gray-900 dark:text-white pt-2',
-                    htmlContainer: 'text-sm font-medium text-gray-500 dark:text-gray-400 m-0 mt-2',
-                    actions: 'mt-5 w-full flex gap-3 px-2',
-                    confirmButton: 'flex-1 btn-gradient-primary !bg-gradient-to-r !from-red-500 !to-rose-600 text-white font-bold rounded-xl py-3 shadow-lg shadow-red-500/30 border-0 m-0 text-sm',
-                    cancelButton: 'flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl py-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all border-0 m-0 text-sm'
-                },
-                buttonsStyling: false
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const res = await fetch(`${this.apiBase}/withdrawals/${id}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': this.csrf
-                            }
-                        });
-                        const data = await res.json();
+        deleteWithdrawal(id) {
+            this.openDeleteModal('withdrawal', id);
+        },
+        // ==================== SUPPLIERS METHODS ====================
+        
+        setSupplierFilter(filter) {
+            this.supplierFilter = filter;
+            this.fetchSuppliers();
+        },
 
-                        if(res.ok) {
-                            Toast.show(config.translations.success, data.message, 'success');
-                            this.fetchWithdrawals();
-                        } else {
-                            Toast.show(config.translations.warning, data.message || 'Error', 'error');
-                        }
-                    } catch (e) {
-                        console.error(e);
-                    }
+        async fetchSuppliers() {
+            this.isSuppliersLoading = true;
+            try {
+                const params = new URLSearchParams({
+                    search: this.supplierSearch || '',
+                    filter: this.supplierFilter || 'all'
+                });
+                const res = await fetch(`${this.apiBase}/suppliers?${params.toString()}`);
+                const data = await res.json();
+                if (res.ok) {
+                    this.suppliers = data.suppliers || [];
+                    this.totalSuppliers = data.totalSuppliers || 0;
+                    this.totalActiveSuppliers = data.totalActiveSuppliers || 0;
+                    this.suppliersWithDueCount = data.suppliersWithDueCount || 0;
+                    if (data.totalPurchases !== undefined) this.totalPurchases = data.totalPurchases;
+                    if (data.totalInvoicesCount !== undefined) this.totalInvoicesCount = data.totalInvoicesCount;
+                    if (data.totalPaid !== undefined) this.totalPaid = data.totalPaid;
+                    if (data.totalPaymentsCount !== undefined) this.totalPaymentsCount = data.totalPaymentsCount;
+                    if (data.totalPendingDues !== undefined) this.totalPendingDues = data.totalPendingDues;
+                    if (data.pendingInvoicesCount !== undefined) this.pendingInvoicesCount = data.pendingInvoicesCount;
+                    if (data.totalSupplierDue !== undefined) this.totalSupplierDue = data.totalSupplierDue;
                 }
-            });
+            } catch (e) {
+                console.error('Error fetching suppliers:', e);
+            }
+            this.isSuppliersLoading = false;
+        },
+
+        async openAllSupplierInvoices(filter = 'all') {
+            this.invoicesModalFilter = filter;
+            this.invoicesModalSearch = '';
+            this.isAllSupplierInvoicesCardLoading = true;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'allSupplierInvoicesModal' } }));
+            await this.fetchAllSupplierInvoices();
+            this.isAllSupplierInvoicesCardLoading = false;
+        },
+
+        async fetchAllSupplierInvoices() {
+            this.isAllSupplierInvoicesLoading = true;
+            try {
+                const params = new URLSearchParams({
+                    status: this.invoicesModalFilter || 'all',
+                    search: this.invoicesModalSearch || ''
+                });
+                const res = await fetch(`${this.apiBase}/suppliers/all-invoices?${params.toString()}`);
+                const data = await res.json();
+                if (res.ok) {
+                    this.allSupplierInvoicesList = data.invoices || [];
+                    if (data.overallTotalPurchases !== undefined) this.totalPurchases = data.overallTotalPurchases;
+                }
+            } catch (e) {
+                console.error('Error fetching all supplier invoices:', e);
+            }
+            this.isAllSupplierInvoicesLoading = false;
+        },
+
+        async openAllSupplierPayments() {
+            this.paymentsModalSearch = '';
+            this.isAllSupplierPaymentsCardLoading = true;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'allSupplierPaymentsModal' } }));
+            await this.fetchAllSupplierPayments();
+            this.isAllSupplierPaymentsCardLoading = false;
+        },
+
+        async fetchAllSupplierPayments() {
+            this.isAllSupplierPaymentsLoading = true;
+            try {
+                const params = new URLSearchParams({
+                    search: this.paymentsModalSearch || ''
+                });
+                const res = await fetch(`${this.apiBase}/suppliers/all-payments?${params.toString()}`);
+                const data = await res.json();
+                if (res.ok) {
+                    this.allSupplierPaymentsList = data.payments || [];
+                    if (data.overallTotalPaid !== undefined) this.totalPaid = data.overallTotalPaid;
+                }
+            } catch (e) {
+                console.error('Error fetching all supplier payments:', e);
+            }
+            this.isAllSupplierPaymentsLoading = false;
+        },
+
+        // Backward compatibility wrappers
+        openTodaySupplierInvoices() {
+            this.openAllSupplierInvoices('all');
+        },
+        openTodaySupplierPayments() {
+            this.openAllSupplierPayments();
+        },
+
+        async openSupplierLedgerById(supplierId) {
+            let supplier = this.suppliers.find(s => s.id == supplierId);
+            if (!supplier) {
+                try {
+                    const res = await fetch(`${this.apiBase}/suppliers?search=&per_page=100`);
+                    const data = await res.json();
+                    if (res.ok && data.suppliers) {
+                        supplier = data.suppliers.find(s => s.id == supplierId);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            if (supplier) {
+                this.openSupplierLedger(supplier);
+            }
+        },
+
+        openAddSupplier() {
+            this.newSupplierName = '';
+            this.newSupplierPhone = '';
+            this.newSupplierBankName = '';
+            this.newSupplierAccountNumber = '';
+            this.newSupplierAddress = '';
+            this.isSavingSupplier = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'addSupplierModal' } }));
+        },
+
+        async saveSupplier() {
+            if (this.isSavingSupplier) return;
+
+            if (!this.newSupplierName || !this.newSupplierName.trim()) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterSupplierName || 'الرجاء إدخال اسم المورد', 'warning');
+                return;
+            }
+
+            if (!this.newSupplierPhone || !this.newSupplierPhone.trim()) {
+                Toast.show(config.translations.warning, 'الرجاء إدخال رقم هاتف المورد', 'warning');
+                return;
+            }
+
+            if (!this.newSupplierBankName || !this.newSupplierBankName.trim()) {
+                Toast.show(config.translations.warning, config.translations.please_enter_bank_name || 'الرجاء إدخال اسم البنك أو المحفظة', 'warning');
+                return;
+            }
+
+            this.isSavingSupplier = true;
+
+            try {
+                const res = await fetch(`${this.apiBase}/suppliers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': this.csrf
+                    },
+                    body: JSON.stringify({
+                        name: this.newSupplierName.trim(),
+                        mobile: this.newSupplierPhone.trim(),
+                        bank_name: this.newSupplierBankName ? this.newSupplierBankName.trim() : '-',
+                        account_number: this.newSupplierAccountNumber ? this.newSupplierAccountNumber.trim() : '-',
+                        address: this.newSupplierAddress ? this.newSupplierAddress.trim() : null,
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'addSupplierModal' } }));
+                    Toast.show(config.translations.success, data.message || 'تمت إضافة المورد بنجاح', 'success');
+                    this.newSupplierName = '';
+                    this.newSupplierPhone = '';
+                    this.newSupplierBankName = '';
+                    this.newSupplierAccountNumber = '';
+                    this.newSupplierAddress = '';
+                    this.fetchSuppliers();
+                } else {
+                    let errMsg = data.message || 'حدث خطأ أثناء الحفظ';
+                    if (data.errors) {
+                        const firstErr = Object.values(data.errors)[0];
+                        if (firstErr && firstErr[0]) errMsg = firstErr[0];
+                    }
+                    Toast.show(config.translations.warning, errMsg, 'error');
+                }
+            } catch (e) {
+                console.error('Error saving supplier:', e);
+                Toast.show(config.translations.warning, 'حدث خطأ في الاتصال بالخادم', 'error');
+            }
+            this.isSavingSupplier = false;
+        },
+
+        openEditSupplierModal() {
+            if (!this.activeSupplier) return;
+            this.editSupplierId = this.activeSupplier.id;
+            this.editSupplierName = this.activeSupplier.name || '';
+            this.editSupplierPhone = this.activeSupplier.mobile || '';
+            this.editSupplierBankName = this.activeSupplier.bank_name || '';
+            this.editSupplierAccountNumber = this.activeSupplier.account_number || '';
+            this.editSupplierAddress = this.activeSupplier.address || '';
+            this.isSavingSupplier = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'editSupplierModal' } }));
+        },
+
+        async updateSupplier() {
+            if (this.isSavingSupplier || !this.editSupplierId) return;
+
+            if (!this.editSupplierName || !this.editSupplierName.trim()) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterSupplierName || 'الرجاء إدخال اسم المورد', 'warning');
+                return;
+            }
+
+            if (!this.editSupplierBankName || !this.editSupplierBankName.trim()) {
+                Toast.show(config.translations.warning, config.translations.please_enter_bank_name || 'الرجاء إدخال اسم البنك أو المحفظة', 'warning');
+                return;
+            }
+
+            this.isSavingSupplier = true;
+
+            try {
+                const res = await fetch(`${this.apiBase}/suppliers/${this.editSupplierId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': this.csrf
+                    },
+                    body: JSON.stringify({
+                        name: this.editSupplierName.trim(),
+                        mobile: this.editSupplierPhone ? this.editSupplierPhone.trim() : '',
+                        bank_name: this.editSupplierBankName ? this.editSupplierBankName.trim() : '-',
+                        account_number: this.editSupplierAccountNumber ? this.editSupplierAccountNumber.trim() : '-',
+                        address: this.editSupplierAddress ? this.editSupplierAddress.trim() : null,
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'editSupplierModal' } }));
+                    Toast.show(config.translations.success, data.message || 'تم التعديل بنجاح', 'success');
+                    if (this.activeSupplier && this.activeSupplier.id === this.editSupplierId) {
+                        this.activeSupplier.name = this.editSupplierName.trim();
+                        this.activeSupplier.mobile = this.editSupplierPhone ? this.editSupplierPhone.trim() : '';
+                        this.activeSupplier.bank_name = this.editSupplierBankName.trim();
+                        this.activeSupplier.account_number = this.editSupplierAccountNumber ? this.editSupplierAccountNumber.trim() : '-';
+                        this.activeSupplier.address = this.editSupplierAddress ? this.editSupplierAddress.trim() : null;
+                    }
+                    this.fetchSuppliers();
+                } else {
+                    let errMsg = data.message || 'حدث خطأ أثناء التعديل';
+                    if (data.errors) {
+                        const firstErr = Object.values(data.errors)[0];
+                        if (firstErr && firstErr[0]) errMsg = firstErr[0];
+                    }
+                    Toast.show(config.translations.warning, errMsg, 'error');
+                }
+            } catch (e) {
+                console.error('Error updating supplier:', e);
+                Toast.show(config.translations.warning, 'حدث خطأ في الاتصال بالخادم', 'error');
+            }
+            this.isSavingSupplier = false;
+        },
+
+        async openSupplierLedger(supplier) {
+            this.activeSupplier = supplier;
+            this.supplierLedgerInvoices = [];
+            this.supplierLedgerPayments = [];
+            this.supplierUnpaidInvoices = [];
+            this.supplierLedgerSummary = null;
+            this.loadingSupplierId = supplier.id;
+
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'supplierLedgerModal' } }));
+            await this.fetchSupplierLedger(supplier.id);
+            this.loadingSupplierId = null;
+        },
+
+        async fetchSupplierLedger(supplierId) {
+            this.isSupplierLedgerLoading = true;
+            try {
+                const res = await fetch(`${this.apiBase}/suppliers/${supplierId}/ledger`);
+                const data = await res.json();
+                if (res.ok) {
+                    this.activeSupplier = data.supplier;
+                    this.supplierLedgerInvoices = data.invoices || [];
+                    this.supplierLedgerPayments = data.payments || [];
+                    this.supplierUnpaidInvoices = data.unpaidInvoices || [];
+                    this.supplierLedgerSummary = data.summary || {};
+                }
+            } catch (e) {
+                console.error('Error fetching supplier ledger:', e);
+            }
+            this.isSupplierLedgerLoading = false;
+        },
+
+        openAddSupplierInvoiceModal() {
+            if (!this.activeSupplier) return;
+            this.newSupplierInvoiceNumber = '';
+            this.newSupplierInvoiceAmount = '';
+            this.newSupplierInvoiceDate = config.todayDate || new Date().toISOString().substring(0, 10);
+            this.newSupplierInvoiceNotes = '';
+            this.isSavingSupplierInvoice = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'addSupplierInvoiceModal' } }));
+        },
+
+        async saveSupplierInvoice() {
+            if (this.isSavingSupplierInvoice || !this.activeSupplier) return;
+
+            if (!this.newSupplierInvoiceNumber || !this.newSupplierInvoiceNumber.trim()) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterInvoiceNumber || 'الرجاء إدخال رقم الفاتورة', 'warning');
+                return;
+            }
+
+            if (!this.newSupplierInvoiceAmount || Number(this.newSupplierInvoiceAmount) <= 0) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterAmount || 'الرجاء إدخال المبلغ', 'warning');
+                return;
+            }
+
+            if (!this.newSupplierInvoiceDate) {
+                Toast.show(config.translations.warning, config.translations.pleaseSelectDate || 'الرجاء تحديد التاريخ', 'warning');
+                return;
+            }
+
+            this.isSavingSupplierInvoice = true;
+
+            try {
+                const res = await fetch(`${this.apiBase}/suppliers/${this.activeSupplier.id}/invoices`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrf
+                    },
+                    body: JSON.stringify({
+                        invoice_number: this.newSupplierInvoiceNumber.trim(),
+                        total_amount: this.newSupplierInvoiceAmount,
+                        invoice_date: this.newSupplierInvoiceDate,
+                        notes: this.newSupplierInvoiceNotes ? this.newSupplierInvoiceNotes.trim() : null
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'addSupplierInvoiceModal' } }));
+                    Toast.show(config.translations.success, data.message || 'تم تسجيل الفاتورة بنجاح', 'success');
+                    this.fetchSupplierLedger(this.activeSupplier.id);
+                    this.fetchSuppliers();
+                } else {
+                    Toast.show(config.translations.warning, data.message || 'حدث خطأ أثناء الحفظ', 'error');
+                }
+            } catch (e) {
+                console.error('Error saving invoice:', e);
+            }
+            this.isSavingSupplierInvoice = false;
+        },
+
+        confirmDeleteSupplierInvoice(invoiceId) {
+            this.openDeleteModal('supplier_invoice', invoiceId);
+        },
+
+        openAddSupplierPaymentModal(invoiceId = null) {
+            if (!this.activeSupplier) return;
+
+            if (!this.supplierUnpaidInvoices || this.supplierUnpaidInvoices.length === 0) {
+                Toast.show(config.translations.warning, config.translations.no_unpaid_invoices || 'لا توجد فواتير مستحقة الدفع لهذا المورد', 'warning');
+                return;
+            }
+
+            if (invoiceId) {
+                this.supplierPaymentInvoiceId = invoiceId;
+                const targetInv = this.supplierUnpaidInvoices.find(inv => inv.id == invoiceId);
+                this.supplierPaymentAmount = targetInv ? Number(targetInv.remaining_amount).toFixed(1) : '';
+            } else {
+                // Auto-select first unpaid invoice
+                const firstInv = this.supplierUnpaidInvoices[0];
+                this.supplierPaymentInvoiceId = firstInv.id;
+                this.supplierPaymentAmount = Number(firstInv.remaining_amount).toFixed(1);
+            }
+
+            // Default bank account if available
+            if (config.storeAccounts && config.storeAccounts.length > 0) {
+                this.supplierPaymentBankAccountId = config.storeAccounts[0].id;
+            } else {
+                this.supplierPaymentBankAccountId = '';
+            }
+
+            this.supplierPaymentDate = config.todayDate || new Date().toISOString().substring(0, 10);
+            this.supplierPaymentNotes = '';
+            this.isSavingSupplierPayment = false;
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'addSupplierPaymentModal' } }));
+        },
+
+        async saveSupplierPayment() {
+            if (this.isSavingSupplierPayment || !this.activeSupplier) return;
+
+            if (!this.supplierPaymentInvoiceId) {
+                Toast.show(config.translations.warning, config.translations.please_select_invoice || 'الرجاء اختيار الفاتورة المستحقة', 'warning');
+                return;
+            }
+
+            if (!this.supplierPaymentBankAccountId) {
+                Toast.show(config.translations.warning, config.translations.selectAccount || 'الرجاء اختيار حساب الدفع', 'warning');
+                return;
+            }
+
+            if (!this.supplierPaymentAmount || Number(this.supplierPaymentAmount) <= 0) {
+                Toast.show(config.translations.warning, config.translations.pleaseEnterAmount || 'الرجاء إدخال المبلغ', 'warning');
+                return;
+            }
+
+            // Check invoice remaining limit
+            if (this.selectedInvoiceRemaining !== null && Number(this.supplierPaymentAmount) > this.selectedInvoiceRemaining) {
+                Toast.show(config.translations.warning, `المبلغ المطلوب يتجاوز المتبقي من الفاتورة (${Number(this.selectedInvoiceRemaining).toFixed(1)} ₪)`, 'warning');
+                return;
+            }
+
+            // Check available balance
+            const available = Number(this.bankBalances[this.supplierPaymentBankAccountId] || 0);
+            if (Number(this.supplierPaymentAmount) > available) {
+                Toast.show(config.translations.warning, config.translations.amount_exceeds_balance || 'عذراً، المبلغ المطلوب أكبر من الرصيد المتوفر في الخزينة!', 'warning');
+                return;
+            }
+
+            if (!this.supplierPaymentDate) {
+                Toast.show(config.translations.warning, config.translations.pleaseSelectDate || 'الرجاء تحديد التاريخ', 'warning');
+                return;
+            }
+
+            this.isSavingSupplierPayment = true;
+
+            try {
+                const res = await fetch(`${this.apiBase}/suppliers/${this.activeSupplier.id}/payments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrf
+                    },
+                    body: JSON.stringify({
+                        amount: this.supplierPaymentAmount,
+                        store_bank_account_id: this.supplierPaymentBankAccountId,
+                        store_supplier_invoice_id: this.supplierPaymentInvoiceId,
+                        payment_date: this.supplierPaymentDate,
+                        notes: this.supplierPaymentNotes ? this.supplierPaymentNotes.trim() : null
+                    })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    window.dispatchEvent(new CustomEvent('close-modal', { detail: { id: 'addSupplierPaymentModal' } }));
+                    Toast.show(config.translations.success, data.message || 'تم تسجيل وصرف الدفعة بنجاح', 'success');
+                    this.fetchSupplierLedger(this.activeSupplier.id);
+                    this.fetchSuppliers();
+                    this.fetchWithdrawals(); // refresh bank balances & withdrawals tab
+                } else {
+                    Toast.show(config.translations.warning, data.message || 'حدث خطأ أثناء الصرف', 'error');
+                }
+            } catch (e) {
+                console.error('Error saving payment:', e);
+            }
+            this.isSavingSupplierPayment = false;
+        },
+
+        confirmDeleteSupplierPayment(paymentId) {
+            this.openDeleteModal('supplier_payment', paymentId);
         }
-    }));
+    };
+}
+
+window.casherNotebook = casherNotebook;
+
+document.addEventListener('alpine:init', () => {
+    if (typeof Alpine !== 'undefined') {
+        Alpine.data('casherNotebook', (cfg) => window.casherNotebook(cfg));
+    }
 });
+
+if (typeof window.Alpine !== 'undefined') {
+    window.Alpine.data('casherNotebook', (cfg) => window.casherNotebook(cfg));
+}
+
+

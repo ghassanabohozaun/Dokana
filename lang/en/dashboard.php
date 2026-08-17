@@ -117,4 +117,6 @@ return [
     'no_recent_transactions' => 'No recent transactions found',
     'recent_users' => 'Recently Added Users',
     'recent_customers' => 'Recently Added Customers',
+    'secure_system' => 'Secure & Protected Cashier System',
+    'theme' => 'Theme',
 ];

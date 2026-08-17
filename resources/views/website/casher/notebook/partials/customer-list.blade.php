@@ -91,11 +91,11 @@
             
             <!-- Load More -->
             <template x-if="totalCustomers > customers.length">
-                <div class="mt-8 mb-4 flex justify-center">
-                    <button @click="loadMoreCustomers" class="group relative px-6 py-3 text-sm font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white dark:bg-emerald-500/10 dark:hover:bg-emerald-500 dark:text-emerald-400 dark:hover:text-white rounded-full transition-all duration-75 flex items-center justify-center gap-2 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/20 active:scale-95">
+                <div class="mt-8 mb-12 flex justify-center pb-10 px-2">
+                    <button @click="loadMoreCustomers" class="w-full max-w-xs py-3.5 px-6 text-sm font-bold text-primary bg-primary/10 hover:bg-primary hover:text-white dark:bg-emerald-500/10 dark:hover:bg-emerald-500 dark:text-emerald-400 dark:hover:text-white rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/20 active:scale-95 touch-manipulation cursor-pointer">
                         <span class="flex items-center gap-2">
-                            {{ __('notebook.load_more_customers') }} 
-                            <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
+                            <span>{{ __('notebook.load_more_customers') }}</span>
+                            <i class="ph-bold ph-caret-down text-base"></i>
                         </span>
                     </button>
                 </div>

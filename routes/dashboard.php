@@ -18,6 +18,7 @@ use App\Http\Controllers\Dashboard\StoreSupplierController;
 use App\Http\Controllers\Dashboard\StoreSupplierInvoiceController;
 use App\Http\Controllers\Dashboard\StoreSupplierPaymentController;
 use App\Http\Controllers\Dashboard\StoreBankAccountAdjustmentController;
+use App\Http\Controllers\Dashboard\NotificationController;
 use App\Livewire\Notifications\NotificationCenter;
 use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;

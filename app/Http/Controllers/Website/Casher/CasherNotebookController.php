@@ -9,8 +9,10 @@ use App\Models\StoreWithdrawal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class CasherNotebookController extends Controller
 {
@@ -55,48 +57,39 @@ class CasherNotebookController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        $storeId = $this->getStoreId();
         $search = $request->query('search', '');
         $filter = $request->query('filter', 'all');
-        $perPage = (int) $request->query('per_page', 5);
+        $perPage = (int) $request->query('per_page', 15);
 
-        $query = StoreCustomer::where('store_id', $this->getStoreId());
+        $query = StoreCustomer::where('store_id', $storeId);
 
         if ($search || $filter !== 'all') {
             $query->where(function($q) use ($search, $filter) {
-                $q->where(function($subQ) use ($search, $filter) {
-                    if ($search) {
-                        $searchTerms = array_filter(explode(' ', trim($search)));
-                        $subQ->where(function($termQ) use ($searchTerms) {
-                            foreach ($searchTerms as $term) {
-                                $termClean = str_replace(['أ', 'إ', 'آ'], 'ا', $term);
-                                $termClean = str_replace('ة', 'ه', $termClean);
-                                $termClean = str_replace('ى', 'ي', $termClean);
-                                
-                                $termQ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا'), 'ة', 'ه'), 'ى', 'ي') LIKE ?", ['%' . $termClean . '%']);
-                            }
-                        });
-                    }
-                    if ($filter === 'debt' || $filter === 'highest_debt') {
-                        $subQ->where('balance', '>', 0);
-                    } elseif ($filter === 'paid') {
-                        $subQ->where('balance', '=', 0);
-                    } elseif ($filter === 'credit') {
-                        $subQ->where('balance', '<', 0);
-                    } elseif ($filter === 'disabled') {
-                        $subQ->where('status', 0);
-                    }
-                    $subQ->where('is_walk_in', false);
-                });
-
                 if ($search) {
-                    $q->orWhere('is_walk_in', true);
+                    $searchTerms = array_filter(explode(' ', trim($search)));
+                    $q->where(function($termQ) use ($searchTerms) {
+                        foreach ($searchTerms as $term) {
+                            $termClean = str_replace(['أ', 'إ', 'آ'], 'ا', $term);
+                            $termClean = str_replace('ة', 'ه', $termClean);
+                            $termClean = str_replace('ى', 'ي', $termClean);
+                            
+                            $termQ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(name, 'أ', 'ا'), 'إ', 'ا'), 'آ', 'ا'), 'ة', 'ه'), 'ى', 'ي') LIKE ?", ['%' . $termClean . '%']);
+                        }
+                    });
+                }
+                if ($filter === 'debt' || $filter === 'highest_debt') {
+                    $q->where('balance', '>', 0);
+                } elseif ($filter === 'paid') {
+                    $q->where('balance', '=', 0);
+                } elseif ($filter === 'credit') {
+                    $q->where('balance', '<', 0);
+                } elseif ($filter === 'disabled') {
+                    $q->where('status', 0);
                 }
             });
         }
 
-        // The total will include the walk-in customer regardless of filter/search.
-        // We might want to subtract 1 if we don't want it to skew "total customers found" 
-        // but it's fine to just count it as a result.
         $totalCustomers = $query->count();
         
         if ($filter === 'highest_debt') {
@@ -110,20 +103,23 @@ class CasherNotebookController extends Controller
             'totalCustomers' => $totalCustomers,
         ];
 
-        // Only calculate heavy stats if there is no search query (e.g. initial load)
+        // Only calculate heavy stats if there is no search query (initial load / page reset)
         if (empty($search)) {
-            $totalDebt = StoreCustomer::where('store_id', $this->getStoreId())->where('balance', '>', 0)->sum('balance');
-            $todayCollections = StoreTransaction::where('store_id', $this->getStoreId())
+            $todayStart = Carbon::today()->startOfDay();
+            $todayEnd = Carbon::today()->endOfDay();
+
+            $totalDebt = StoreCustomer::where('store_id', $storeId)->where('balance', '>', 0)->sum('balance');
+            $todayCollections = StoreTransaction::where('store_id', $storeId)
                 ->where('type', 'payment')
-                ->whereDate('created_at', Carbon::today())
+                ->whereBetween('created_at', [$todayStart, $todayEnd])
                 ->sum('amount');
-            $todayDirectSales = StoreTransaction::where('store_id', $this->getStoreId())
+            $todayDirectSales = StoreTransaction::where('store_id', $storeId)
                 ->where('type', 'direct_sale')
-                ->whereDate('created_at', Carbon::today())
+                ->whereBetween('created_at', [$todayStart, $todayEnd])
                 ->sum('amount');
-            $todayDebts = StoreTransaction::where('store_id', $this->getStoreId())
+            $todayDebts = StoreTransaction::where('store_id', $storeId)
                 ->where('type', 'debt')
-                ->whereDate('created_at', Carbon::today())
+                ->whereBetween('created_at', [$todayStart, $todayEnd])
                 ->sum('amount');
 
             $response = array_merge($response, [
@@ -149,7 +145,7 @@ class CasherNotebookController extends Controller
         $storeId = $this->getStoreId();
 
         $periods = [
-            'today' => [Carbon::today(), Carbon::now()],
+            'today' => [Carbon::today()->startOfDay(), Carbon::now()],
             'week' => [Carbon::now()->startOfWeek(), Carbon::now()],
             'month' => [Carbon::now()->startOfMonth(), Carbon::now()],
         ];
@@ -196,25 +192,27 @@ class CasherNotebookController extends Controller
             'opening_balance' => 'nullable|numeric|min:0',
         ]);
 
-        $customer = StoreCustomer::create([
-            'store_id' => $this->getStoreId(),
-            'name' => $request->name,
-            'phone' => $request->phone,
-        ]);
-
-        if ($request->filled('opening_balance') && $request->opening_balance > 0) {
-            StoreTransaction::create([
-                'store_id' => $customer->store_id,
-                'store_customer_id' => $customer->id,
-                'type' => 'debt',
-                'amount' => $request->opening_balance,
-                'transaction_date' => now(),
-                'description' => __('notebook.opening_balance') ?? 'رصيد افتتاحي',
-                'created_by' => Auth::guard('casher')->id(),
+        return DB::transaction(function() use ($request) {
+            $customer = StoreCustomer::create([
+                'store_id' => $this->getStoreId(),
+                'name' => $request->name,
+                'phone' => $request->phone,
             ]);
-        }
 
-        return response()->json(['customer' => $customer, 'message' => __('notebook.customer_added') . ' ' . $customer->name]);
+            if ($request->filled('opening_balance') && $request->opening_balance > 0) {
+                StoreTransaction::create([
+                    'store_id' => $customer->store_id,
+                    'store_customer_id' => $customer->id,
+                    'type' => 'debt',
+                    'amount' => $request->opening_balance,
+                    'transaction_date' => now(),
+                    'description' => __('notebook.opening_balance') ?? 'رصيد افتتاحي',
+                    'created_by' => Auth::guard('casher')->id(),
+                ]);
+            }
+
+            return response()->json(['customer' => $customer, 'message' => __('notebook.customer_added') . ' ' . $customer->name]);
+        });
     }
 
     /**
@@ -251,7 +249,7 @@ class CasherNotebookController extends Controller
         }
 
         $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($customerId);
-        $perPage = (int) $request->query('per_page', 5);
+        $perPage = (int) $request->query('per_page', 20);
 
         $transactions = $customer->transactions()
             ->selectRaw("store_transactions.*, SUM(CASE WHEN type = 'debt' THEN amount ELSE -amount END) OVER (PARTITION BY store_customer_id ORDER BY transaction_date ASC, id ASC) as running_balance")
@@ -262,7 +260,6 @@ class CasherNotebookController extends Controller
             ->take($perPage)
             ->get();
             
-        // Map createdBy and bank_account_name properties for easier access
         $transactions->transform(function ($tx) {
             $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
             
@@ -295,14 +292,16 @@ class CasherNotebookController extends Controller
         }
 
         $perPage = (int) $request->query('per_page', 20);
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
 
         $transactions = StoreTransaction::with(['customer', 'createdBy', 'bankAccount.paymentEntity'])
             ->where('store_id', $this->getStoreId())
             ->whereIn('type', ['payment', 'direct_sale'])
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->orderBy('id', 'desc')
             ->paginate($perPage);
 
-        // Map data similarly to ledger
         $transactions->getCollection()->transform(function ($tx) {
             $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
             
@@ -333,15 +332,16 @@ class CasherNotebookController extends Controller
         }
 
         $perPage = (int) $request->query('per_page', 20);
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
 
         $transactions = StoreTransaction::with(['customer', 'createdBy'])
             ->where('store_id', $this->getStoreId())
             ->where('type', 'debt')
-            ->whereDate('created_at', Carbon::today())
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->orderBy('id', 'desc')
             ->paginate($perPage);
 
-        // Map data similarly to ledger
         $transactions->getCollection()->transform(function ($tx) {
             $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
             return $tx;
@@ -364,15 +364,16 @@ class CasherNotebookController extends Controller
         }
 
         $perPage = (int) $request->query('per_page', 20);
+        $todayStart = Carbon::today()->startOfDay();
+        $todayEnd = Carbon::today()->endOfDay();
 
         $transactions = StoreTransaction::with(['customer', 'createdBy', 'bankAccount.paymentEntity'])
             ->where('store_id', $this->getStoreId())
             ->where('type', 'direct_sale')
-            ->whereDate('created_at', Carbon::today())
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
             ->orderBy('id', 'desc')
             ->paginate($perPage);
 
-        // Map data similarly to ledger
         $transactions->getCollection()->transform(function ($tx) {
             $tx->cashier_name = $tx->createdBy ? $tx->createdBy->name : null;
             
@@ -402,7 +403,8 @@ class CasherNotebookController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $customer = StoreCustomer::where('store_id', $this->getStoreId())->findOrFail($customerId);
+        $storeId = $this->getStoreId();
+        $customer = StoreCustomer::where('store_id', $storeId)->findOrFail($customerId);
 
         if ($customer->status == 0 && $request->type === 'debt' && !$request->boolean('is_direct_sale')) {
             return response()->json(['message' => __('notebook.customer_disabled_cannot_add_debt') ?? 'العميل معطل، لا يمكن إضافة ديون، يُسمح بتسديد الدفعات والشراء المباشر فقط.'], 403);
@@ -411,64 +413,68 @@ class CasherNotebookController extends Controller
         $request->validate([
             'amount' => 'required|numeric|min:0.1',
             'type' => 'required|in:debt,payment',
-            'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
+            'store_bank_account_id' => [
+                'nullable',
+                'required_if:type,payment',
+                Rule::exists('store_bank_accounts', 'id')->where('store_id', $storeId)
+            ],
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
             'is_direct_sale' => 'nullable|boolean',
         ]);
 
-        // Note: Validation for debt limit is now handled by StoreTransactionObserver creating event
+        return DB::transaction(function() use ($request, $customer, $storeId) {
+            if ($request->boolean('is_direct_sale')) {
+                // Direct POS sale: record debt then immediate payment atomically
+                $debtTx = new StoreTransaction([
+                    'store_id' => $storeId,
+                    'store_customer_id' => $customer->id,
+                    'type' => 'debt',
+                    'amount' => $request->amount,
+                    'transaction_date' => $request->transaction_date,
+                    'description' => $request->description ?: 'مبيعات',
+                    'created_by' => Auth::guard('casher')->id(),
+                ]);
+                $debtTx->skip_limit_check = true;
+                $debtTx->save();
 
-        if ($request->boolean('is_direct_sale')) {
-            // Direct POS sale: record debt then immediate payment
-            $debtTx = new StoreTransaction([
-                'store_id' => $this->getStoreId(),
-                'store_customer_id' => $customer->id,
-                'type' => 'debt',
-                'amount' => $request->amount,
-                'transaction_date' => $request->transaction_date,
-                'description' => $request->description ?: 'مبيعات',
-                'created_by' => Auth::guard('casher')->id(),
+                $tx = StoreTransaction::create([
+                    'store_id' => $storeId,
+                    'store_customer_id' => $customer->id,
+                    'store_bank_account_id' => $request->store_bank_account_id,
+                    'type' => 'payment',
+                    'amount' => $request->amount,
+                    'transaction_date' => $request->transaction_date,
+                    'description' => $request->description ?: 'دفع مباشر',
+                    'linked_transaction_id' => $debtTx->id,
+                    'created_by' => Auth::guard('casher')->id(),
+                ]);
+
+                // Link debt to payment
+                $debtTx->updateQuietly(['linked_transaction_id' => $tx->id]);
+            } else {
+                $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
+
+                $tx = StoreTransaction::create([
+                    'store_id' => $storeId,
+                    'store_customer_id' => $customer->id,
+                    'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
+                    'type' => $request->type,
+                    'amount' => $request->amount,
+                    'transaction_date' => $request->transaction_date,
+                    'description' => $description,
+                    'created_by' => Auth::guard('casher')->id(),
+                ]);
+            }
+
+            $customer->refresh();
+
+            return response()->json([
+                'transaction' => $tx,
+                'customer' => $customer,
+                'message' => $request->type === 'debt' ? __('notebook.debt_registered') : __('notebook.payment_registered'),
             ]);
-            $debtTx->skip_limit_check = true;
-            $debtTx->save();
-
-            $tx = StoreTransaction::create([
-                'store_id' => $this->getStoreId(),
-                'store_customer_id' => $customer->id,
-                'store_bank_account_id' => $request->store_bank_account_id,
-                'type' => 'payment',
-                'amount' => $request->amount,
-                'transaction_date' => $request->transaction_date,
-                'description' => $request->description ?: 'دفع مباشر',
-                'linked_transaction_id' => $debtTx->id,
-                'created_by' => Auth::guard('casher')->id(),
-            ]);
-
-            // Link debt to payment
-            $debtTx->updateQuietly(['linked_transaction_id' => $tx->id]);
-        } else {
-            $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
-
-            $tx = StoreTransaction::create([
-                'store_id' => $this->getStoreId(),
-                'store_customer_id' => $customer->id,
-                'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
-                'type' => $request->type,
-                'amount' => $request->amount,
-                'transaction_date' => $request->transaction_date,
-                'description' => $description,
-                'created_by' => Auth::guard('casher')->id(),
-            ]);
-        }
-
-        $customer->refresh();
-
-        return response()->json([
-            'transaction' => $tx,
-            'customer' => $customer,
-            'message' => $request->type === 'debt' ? __('notebook.debt_registered') : __('notebook.payment_registered'),
-        ]);
+        });
     }
 
     /**
@@ -480,35 +486,43 @@ class CasherNotebookController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $tx = StoreTransaction::where('store_id', $this->getStoreId())->findOrFail($id);
+        $storeId = $this->getStoreId();
+        $tx = StoreTransaction::where('store_id', $storeId)->findOrFail($id);
 
         $request->validate([
             'amount' => 'required|numeric|min:0.1',
             'type' => 'required|in:debt,payment',
-            'store_bank_account_id' => 'nullable|required_if:type,payment|exists:store_bank_accounts,id',
+            'store_bank_account_id' => [
+                'nullable',
+                'required_if:type,payment',
+                Rule::exists('store_bank_accounts', 'id')->where('store_id', $storeId)
+            ],
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
         ]);
 
-        $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
+        return DB::transaction(function() use ($request, $tx) {
+            $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
 
-        $tx->update([
-            'type' => $request->type,
-            'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
-            'amount' => $request->amount,
-            'transaction_date' => $request->transaction_date,
-            'description' => $description,
-            // we do not update created_by on update
-        ]);
+            $tx->update([
+                'type' => $request->type,
+                'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
+                'amount' => $request->amount,
+                'transaction_date' => $request->transaction_date,
+                'description' => $description,
+            ]);
 
-        $customer = $tx->customer()->first();
-        $customer->refresh();
+            $customer = $tx->customer()->first();
+            if ($customer) {
+                $customer->refresh();
+            }
 
-        return response()->json([
-            'transaction' => $tx,
-            'customer' => $customer,
-            'message' => __('notebook.transaction_updated'),
-        ]);
+            return response()->json([
+                'transaction' => $tx,
+                'customer' => $customer,
+                'message' => __('notebook.transaction_updated'),
+            ]);
+        });
     }
 
     /**
@@ -521,15 +535,19 @@ class CasherNotebookController extends Controller
         }
 
         $tx = StoreTransaction::where('store_id', $this->getStoreId())->findOrFail($id);
-        $customer = $tx->customer()->first();
-        
-        $tx->forceDelete();
-        $customer->refresh();
 
-        return response()->json([
-            'customer' => $customer,
-            'message' => __('notebook.transaction_deleted'),
-        ]);
+        return DB::transaction(function() use ($tx) {
+            $customer = $tx->customer()->first();
+            $tx->forceDelete();
+            if ($customer) {
+                $customer->refresh();
+            }
+
+            return response()->json([
+                'customer' => $customer,
+                'message' => __('notebook.transaction_deleted'),
+            ]);
+        });
     }
 
     /**
@@ -587,7 +605,7 @@ class CasherNotebookController extends Controller
             $aiText = $body['candidates'][0]['content']['parts'][0]['text'] ?? '';
             
             // Clean markdown formatting if Gemini returns ```json ... ```
-            $aiText = preg_replace('/```json\s*/', '', $aiText);
+            $aiText = preg_replace('/```json\s*/i', '', $aiText);
             $aiText = preg_replace('/```\s*/', '', $aiText);
             
             $data = json_decode(trim($aiText), true);
@@ -596,7 +614,7 @@ class CasherNotebookController extends Controller
                 return response()->json(['message' => 'لم يتمكن الذكاء الاصطناعي من فهم الجملة بوضوح'], 400);
             }
 
-            // Fuzzy search for the customer
+            // Search for customer safely
             $search = $data['customer_name'];
             $searchTerms = array_filter(explode(' ', trim($search)));
             
@@ -614,12 +632,11 @@ class CasherNotebookController extends Controller
                 });
             }
 
-            // Get the first matching customer
             $customer = $customerQuery->first();
 
             return response()->json([
                 'success' => true,
-                'customer' => $customer, // Can be null if not found
+                'customer' => $customer,
                 'parsed_name' => $data['customer_name'],
                 'amount' => $data['amount'],
                 'type' => $data['type'],

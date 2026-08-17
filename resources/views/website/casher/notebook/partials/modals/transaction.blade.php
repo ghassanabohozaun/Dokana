@@ -51,7 +51,13 @@
                         <div>
                             <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.amount_currency') }} <span class="text-red-500">*</span></label>
                             <div class="relative">
-                                <input x-model="txAmount" type="number" required min="0.01" step="0.01" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pe-12 ps-4 py-4 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-3xl font-black transition-all text-gray-900 dark:text-white text-start" placeholder="0.00">
+                                <input x-model="txAmount" 
+                                       @input="txAmount = sanitizeAmountInput(txAmount)" 
+                                       type="text" 
+                                       inputmode="decimal" 
+                                       required 
+                                       class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl pe-12 ps-4 py-4 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none text-3xl font-black transition-all text-gray-900 dark:text-white text-start" 
+                                       placeholder="0.00">
                                 <span class="absolute end-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">₪</span>
                             </div>
                         </div>

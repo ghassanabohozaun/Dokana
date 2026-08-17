@@ -116,4 +116,6 @@ return [
     'no_recent_transactions' => 'لا توجد حركات مؤخراً',
     'recent_users' => 'أحدث المستخدمين المضافين',
     'recent_customers' => 'أحدث الزبائن المنضمين',
+    'secure_system' => 'نظام كاشير آمن ومحمي',
+    'theme' => 'المظهر',
 ];

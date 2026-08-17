@@ -154,7 +154,10 @@
                     <div class="absolute inset-y-0 {{ app()->getLocale() == 'ar' ? 'left-0 pl-4' : 'right-0 pr-4' }} flex items-center pointer-events-none text-red-500">
                         <i class="ph-bold ph-hand-coins text-xl"></i>
                     </div>
-                    <input type="number" step="0.01" x-model="withdrawalAmount" 
+                    <input type="text" 
+                        inputmode="decimal" 
+                        x-model="withdrawalAmount" 
+                        @input="withdrawalAmount = sanitizeAmountInput(withdrawalAmount)"
                         class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl {{ app()->getLocale() == 'ar' ? 'pl-12 pr-4 text-right' : 'pr-12 pl-4 text-left' }} py-3.5 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 outline-none transition-all font-bold text-lg text-gray-900 dark:text-white" 
                         placeholder="0.00" required>
                 </div>

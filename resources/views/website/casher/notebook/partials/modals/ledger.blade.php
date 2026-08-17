@@ -4,7 +4,7 @@
          x-on:open-modal.window="if ($event.detail.id === 'ledgerModal') show = true"
          x-on:close-modal.window="if ($event.detail.id === 'ledgerModal') show = false"
          style="display: none;"
-         class="overlay-panel flex justify-center"
+         class="overlay-panel overlay-panel-detail flex justify-center"
          x-transition:enter="transform transition ease-out duration-200"
          x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"
@@ -122,7 +122,7 @@
                     </div>
 
                     <!-- Transaction List -->
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
+                    <div class="flex-1 overflow-y-auto p-4 pb-28 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
                         <div x-show="isLedgerLoading && ledgerTransactions.length === 0" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                             <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-primary"></i>
                         </div>
@@ -140,13 +140,15 @@
                                     <div class="bg-white dark:bg-darkCard p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col gap-3 mb-3 hover:shadow-md transition-shadow">
                                         <div class="flex justify-between items-center">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" :class="tx.type === 'debt' ? 'bg-red-50 text-red-500 dark:bg-red-900/20' : 'bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20'">
+                                                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                                                     :class="tx.type === 'debt' ? 'bg-red-50 text-red-500 dark:bg-red-900/20' : 'bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20'">
                                                     <i class="ph-bold text-lg" :class="tx.type === 'debt' ? 'ph-arrow-up-right' : 'ph-arrow-down-left'"></i>
                                                 </div>
                                                 <div>
-                                                    <p class="font-bold text-sm text-gray-900 dark:text-gray-100" x-text="tx.description"></p>
-                                                    <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
-                                                        <i class="ph-fill ph-calendar text-xs"></i> 
+                                                    <p class="font-bold text-sm text-gray-800 dark:text-gray-200" x-text="tx.type === 'debt' ? '{{ __('notebook.debt') }}' : (tx.type === 'direct_sale' ? '{{ __('notebook.direct_sale') ?? 'شراء فوري' }}' : '{{ __('notebook.payment') }}')"></p>
+                                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" x-text="tx.description"></p>
+                                                    <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 font-medium flex items-center gap-1">
+                                                        <i class="ph-fill ph-clock text-xs"></i> 
                                                         <span x-text="formatDateTime(tx.transaction_date || tx.created_at)"></span>
                                                     </p>
                                                     <!-- Cashier Name -->
@@ -155,7 +157,7 @@
                                                             <i class="ph-fill ph-user text-[10px]"></i> {{ __('notebook.added_by') }}: <span x-text="tx.cashier_name"></span>
                                                         </p>
                                                     </template>
-                                                    <!-- Bank Account Name -->
+                                                    <!-- Bank Account Name for payments -->
                                                     <template x-if="tx.bank_account_name">
                                                         <p class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1 font-medium flex items-center gap-1 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-md inline-flex w-fit">
                                                             <i class="ph-fill ph-bank text-xs"></i> <span x-text="tx.bank_account_name"></span>
@@ -163,20 +165,13 @@
                                                     </template>
                                                 </div>
                                             </div>
-                                            <div class="text-left flex flex-col items-end shrink-0">
-                                                <div class="font-black text-xl" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
-                                                    <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
-                                                </div>
-                                                <template x-if="tx.running_balance !== undefined && tx.running_balance !== null">
-                                                    <div class="text-[10px] font-bold mt-1 px-2 py-0.5 rounded-md" 
-                                                         :class="Number(tx.running_balance) > 0 ? 'bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400' : (Number(tx.running_balance) < 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
-                                                        {{ __('notebook.balance_after') ?? 'الرصيد بعدها:' }} <span x-text="Math.abs(Number(tx.running_balance)).toFixed(1)"></span> ₪
-                                                    </div>
-                                                </template>
+                                            <div class="text-left font-black shrink-0 text-xl"
+                                                 :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
+                                                <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
                                             </div>
                                         </div>
                                         @if(auth('casher')->user()->hasAbility('notebook_update') || auth('casher')->user()->hasAbility('notebook_delete'))
-                                        <template x-if="!(tx.type === 'debt' && tx.linked_transaction_id !== null) && activeCustomer.status != 0">
+                                        <template x-if="activeCustomer.status != 0">
                                             <div class="flex items-center gap-2 border-t dark:border-gray-800 pt-3 mt-1">
                                                 @if(auth('casher')->user()->hasAbility('notebook_update'))
                                                 <button @click="editTransaction(tx)" class="flex-1 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-lg transition-colors flex items-center justify-center gap-1">
@@ -197,13 +192,16 @@
                         </template>
 
                         <template x-if="totalLedgerTransactions > ledgerTransactions.length">
-                            <div class="mt-6 flex justify-center pb-4">
-                                <button @click="loadMoreLedger" :disabled="isLedgerLoading" class="group relative px-6 py-3 text-xs font-bold text-gray-600 bg-white hover:bg-gray-100 shadow-sm border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-300 rounded-full transition-all duration-75 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <div class="mt-6 mb-10 flex justify-center pb-14 px-2">
+                                <button @click="loadMoreLedger" :disabled="isLedgerLoading" 
+                                        class="w-full max-w-sm py-3.5 px-6 text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 shadow-md hover:shadow-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 dark:text-gray-200 rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 touch-manipulation cursor-pointer">
                                     <span class="flex items-center gap-2" x-show="!isLedgerLoading">
-                                        {{ __('notebook.show_older_transactions') }} <i class="ph-bold ph-caret-down group-hover:translate-y-0.5 transition-transform"></i>
+                                        <span>{{ __('notebook.show_older_transactions') }}</span>
+                                        <i class="ph-bold ph-caret-down text-base"></i>
                                     </span>
                                     <span class="flex items-center gap-2" x-show="isLedgerLoading" style="display: none;">
-                                        <i class="ph-bold ph-spinner-gap animate-spin text-lg"></i> {{ __('notebook.loading') ?? 'جاري التحميل...' }}
+                                        <i class="ph-bold ph-spinner-gap animate-spin text-lg text-primary"></i> 
+                                        <span>{{ __('notebook.loading') ?? 'جاري التحميل...' }}</span>
                                     </span>
                                 </button>
                             </div>

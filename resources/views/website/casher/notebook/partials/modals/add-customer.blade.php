@@ -37,11 +37,22 @@
                         </div>
                         <div>
                             <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.phone_optional') }}</label>
-                            <input x-model="newCustomerPhone" type="tel" maxlength="10" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" dir="ltr" placeholder="05...">
+                            <input x-model="newCustomerPhone" 
+                                   @input="newCustomerPhone = normalizeArabicNumbers(newCustomerPhone)" 
+                                   type="tel" 
+                                   maxlength="10" 
+                                   class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" 
+                                   dir="ltr" 
+                                   placeholder="05...">
                         </div>
                         <div>
                             <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.opening_balance') ?? 'رصيد افتتاحي (ديون سابقة)' }}</label>
-                            <input x-model="newCustomerOpeningBalance" type="number" step="0.01" min="0" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" placeholder="0.00">
+                            <input x-model="newCustomerOpeningBalance" 
+                                   @input="newCustomerOpeningBalance = sanitizeAmountInput(newCustomerOpeningBalance)" 
+                                   type="text" 
+                                   inputmode="decimal" 
+                                   class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder-gray-400" 
+                                   placeholder="0.00">
                         </div>
                         
                         <!-- Invisible submit button to allow form submission on enter -->

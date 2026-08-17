@@ -1,4 +1,4 @@
-﻿/* Custom Tajawal Font */
+/* Custom Tajawal Font */
 @font-face {
     font-family: 'Tajawal';
     font-style: normal;
@@ -303,12 +303,20 @@ body {
     overflow-y: auto;
 }
 
+.overlay-panel-detail {
+    z-index: 115 !important;
+}
+
+.overlay-panel-form {
+    z-index: 130 !important;
+}
+
 .dark .overlay-panel {
     background: #0f172a;
 }
 
 .modal-highest-z {
-    z-index: 110 !important;
+    z-index: 150 !important;
 }
 
 /* Cashier Notebook - Modern Glassmorphism */
