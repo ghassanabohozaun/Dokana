@@ -1,6 +1,6 @@
 @extends('layouts.website.app')
 
-@section('title', __('dashboard.casher') . ' - ' . (setting()->getTranslation('site_name', app()->getLocale()) ?: ''))
+@section('title', (setting() && setting()->site_name ? setting()->site_name . ' | ' : '') . __('dashboard.casher'))
 
 @section('content')
 <div x-data="casherNotebook(window.casherConfig)" x-init="init()" class="notebook-container transition-colors duration-75 font-sans shadow-xl">

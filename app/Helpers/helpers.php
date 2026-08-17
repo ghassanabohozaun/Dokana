@@ -61,7 +61,7 @@ if (!function_exists('Lang')) {
 if (!function_exists('user')) {
     function user()
     {
-        return auth()->guard('web')->user();
+        return auth()->guard('web')->user() ?? auth()->guard('casher')->user() ?? auth()->guard('admin')->user() ?? auth()->user();
     }
 }
 
