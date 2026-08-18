@@ -78,7 +78,7 @@ class CasherNotebookController extends Controller
                         }
                     });
                 }
-                if ($filter === 'debt' || $filter === 'highest_debt') {
+                if ($filter === 'debt' || $filter === 'highest_debt' || $filter === 'oldest_debt') {
                     $q->where('balance', '>', 0);
                 } elseif ($filter === 'paid') {
                     $q->where('balance', '=', 0);
@@ -94,6 +94,19 @@ class CasherNotebookController extends Controller
         
         if ($filter === 'highest_debt') {
             $customers = $query->orderByDesc('is_walk_in')->orderByDesc('balance')->latest()->take($perPage)->get();
+        } elseif ($filter === 'oldest_debt') {
+            $lastTxSubquery = StoreTransaction::select('transaction_date')
+                ->whereColumn('store_customer_id', 'store_customers.id')
+                ->latest('transaction_date')
+                ->limit(1);
+
+            $customers = $query->addSelect([
+                    'last_activity_date' => $lastTxSubquery
+                ])
+                ->orderByDesc('is_walk_in')
+                ->orderByRaw('COALESCE(last_activity_date, store_customers.created_at) ASC')
+                ->take($perPage)
+                ->get();
         } else {
             $customers = $query->orderByDesc('is_walk_in')->latest()->take($perPage)->get();
         }

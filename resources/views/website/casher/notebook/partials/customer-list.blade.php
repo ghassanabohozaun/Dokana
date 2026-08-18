@@ -53,6 +53,13 @@
                             <p class="text-[11px] text-gray-400 dark:text-gray-500 mt-1 font-medium flex items-center gap-1">
                                 <i class="ph-fill ph-phone text-xs"></i> <span x-text="customer.phone || '{{ __('notebook.no_phone') }}'"></span>
                             </p>
+                            <template x-if="filter === 'oldest_debt' && (customer.last_activity_date || customer.created_at)">
+                                <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-bold flex items-center gap-1 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-md w-fit">
+                                    <i class="ph-bold ph-clock-counter-clockwise text-xs"></i>
+                                    <span>{{ __('notebook.last_activity') ?? 'آخر نشاط:' }}</span>
+                                    <span x-text="formatDateTime(customer.last_activity_date || customer.created_at)"></span>
+                                </p>
+                            </template>
                             <template x-if="customer.max_debt_limit !== null">
                                 <div class="mt-2 w-full pr-1">
                                     <div class="flex justify-between items-center text-[10px] mb-1.5 gap-2">

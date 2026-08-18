@@ -146,3 +146,29 @@ Route::get('/run-my-migrations-secretly', function () {
         </div>';
     }
 });
+
+// Dedicated Quick Cache Cleaner for Production without SSH
+Route::get('/clear-cache', function () {
+    if (!app()->isLocal() && request('key') !== 'dokana_prod_safe_2026') {
+        abort(403, 'Access Denied: Unauthorized access.');
+    }
+
+    try {
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+
+        return '<div style="font-family: sans-serif; padding: 30px; line-height: 1.6; background: #0f172a; color: #f8fafc; border-radius: 12px; max-width: 600px; margin: 40px auto; direction: rtl; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); border: 1px solid #334155;">
+            <h2 style="color: #10b981; margin-top: 0; display: flex; align-items: center; gap: 8px;">✨ تم تنظيف الكاش بنجاح!</h2>
+            <p style="color: #94a3b8; font-size: 14px;">تم مسح وتفريغ كاش القوالب (Views)، والتكوين (Config)، والمسارات (Routes)، وذاكرة التخزين المؤقت (Cache).</p>
+            <pre style="background: #1e293b; padding: 14px; border-radius: 8px; color: #38bdf8; direction: ltr; text-align: left; font-size: 13px; border: 1px solid #334155;">' . e($output) . '</pre>
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="' . url('/') . '" style="display: inline-block; background: #2563eb; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-size: 14px;">الذهاب للرئيسية</a>
+            </div>
+        </div>';
+    } catch (\Exception $e) {
+        return '<div style="font-family: sans-serif; padding: 30px; background: #450a0a; color: #fecaca; border-radius: 12px; max-width: 600px; margin: 40px auto; direction: rtl;">
+            <h2 style="color: #ef4444; margin-top: 0;">❌ حدث خطأ أثناء تنظيف الكاش:</h2>
+            <pre style="direction: ltr; text-align: left;">' . e($e->getMessage()) . '</pre>
+        </div>';
+    }
+});
