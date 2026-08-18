@@ -1,10 +1,10 @@
 <!-- Add Supplier Payment Overlay -->
 <div x-data="{ show: false, openBankSelect: false, openInvoiceSelect: false }" 
      x-show="show" 
-     x-on:open-modal.window="if ($event.detail.id === 'addSupplierPaymentModal') { show = true; openBankSelect = false; openInvoiceSelect = false; }"
+     x-on:open-modal.window="if ($event.detail.id === 'addSupplierPaymentModal') { show = true; openBankSelect = false; openInvoiceSelect = false; $nextTick(() => { $el.scrollTop = 0; }); }"
      x-on:close-modal.window="if ($event.detail.id === 'addSupplierPaymentModal') { show = false; openBankSelect = false; openInvoiceSelect = false; }"
      style="display: none;"
-     class="overlay-panel flex justify-center"
+     class="overlay-panel overlay-panel-form flex justify-center"
      x-transition:enter="transform transition ease-out duration-200"
      x-transition:enter-start="-translate-x-full"
      x-transition:enter-end="translate-x-0"
@@ -64,18 +64,41 @@
                                 @foreach($storeBankAccounts as $account)
                                     @php
                                         $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
+                                        $holderName = is_array($account->account_holder_name) 
+                                            ? ($account->account_holder_name[app()->getLocale()] ?? $account->account_holder_name['ar'] ?? '') 
+                                            : $account->account_holder_name;
                                         $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
                                     @endphp
                                     <button type="button" 
                                             @click="supplierPaymentBankAccountId = '{{ $account->id }}'; openBankSelect = false;" 
                                             class="w-full text-start px-5 py-3 hover:bg-amber-50/50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between group border-b border-gray-50 dark:border-gray-700/30 last:border-0"
                                             :class="supplierPaymentBankAccountId == '{{ $account->id }}' ? 'bg-amber-50/80 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 font-bold' : 'text-gray-700 dark:text-gray-300'">
-                                        <div class="flex items-center gap-2">
-                                            <i class="ph-bold ph-credit-card text-lg text-amber-500"></i>
-                                            <span>{{ $accountName }}</span>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                                                 :class="supplierPaymentBankAccountId == '{{ $account->id }}' ? 'bg-amber-500 text-white' : 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'">
+                                                @if($account->account_type === 'cash')
+                                                    <i class="ph-bold ph-money text-lg"></i>
+                                                @else
+                                                    <i class="ph-bold ph-bank text-lg"></i>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-sm text-gray-900 dark:text-white">{{ $accountName }}</span>
+                                                    @if($account->is_default)
+                                                        <span class="text-[10px] bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold">الأساسي</span>
+                                                    @endif
+                                                </div>
+                                                @if(!empty($holderName))
+                                                    <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5 font-medium">
+                                                        <i class="ph-fill ph-user text-[11px] text-amber-500/80"></i>
+                                                        <span>{{ $holderName }}</span>
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
-                                              x-text="'رصيد: ' + Number(bankBalances['{{ $account->id }}'] || 0).toFixed(1)">
+                                        <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 shrink-0"
+                                              x-text="'رصيد: ' + Number(bankBalances['{{ $account->id }}'] || 0).toFixed(1) + ' ₪'">
                                         </span>
                                     </button>
                                 @endforeach

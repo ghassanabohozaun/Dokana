@@ -1,7 +1,7 @@
     <!-- Today Direct Sales Overlay -->
     <div x-data="{ show: false }" 
          x-show="show" 
-         x-on:open-modal.window="if ($event.detail.id === 'todayDirectSalesModal') show = true"
+         x-on:open-modal.window="if ($event.detail.id === 'todayDirectSalesModal') { show = true; $nextTick(() => { if($refs.todayDirectSalesScroll) $refs.todayDirectSalesScroll.scrollTop = 0; $el.scrollTop = 0; }); }"
          x-on:close-modal.window="if ($event.detail.id === 'todayDirectSalesModal') show = false"
          style="display: none;"
          class="overlay-panel flex justify-center"
@@ -40,7 +40,7 @@
                 </div>
                 
                 <!-- Transaction List -->
-                <div class="flex-1 overflow-y-auto p-4 pb-28 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
+                <div x-ref="todayDirectSalesScroll" class="flex-1 overflow-y-auto p-4 pb-28 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
                     <div x-show="isDirectSalesLoading && todayDirectSalesList.length === 0" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                         <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-primary"></i>
                     </div>

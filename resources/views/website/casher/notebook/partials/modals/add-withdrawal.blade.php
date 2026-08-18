@@ -1,10 +1,10 @@
 <!-- Add Withdrawal Drawer -->
 <div x-data="{ show: false }" 
      x-show="show" 
-     x-on:open-modal.window="if ($event.detail.id === 'withdrawalModal') show = true"
+     x-on:open-modal.window="if ($event.detail.id === 'withdrawalModal') { show = true; $nextTick(() => { if($refs.withdrawalScroll) $refs.withdrawalScroll.scrollTop = 0; }); }"
      x-on:close-modal.window="if ($event.detail.id === 'withdrawalModal') show = false"
      style="display: none;"
-     class="fixed inset-0 z-50 flex" x-cloak>
+     class="fixed inset-0 z-[120] flex" x-cloak>
      
     <!-- Backdrop -->
     <div x-show="show" 
@@ -25,7 +25,8 @@
          x-transition:leave="transform transition ease-in duration-150"
          x-transition:leave-start="translate-x-0"
          x-transition:leave-end="-translate-x-full"
-         class="drawer-panel p-6 overflow-y-auto">
+         class="drawer-panel p-6 overflow-y-auto"
+         x-ref="withdrawalScroll">
          
         <div class="w-12 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-6 md:hidden"></div>
         
@@ -94,7 +95,9 @@
                          @foreach($storeBankAccounts as $account)
                              @php
                                  $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
-                                 $isDefault = $account->is_default ? " <span class='text-[10px] bg-red-500/10 text-red-500 px-2 py-0.5 rounded-full mx-1'>الأساسي</span>" : "";
+                                 $holderName = is_array($account->account_holder_name) 
+                                     ? ($account->account_holder_name[app()->getLocale()] ?? $account->account_holder_name['ar'] ?? '') 
+                                     : $account->account_holder_name;
                                  $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
                              @endphp
                              <button type="button" 
@@ -111,15 +114,28 @@
                                         @endif
                                      </div>
                                      <div class="flex flex-col">
-                                        <span class="font-bold text-sm">{!! addslashes($accountName) !!}</span>
-                                        @if($account->is_default)
-                                            <span class="text-[10px] text-red-500 font-bold mt-0.5">{{ __('bank_accounts.is_default') ?? 'الأساسي' }}</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-sm text-gray-900 dark:text-white">{!! addslashes($accountName) !!}</span>
+                                            @if($account->is_default)
+                                                <span class="text-[10px] bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300 px-1.5 py-0.5 rounded-full font-bold">{{ __('bank_accounts.is_default') ?? 'الأساسي' }}</span>
+                                            @endif
+                                        </div>
+                                        @if(!empty($holderName))
+                                            <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5 font-medium">
+                                                <i class="ph-fill ph-user text-[11px] text-red-500/70"></i>
+                                                <span>{{ $holderName }}</span>
+                                            </span>
                                         @endif
                                      </div>
                                  </div>
                                  
-                                 <div x-show="withdrawalBankAccountId == '{{ $account->id }}'" class="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-sm" x-transition.scale>
-                                    <i class="ph-bold ph-check text-xs"></i>
+                                 <div class="flex items-center gap-2">
+                                     <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                           x-text="'رصيد: ' + Number(bankBalances['{{ $account->id }}'] || 0).toFixed(1) + ' ₪'">
+                                     </span>
+                                     <div x-show="withdrawalBankAccountId == '{{ $account->id }}'" class="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center shadow-sm" x-transition.scale>
+                                        <i class="ph-bold ph-check text-xs"></i>
+                                     </div>
                                  </div>
                              </button>
                          @endforeach

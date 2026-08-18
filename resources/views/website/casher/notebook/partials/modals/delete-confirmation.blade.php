@@ -2,7 +2,7 @@
     <div x-data="{ show: false }" x-show="show"
         x-on:open-modal.window="if ($event.detail.id === 'deleteConfirmModal') show = true"
         x-on:close-modal.window="if ($event.detail.id === 'deleteConfirmModal') show = false"
-        style="display: none; z-index: 120;" class="fixed inset-0 flex items-center justify-center p-4 sm:p-0" x-cloak>
+        style="display: none; z-index: 150;" class="fixed inset-0 flex items-center justify-center p-4 sm:p-0 modal-highest-z" x-cloak>
 
         <!-- Backdrop -->
         <div x-show="show" x-transition:enter="transition-opacity ease-out duration-300"

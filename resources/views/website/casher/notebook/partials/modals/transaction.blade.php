@@ -1,10 +1,10 @@
     <!-- Add Transaction Overlay -->
     <div x-data="{ show: false }" 
          x-show="show" 
-         x-on:open-modal.window="if ($event.detail.id === 'transactionModal') show = true"
+         x-on:open-modal.window="if ($event.detail.id === 'transactionModal') { show = true; $nextTick(() => { $el.scrollTop = 0; }); }"
          x-on:close-modal.window="if ($event.detail.id === 'transactionModal') show = false"
-         style="display: none; z-index: 110;"
-         class="overlay-panel flex justify-center"
+         style="display: none;"
+         class="overlay-panel overlay-panel-form flex justify-center"
          x-transition:enter="transform transition ease-out duration-200"
          x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"
@@ -108,7 +108,9 @@
                                      @foreach($storeBankAccounts as $account)
                                          @php
                                              $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
-                                             $isDefault = $account->is_default ? " <span class='text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full mx-1'>الأساسي</span>" : "";
+                                             $holderName = is_array($account->account_holder_name) 
+                                                 ? ($account->account_holder_name[app()->getLocale()] ?? $account->account_holder_name['ar'] ?? '') 
+                                                 : $account->account_holder_name;
                                              $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
                                          @endphp
                                          <button type="button" 
@@ -125,15 +127,28 @@
                                                     @endif
                                                  </div>
                                                  <div class="flex flex-col">
-                                                    <span class="font-bold text-sm">{!! addslashes($accountName) !!}</span>
-                                                    @if($account->is_default)
-                                                        <span class="text-[10px] text-primary font-bold mt-0.5">{{ __('bank_accounts.is_default') ?? 'الأساسي' }}</span>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="font-bold text-sm text-gray-900 dark:text-white">{!! addslashes($accountName) !!}</span>
+                                                        @if($account->is_default)
+                                                            <span class="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">{{ __('bank_accounts.is_default') ?? 'الأساسي' }}</span>
+                                                        @endif
+                                                    </div>
+                                                    @if(!empty($holderName))
+                                                        <span class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5 font-medium">
+                                                            <i class="ph-fill ph-user text-[11px] text-primary/70"></i>
+                                                            <span>{{ $holderName }}</span>
+                                                        </span>
                                                     @endif
                                                  </div>
                                              </div>
                                              
-                                             <div x-show="txBankAccountId == '{{ $account->id }}'" class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shadow-sm" x-transition.scale>
-                                                <i class="ph-bold ph-check text-xs"></i>
+                                             <div class="flex items-center gap-2">
+                                                 <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+                                                       x-text="'رصيد: ' + Number(bankBalances['{{ $account->id }}'] || 0).toFixed(1) + ' ₪'">
+                                                 </span>
+                                                 <div x-show="txBankAccountId == '{{ $account->id }}'" class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center shadow-sm" x-transition.scale>
+                                                    <i class="ph-bold ph-check text-xs"></i>
+                                                 </div>
                                              </div>
                                          </button>
                                      @endforeach

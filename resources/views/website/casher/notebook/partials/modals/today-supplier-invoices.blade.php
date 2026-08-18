@@ -1,7 +1,7 @@
 <!-- Comprehensive Supplier Invoices Overlay -->
 <div x-data="{ show: false }" 
      x-show="show" 
-     x-on:open-modal.window="if ($event.detail.id === 'allSupplierInvoicesModal' || $event.detail.id === 'todaySupplierInvoicesModal') show = true"
+     x-on:open-modal.window="if ($event.detail.id === 'allSupplierInvoicesModal' || $event.detail.id === 'todaySupplierInvoicesModal') { show = true; $nextTick(() => { if($refs.supplierInvoicesScroll) $refs.supplierInvoicesScroll.scrollTop = 0; $el.scrollTop = 0; }); }"
      x-on:close-modal.window="if ($event.detail.id === 'allSupplierInvoicesModal' || $event.detail.id === 'todaySupplierInvoicesModal') show = false"
      style="display: none;"
      class="overlay-panel flex justify-center"
@@ -85,7 +85,7 @@
             </div>
             
             <!-- List Content -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
+            <div x-ref="supplierInvoicesScroll" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
                 <div x-show="isAllSupplierInvoicesLoading" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                     <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-blue-500"></i>
                 </div>
@@ -150,7 +150,7 @@
                                         </template>
                                         
                                         <template x-if="inv.status !== 'paid' && Number(inv.remaining_amount) > 0">
-                                            <button @click="openSupplierLedgerById(inv.supplier_id); show = false; openAddSupplierPaymentModal(inv.id);" 
+                                            <button @click="openDirectSupplierPayment(inv.id, inv.supplier_id)" 
                                                     class="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-bold text-[11px] hover:bg-amber-100 flex items-center gap-1 transition-colors">
                                                 <i class="ph-bold ph-hand-coins"></i>
                                                 <span>{{ __('notebook.payout_to_supplier') }}</span>

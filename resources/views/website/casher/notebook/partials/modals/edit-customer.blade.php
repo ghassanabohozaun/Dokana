@@ -1,10 +1,10 @@
     <!-- Edit Customer Overlay -->
     <div x-data="{ show: false }" 
          x-show="show" 
-         x-on:open-modal.window="if ($event.detail.id === 'editCustomerModal') show = true"
+         x-on:open-modal.window="if ($event.detail.id === 'editCustomerModal') { show = true; $nextTick(() => { $el.scrollTop = 0; }); }"
          x-on:close-modal.window="if ($event.detail.id === 'editCustomerModal') show = false"
-         style="display: none; z-index: 110;"
-         class="overlay-panel flex justify-center"
+         style="display: none;"
+         class="overlay-panel overlay-panel-form flex justify-center"
          x-transition:enter="transform transition ease-out duration-200"
          x-transition:enter-start="-translate-x-full"
          x-transition:enter-end="translate-x-0"

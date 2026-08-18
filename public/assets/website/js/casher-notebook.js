@@ -1396,8 +1396,82 @@ function casherNotebook(passedConfig = {}) {
             this.openDeleteModal('supplier_invoice', invoiceId);
         },
 
+        async openDirectSupplierPayment(invoiceId, supplierId = null) {
+            if (!supplierId && this.activeSupplier) {
+                supplierId = this.activeSupplier.id;
+            }
+
+            if (supplierId) {
+                if (!this.activeSupplier || this.activeSupplier.id != supplierId) {
+                    let supplier = this.suppliers.find(s => s.id == supplierId);
+                    if (!supplier) {
+                        try {
+                            const res = await fetch(`${this.apiBase}/suppliers?search=&per_page=100`);
+                            const data = await res.json();
+                            if (res.ok && data.suppliers) {
+                                supplier = data.suppliers.find(s => s.id == supplierId);
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                    if (supplier) {
+                        this.activeSupplier = supplier;
+                    }
+                }
+                
+                if (!this.supplierUnpaidInvoices || this.supplierUnpaidInvoices.length === 0) {
+                    await this.fetchSupplierLedger(supplierId);
+                }
+            }
+
+            // Fallback: If still empty, but target invoice exists in allSupplierInvoicesList
+            if ((!this.supplierUnpaidInvoices || this.supplierUnpaidInvoices.length === 0) && invoiceId) {
+                const inv = this.allSupplierInvoicesList.find(i => i.id == invoiceId);
+                if (inv && Number(inv.remaining_amount) > 0) {
+                    this.supplierUnpaidInvoices = [{
+                        id: inv.id,
+                        invoice_number: inv.invoice_number,
+                        total_amount: inv.total_amount,
+                        paid_amount: inv.paid_amount || 0,
+                        remaining_amount: inv.remaining_amount,
+                        invoice_date: inv.invoice_date,
+                        status: inv.status
+                    }];
+                }
+            }
+
+            this.openAddSupplierPaymentModal(invoiceId);
+        },
+
         openAddSupplierPaymentModal(invoiceId = null) {
-            if (!this.activeSupplier) return;
+            if (!this.activeSupplier) {
+                if (invoiceId) {
+                    const inv = this.allSupplierInvoicesList.find(i => i.id == invoiceId);
+                    if (inv) {
+                        this.openDirectSupplierPayment(invoiceId, inv.supplier_id);
+                        return;
+                    }
+                }
+                return;
+            }
+
+            if (!this.supplierUnpaidInvoices || this.supplierUnpaidInvoices.length === 0) {
+                if (invoiceId) {
+                    const inv = this.allSupplierInvoicesList.find(i => i.id == invoiceId);
+                    if (inv && Number(inv.remaining_amount) > 0) {
+                        this.supplierUnpaidInvoices = [{
+                            id: inv.id,
+                            invoice_number: inv.invoice_number,
+                            total_amount: inv.total_amount,
+                            paid_amount: inv.paid_amount || 0,
+                            remaining_amount: inv.remaining_amount,
+                            invoice_date: inv.invoice_date,
+                            status: inv.status
+                        }];
+                    }
+                }
+            }
 
             if (!this.supplierUnpaidInvoices || this.supplierUnpaidInvoices.length === 0) {
                 Toast.show(config.translations.warning, config.translations.no_unpaid_invoices || 'لا توجد فواتير مستحقة الدفع لهذا المورد', 'warning');
@@ -1489,6 +1563,8 @@ function casherNotebook(passedConfig = {}) {
                     Toast.show(config.translations.success, data.message || 'تم تسجيل وصرف الدفعة بنجاح', 'success');
                     this.fetchSupplierLedger(this.activeSupplier.id);
                     this.fetchSuppliers();
+                    this.fetchAllSupplierInvoices();
+                    this.fetchAllSupplierPayments();
                     this.fetchWithdrawals(); // refresh bank balances & withdrawals tab
                 } else {
                     Toast.show(config.translations.warning, data.message || 'حدث خطأ أثناء الصرف', 'error');
@@ -1506,6 +1582,16 @@ function casherNotebook(passedConfig = {}) {
 }
 
 window.casherNotebook = casherNotebook;
+
+window.addEventListener('open-modal', () => {
+    setTimeout(() => {
+        document.querySelectorAll('.overlay-panel, .drawer-panel, [x-ref$="Scroll"], .custom-scrollbar, [class*="overflow-y-auto"]').forEach(el => {
+            if (el.offsetParent !== null) {
+                el.scrollTop = 0;
+            }
+        });
+    }, 50);
+});
 
 document.addEventListener('alpine:init', () => {
     if (typeof Alpine !== 'undefined') {

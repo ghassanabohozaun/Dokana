@@ -109,11 +109,23 @@
                 @foreach($storeBankAccounts as $account)
                 @php
                     $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
+                    $holderName = is_array($account->account_holder_name) 
+                        ? ($account->account_holder_name[app()->getLocale()] ?? $account->account_holder_name['ar'] ?? '') 
+                        : $account->account_holder_name;
                     $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
+                    $fullDisplayName = (!empty($holderName) && $account->account_type !== 'cash') 
+                        ? $accountName . ' (' . $holderName . ')' 
+                        : $accountName;
                 @endphp
                 {
                     id: {{ $account->id }},
-                    name: "{!! addslashes($accountName) !!}"
+                    name: "{!! addslashes($fullDisplayName) !!}",
+                    short_name: "{!! addslashes($accountName) !!}",
+                    holder_name: "{!! addslashes($holderName ?? '') !!}",
+                    account_number: "{!! addslashes($account->account_number ?? '') !!}",
+                    account_type: "{{ $account->account_type }}",
+                    entity_name: "{!! addslashes($entityName) !!}",
+                    is_default: {{ $account->is_default ? 'true' : 'false' }}
                 },
                 @endforeach
             ]

@@ -304,11 +304,11 @@ body {
 }
 
 .overlay-panel-detail {
-    z-index: 115 !important;
+    z-index: 110 !important;
 }
 
 .overlay-panel-form {
-    z-index: 130 !important;
+    z-index: 120 !important;
 }
 
 .dark .overlay-panel {
@@ -317,6 +317,10 @@ body {
 
 .modal-highest-z {
     z-index: 150 !important;
+}
+
+.flatpickr-calendar {
+    z-index: 99999 !important;
 }
 
 /* Cashier Notebook - Modern Glassmorphism */

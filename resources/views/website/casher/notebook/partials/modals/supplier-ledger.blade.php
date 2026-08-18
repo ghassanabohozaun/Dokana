@@ -1,7 +1,7 @@
 <!-- Supplier Ledger Overlay -->
 <div x-data="{ show: false, ledgerTab: 'invoices' }" 
      x-show="show" 
-     x-on:open-modal.window="if ($event.detail.id === 'supplierLedgerModal') { show = true; ledgerTab = 'invoices'; }"
+     x-on:open-modal.window="if ($event.detail.id === 'supplierLedgerModal') { show = true; ledgerTab = 'invoices'; $nextTick(() => { if($refs.supplierLedgerScroll) $refs.supplierLedgerScroll.scrollTop = 0; $el.scrollTop = 0; }); }"
      x-on:close-modal.window="if ($event.detail.id === 'supplierLedgerModal') show = false"
      style="display: none;"
      class="overlay-panel overlay-panel-detail flex justify-center"
@@ -94,7 +94,7 @@
                 </div>
 
                 <!-- Ledger Body -->
-                <div class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-[#0b1121] custom-scrollbar relative">
+                <div x-ref="supplierLedgerScroll" class="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-[#0b1121] custom-scrollbar relative">
                     <!-- Loading Indicator -->
                     <div x-show="isSupplierLedgerLoading" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                         <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-amber-500"></i>

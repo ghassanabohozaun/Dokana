@@ -1,6 +1,6 @@
 <!-- Accounts Drawer -->
 <div x-show="showAccountsSheet" 
-     class="fixed inset-0 z-[60] flex" 
+     class="fixed inset-0 z-[100] flex" 
      style="display: none;" x-cloak>
      
     <!-- Backdrop -->
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Body: Accounts List -->
-        <div class="p-6 overflow-y-auto hide-scrollbar flex-1">
+        <div x-ref="accountsScroll" x-effect="if (showAccountsSheet) $nextTick(() => { if($refs.accountsScroll) $refs.accountsScroll.scrollTop = 0; })" class="p-6 overflow-y-auto hide-scrollbar flex-1">
             <div class="space-y-4">
                 <template x-for="account in storeAccounts" :key="account.id">
                     <div class="bg-white dark:bg-[#1a2235] p-5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-between group transition-all hover:shadow-md">
@@ -48,7 +48,13 @@
                                 <i class="ph-bold ph-wallet"></i>
                             </div>
                             <div>
-                                <h4 class="font-bold text-gray-800 dark:text-white text-md" x-text="account.name"></h4>
+                                <h4 class="font-bold text-gray-800 dark:text-white text-md" x-text="account.short_name || account.name"></h4>
+                                <template x-if="account.holder_name">
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5 font-medium">
+                                        <i class="ph-fill ph-user text-[11px] text-blue-500/70"></i>
+                                        <span x-text="account.holder_name"></span>
+                                    </p>
+                                </template>
                             </div>
                         </div>
                         <div class="text-right shrink-0">

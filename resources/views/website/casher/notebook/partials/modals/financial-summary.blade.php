@@ -1,8 +1,8 @@
 <!-- Financial Summary Drawer -->
 <div x-data="{ show: false }" x-show="show"
-    x-on:open-modal.window="if ($event.detail.id === 'financialSummaryModal') show = true"
+    x-on:open-modal.window="if ($event.detail.id === 'financialSummaryModal') { show = true; $nextTick(() => { if($refs.financialSummaryScroll) $refs.financialSummaryScroll.scrollTop = 0; }); }"
     x-on:close-modal.window="if ($event.detail.id === 'financialSummaryModal') show = false" style="display: none;"
-    class="fixed inset-0 z-[60] flex" x-cloak>
+    class="fixed inset-0 z-[100] flex" x-cloak>
 
     <!-- Backdrop -->
     <div x-show="show" x-transition:enter="transition-opacity ease-out duration-200" x-transition:enter-start="opacity-0"
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Content -->
-        <div class="flex-1 overflow-y-auto relative p-5 custom-scrollbar">
+        <div x-ref="financialSummaryScroll" class="flex-1 overflow-y-auto relative p-5 custom-scrollbar">
 
             <div x-show="isSummaryLoading"
                 class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gray-50/80 dark:bg-darkCard/80 backdrop-blur-sm"

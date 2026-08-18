@@ -1,7 +1,7 @@
     <!-- Customer Ledger Overlay -->
     <div x-data="{ show: false }" 
          x-show="show" 
-         x-on:open-modal.window="if ($event.detail.id === 'ledgerModal') show = true"
+         x-on:open-modal.window="if ($event.detail.id === 'ledgerModal') { show = true; $nextTick(() => { if($refs.ledgerScroll) $refs.ledgerScroll.scrollTop = 0; $el.scrollTop = 0; }); }"
          x-on:close-modal.window="if ($event.detail.id === 'ledgerModal') show = false"
          style="display: none;"
          class="overlay-panel overlay-panel-detail flex justify-center"
@@ -54,7 +54,6 @@
                                 <div class="text-[11px] font-bold px-2.5 py-1 rounded-md" :class="activeCustomer.balance > 0 ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' : (activeCustomer.balance < 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
                                     <span x-text="activeCustomer.balance > 0 ? '{{ __('notebook.owes_debt') }}' : (activeCustomer.balance < 0 ? '{{ __('notebook.has_credit') }}' : '{{ __('notebook.paid') }}')"></span>
                                 </div>
-
                             </div>
                         </div>
 
@@ -122,7 +121,7 @@
                     </div>
 
                     <!-- Transaction List -->
-                    <div class="flex-1 overflow-y-auto p-4 pb-28 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
+                    <div x-ref="ledgerScroll" class="flex-1 overflow-y-auto p-4 pb-28 space-y-3 bg-gray-50/50 dark:bg-[#0b1121] custom-scrollbar relative">
                         <div x-show="isLedgerLoading && ledgerTransactions.length === 0" class="absolute inset-0 bg-white/50 dark:bg-black/50 z-10 flex items-center justify-center backdrop-blur-sm" x-cloak>
                             <i class="ph-bold ph-spinner-gap animate-spin text-4xl text-primary"></i>
                         </div>
@@ -145,8 +144,18 @@
                                                     <i class="ph-bold text-lg" :class="tx.type === 'debt' ? 'ph-arrow-up-right' : 'ph-arrow-down-left'"></i>
                                                 </div>
                                                 <div>
-                                                    <p class="font-bold text-sm text-gray-800 dark:text-gray-200" x-text="tx.type === 'debt' ? '{{ __('notebook.debt') }}' : (tx.type === 'direct_sale' ? '{{ __('notebook.direct_sale') ?? 'شراء فوري' }}' : '{{ __('notebook.payment') }}')"></p>
-                                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5" x-text="tx.description"></p>
+                                                    <!-- Main Title: Description if exists, otherwise transaction type -->
+                                                    <p class="font-bold text-sm text-gray-800 dark:text-gray-100" 
+                                                       x-text="tx.description ? tx.description : (tx.type === 'debt' ? '{{ __('notebook.debt') }}' : (tx.type === 'direct_sale' ? '{{ __('notebook.direct_sale') ?? 'شراء فوري' }}' : '{{ __('notebook.payment') }}'))">
+                                                    </p>
+                                                    
+                                                    <!-- Subtitle: Type if description exists -->
+                                                    <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 font-medium" 
+                                                       x-show="tx.description" 
+                                                       x-text="tx.type === 'debt' ? '{{ __('notebook.debt') }}' : (tx.type === 'direct_sale' ? '{{ __('notebook.direct_sale') ?? 'شراء فوري' }}' : '{{ __('notebook.payment') }}')">
+                                                    </p>
+
+                                                    <!-- Date / Time -->
                                                     <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 font-medium flex items-center gap-1">
                                                         <i class="ph-fill ph-clock text-xs"></i> 
                                                         <span x-text="formatDateTime(tx.transaction_date || tx.created_at)"></span>
@@ -165,9 +174,17 @@
                                                     </template>
                                                 </div>
                                             </div>
-                                            <div class="text-left font-black shrink-0 text-xl"
-                                                 :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
-                                                <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
+                                            <div class="text-left flex flex-col items-end shrink-0">
+                                                <div class="font-black text-xl" :class="tx.type === 'debt' ? 'text-red-500' : 'text-emerald-500'">
+                                                    <span x-text="(tx.type === 'debt' ? '+' : '-') + Number(tx.amount).toFixed(1)"></span> <span class="text-[11px] font-normal">₪</span>
+                                                </div>
+                                                <template x-if="tx.running_balance !== undefined && tx.running_balance !== null">
+                                                    <div class="text-[10px] font-bold mt-1 px-2 py-0.5 rounded-md flex items-center gap-1" 
+                                                         :class="Number(tx.running_balance) > 0 ? 'bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400' : (Number(tx.running_balance) < 0 ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400')">
+                                                        <span>{{ __('notebook.balance_after') ?? 'الرصيد بعدها:' }}</span>
+                                                        <span x-text="Math.abs(Number(tx.running_balance)).toFixed(1) + ' ₪'"></span>
+                                                    </div>
+                                                </template>
                                             </div>
                                         </div>
                                         @if(auth('casher')->user()->hasAbility('notebook_update') || auth('casher')->user()->hasAbility('notebook_delete'))
