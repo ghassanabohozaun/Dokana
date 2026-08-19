@@ -30,5 +30,7 @@ return [
     'name_ar_required' => 'Please enter the name in Arabic',
     'name_en_required' => 'Please enter the name in English',
     'type_required' => 'Please select the type',
+    'bank_account_required' => 'Bank account or wallet is required.',
     'delete_restriction' => 'Sorry, this payment entity cannot be deleted because it has linked bank accounts!',
 ];
+

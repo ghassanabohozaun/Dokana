@@ -64,6 +64,9 @@ return [
     'confirm_delete_selected_text' => 'Are you sure you want to delete the selected notifications? This action cannot be undone.',
     'confirm_delete_all_text' => 'Are you sure you want to delete all notifications? This action cannot be undone.',
     'confirm_delete_single_text' => 'Are you sure you want to delete this notification? This action cannot be undone.',
+    'live_updates' => 'Live Updates',
+    'center_subtitle' => 'Alerts center for system, store, and customer transactions',
+    'no_notifications_desc' => 'You are all caught up on recent updates. No pending alerts require your attention right now.',
     'overdue_debt_title' => 'Debt Limit Exceeded (Overdue)',
     'overdue_debt_body' => 'Customer :customer_name has an outstanding balance of :balance ILS and has exceeded the 10-day limit (Current debt age: :days days).',
 ];

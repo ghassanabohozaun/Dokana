@@ -74,6 +74,11 @@ class Store extends Model
         return $this->hasMany(StoreTransaction::class);
     }
 
+    public function withdrawals()
+    {
+        return $this->hasMany(StoreWithdrawal::class);
+    }
+
     // Improve the screen show
     public function getLogoUrlAttribute()
     {

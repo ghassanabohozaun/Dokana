@@ -1,245 +1,159 @@
-<input type="hidden" id="bank_accounts-total-count" value="{!! $bankAccounts->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id='myTable'>
-        <thead class="bg-white">
+<input type="hidden" id="bank_accounts-total-count" value="{{ $bankAccounts->total() }}">
+
+<div class="overflow-x-auto">
+    <table class="table-modern w-full" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">#</th>
+                <th class="w-12 text-center">#</th>
                 @if (isset($stores))
-                    <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                    <th>{{ __('stores.store') }}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.account_details') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.account_info') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.total_deposits') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.total_withdrawals') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('general.balance') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.is_default') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('departments.created_by') !!}</th>
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th>{{ __('bank_accounts.account_details') }}</th>
+                <th>{{ __('bank_accounts.account_info') }}</th>
+                <th class="text-center">{{ __('bank_accounts.total_deposits') }}</th>
+                <th class="text-center">{{ __('bank_accounts.total_withdrawals') }}</th>
+                <th class="text-center">{{ __('general.balance') }}</th>
+                <th class="text-center">{{ __('bank_accounts.is_default') }}</th>
+                <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
+                <th class="text-center w-28">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
-        <tbody>
-            @forelse ($bankAccounts as $key=>$account)
-                <tr id="row{{ $account->id }}" class="premium-table-row pointer" data-row-title="{!! $account->paymentEntity->name ?? '' !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+            @forelse ($bankAccounts as $account)
+                <tr id="row{{ $account->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                            {{ $loop->iteration + ($bankAccounts->currentPage() - 1) * $bankAccounts->perPage() }}
                         </span>
+                    </td>
 
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <!-- Header Gradient -->
-                                <div class="premium-modal-header"></div>
+                    <!-- Store (if admin/multi-store) -->
+                    @if (isset($stores))
+                    <td>
+                        @if($account->store)
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                <i class="fas fa-store text-[10px] text-indigo-500"></i>
+                                {{ $account->store->name }}
+                            </span>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
+                    </td>
+                    @endif
 
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        <div
-                                            class="avatar-circle avatar-size-100 d-inline-flex align-items-center justify-content-center text-white text-uppercase shadow-sm bg-indigo-alt">
-                                            <i class="fas fa-university font-40"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">
-                                        @if ($account->account_type == 'wallet')
-                                            <i class="fas fa-wallet text-info mr-1"></i>
-                                        @else
-                                            <i class="fas fa-university text-primary mr-1"></i>
-                                        @endif
-                                        {!! $account->paymentEntity->name ?? '' !!}
-                                    </h4>
-                                    <span class="modal-role-badge">{!! $account->account_number !!}</span>
-                                </div>
-
-                                <!-- Detail Items List -->
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-fingerprint"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.system_id') !!}</span>
-                                            <span class="detail-info-value text-muted"># {!! $account->id !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-user"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('bank_accounts.account_holder_name') !!}</span>
-                                            <span class="detail-info-value text-muted">{!! $account->account_holder_name !!}</span>
-                                        </div>
-                                    </div>
-
-                                    @if ($account->iban)
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-barcode"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('bank_accounts.iban') !!}</span>
-                                                <span class="detail-info-value text-muted"
-                                                    dir="ltr">{!! $account->formatted_iban !!}</span>
-                                            </div>
-                                        </div>
+                    <!-- Account Details & Type -->
+                    <td>
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-lg {{ $account->account_type == 'wallet' ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400' : ($account->account_type == 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400' : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400') }} text-xs">
+                                <i class="fas {{ $account->account_type == 'wallet' ? 'fa-wallet' : ($account->account_type == 'cash' ? 'fa-money-bill-wave' : 'fa-university') }}"></i>
+                            </div>
+                            <div>
+                                <span class="font-bold text-xs md:text-sm text-slate-800 dark:text-white block">
+                                    {{ $account->paymentEntity->name ?? '---' }}
+                                </span>
+                                <span class="text-[10px] text-slate-400">
+                                    @if ($account->account_type == 'wallet')
+                                        {{ __('bank_accounts.type_wallet') }}
+                                    @elseif ($account->account_type == 'cash')
+                                        {{ __('bank_accounts.type_cash') ?? 'نقدي' }}
+                                    @else
+                                        {{ __('bank_accounts.type_bank') }}
                                     @endif
-
-                                    @if (isset($stores))
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                                <span class="detail-info-value text-muted small">
-                                                    <span
-                                                        class="badge badge-light-primary border-0">{!! $account->store->name ?? '---' !!}</span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-coins text-success"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.balance') !!}</span>
-                                            <div class="mt-1">
-                                                @if ($account->current_balance > 0)
-                                                    <span class="premium-store-badge store-badge-balance-payment">
-                                                        <i class="fas fa-coins mr-1"></i> {!! number_format($account->current_balance, 2) !!}
-                                                    </span>
-                                                @elseif($account->current_balance < 0)
-                                                    <span class="premium-store-badge store-badge-balance-debt">
-                                                        <i class="fas fa-exclamation-triangle mr-1"></i>
-                                                        {!! number_format(abs($account->current_balance), 2) !!}
-                                                    </span>
-                                                @else
-                                                    <span class="premium-store-badge store-badge-balance-zero">
-                                                        <i class="fas fa-minus mr-1"></i> 0.00
-                                                    </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-star"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('bank_accounts.is_default') !!}</span>
-                                            <div class="detail-info-value mt-1">
-                                                @if ($account->is_default)
-                                                    <span
-                                                        class="badge badge-success badge-glow badge-pill px-2">{!! __('bank_accounts.is_default') !!}</span>
-                                                @else
-                                                    <span class="text-muted">---</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-user-plus"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('departments.created_by') !!}</span>
-                                            <span class="detail-info-value">{!! $account->creator->name ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                </span>
                             </div>
                         </div>
                     </td>
 
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
-                            {!! $loop->iteration + ($bankAccounts->currentPage() - 1) * $bankAccounts->perPage() !!}
-                        </span>
-                    </td>
-
-                    <!-- Store -->
-                    @if (isset($stores))
-                        <td class="text-center align-middle">
-                            <a href="javascript:void(0)" class="store-chip">
-                                <i class="fas fa-briefcase mr-1"></i>
-                                {!! $account->store->name ?? '---' !!}
-                            </a>
-                        </td>
-                    @endif
-
-                    <!-- Account Details -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.bank_accounts.parts.actions')
+                    <!-- Account Info (Number & Holder) -->
+                    <td>
+                        <div class="font-bold text-xs text-slate-800 dark:text-slate-200" dir="ltr">
+                            {{ $account->account_number }}
                         </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $account->creator->name ?? '---' !!}</span>
-                            <span class="badge badge-light-primary"><i class="fas fa-hashtag mr-25"></i> {!! $account->account_number !!}</span>
-                            @if(isset($stores) && $account->store)
-                                <span class="badge badge-light-info"><i class="fas fa-briefcase mr-25"></i> {!! $account->store->name !!}</span>
-                            @endif
+                        <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                            {{ $account->account_holder_name }}
                         </div>
-
-                        <div class="d-flex flex-column align-items-center">
-                            @if ($account->account_type == 'wallet')
-                                <span class="badge badge-light-info badge-pill font-weight-bold px-2 py-1 mb-1"><i class="fas fa-wallet mr-1"></i> {!! __('bank_accounts.type_wallet') !!}</span>
-                            @else
-                                <span class="badge badge-light-primary badge-pill font-weight-bold px-2 py-1 mb-1"><i class="fas fa-university mr-1"></i> {!! __('bank_accounts.type_bank') !!}</span>
-                            @endif
-                            <span class="font-weight-bold text-primary">{!! $account->paymentEntity->name ?? '' !!}</span>
-                        </div>
-                    </td>
-
-                    <!-- Account Info -->
-                    <td class="text-center align-middle">
-                        <div class="font-weight-bold" dir="ltr">{!! $account->account_number !!}</div>
-                        <div class="text-muted small mt-1">{!! $account->account_holder_name !!}</div>
                     </td>
 
                     <!-- Total Deposits -->
-                    <td class="text-center align-middle">
-                        <div class="font-weight-bold text-success" title="{!! __('bank_accounts.total_deposits') !!}">
-                            <i class="fas fa-arrow-down mr-1"></i> {!! number_format($account->total_deposits, 2) !!}
-                        </div>
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                            <i class="fas fa-arrow-down text-[10px] me-1"></i>{{ number_format($account->total_deposits, 2) }}
+                        </span>
                     </td>
 
                     <!-- Total Withdrawals -->
-                    <td class="text-center align-middle">
-                        <div class="font-weight-bold text-danger" title="{!! __('bank_accounts.total_withdrawals') !!}">
-                            <i class="fas fa-arrow-up mr-1"></i> {!! number_format($account->total_withdrawals, 2) !!}
-                        </div>
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-rose-600 dark:text-rose-400">
+                            <i class="fas fa-arrow-up text-[10px] me-1"></i>{{ number_format($account->total_withdrawals, 2) }}
+                        </span>
                     </td>
 
                     <!-- Balance -->
-                    <td class="text-center align-middle" dir="ltr">
-                        <div class="font-weight-bold {{ $account->current_balance > 0 ? 'text-success' : ($account->current_balance < 0 ? 'text-danger' : 'text-muted') }}" title="{!! __('general.balance') !!}">
-                            <i class="fas fa-coins mr-1"></i> {!! number_format($account->current_balance, 2) !!}
-                        </div>
+                    <td class="text-center" dir="ltr">
+                        <span class="text-xs font-black {{ $account->current_balance > 0 ? 'text-emerald-600 dark:text-emerald-400' : ($account->current_balance < 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600 dark:text-slate-400') }}">
+                            <i class="fas fa-coins text-[10px] me-1"></i>{{ number_format($account->current_balance, 2) }}
+                        </span>
                     </td>
 
-                    <!-- Is Default -->
-                    <td class="text-center align-middle">
+                    <!-- Is Default Star -->
+                    <td class="text-center">
                         @if ($account->is_default)
-                            <i class="fas fa-star text-warning font-large-1" title="{!! __('bank_accounts.is_default') !!}"></i>
+                            <span class="inline-flex items-center justify-center h-6 w-6 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-500" title="{{ __('bank_accounts.is_default') }}">
+                                <i class="fas fa-star text-xs"></i>
+                            </span>
                         @else
-                            <i class="fas fa-star-o text-muted font-large-1"></i>
+                            <span class="inline-flex items-center justify-center h-6 w-6 rounded-lg text-slate-300 dark:text-slate-700">
+                                <i class="far fa-star text-xs"></i>
+                            </span>
                         @endif
                     </td>
 
                     <!-- Created By -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="text-muted small">{!! $account->creator->name ?? '---' !!}</span>
+                    <td class="hidden sm:table-cell">
+                        @if($account->creator)
+                            <span class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                <i class="fas fa-user-tie text-[10px] text-slate-400"></i> {{ $account->creator->name }}
+                            </span>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
                     </td>
 
-                    <!-- Actions Column Removed -->
+                    <!-- Actions -->
+                    <td class="text-center">
+                        @include('dashboard.bank_accounts.parts.actions')
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('bank_accounts.no_bank_accounts_found') !!}
+                    <td colspan="{{ isset($stores) ? 10 : 9 }}" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-university text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {{ __('bank_accounts.no_bank_accounts_found') }}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            لم يتم تسجيل أي بنوك أو محافظ دفع في النظام حتى الآن. يمكنك إضافة حساب جديد من الزر أعلاه.
+                        </p>
                     </td>
                 </tr>
             @endforelse
-        </tbody>
 
+        </tbody>
     </table>
-    <div class="float-right mt-2 custom-pagination">
+</div>
+
+<!-- Pagination Footer -->
+@if ($bankAccounts->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
         {!! $bankAccounts->links() !!}
     </div>
-</div>
+@endif

@@ -1,5 +1,3 @@
-@if ($entity->status == 1)
-    <span class="badge badge-success badge-glow badge-pill px-2">{!! __('general.enable') !!}</span>
-@else
-    <span class="badge badge-danger badge-glow badge-pill px-2">{!! __('general.disabled') !!}</span>
-@endif
+<span class="badge-pill entity_status_{{ $entity->id }} {{ $entity->status == 1 ? 'badge-pill-success' : 'badge-pill-danger' }}">
+    {{ $entity->status == 1 ? __('general.enable') : __('general.disabled') }}
+</span>

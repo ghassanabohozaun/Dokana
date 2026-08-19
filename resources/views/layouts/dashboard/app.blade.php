@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html class="loading"
-    @if (Config::get('app.locale') == 'ar') lang="ar" data-textdirection="rtl" @else  lang="en" data-textdirection="ltr" @endif>
+<html lang="{{ Lang() }}" dir="{{ Lang() == 'ar' ? 'rtl' : 'ltr' }}" class="h-full overflow-hidden">
 
 <head>
     @include('layouts.dashboard.app-parts._head')
@@ -9,24 +8,39 @@
     @livewireStyles
 </head>
 
-<body class="vertical-layout vertical-menu-modern 2-columns  menu-expanded fixed-navbar" data-open="click"
-    data-menu="vertical-menu-modern" data-col="2-columns" style="font-family: 'Tajawal', sans-serif;">
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-indigo-500 selection:text-white overflow-hidden">
+    <div class="h-screen flex flex-col overflow-hidden">
+        <!-- Sidebar Navigation -->
+        @include('layouts.dashboard.app-parts._sidebar')
 
-    @include('layouts.dashboard.app-parts._header')
-    @include('layouts.dashboard.app-parts._sidebar')
+        <!-- Main Content Layout (Responsive start-padding for fixed desktop sidebar) -->
+        <div class="flex-1 flex flex-col md:ps-72 h-full overflow-hidden transition-all duration-300">
+            <!-- Top Navbar (Fixed at top) -->
+            @include('layouts.dashboard.app-parts._header')
 
-    @isset($slot)
-        {{ $slot }}
-    @else
-        @yield('content')
-    @endisset
+            <!-- Dedicated Vertical Scrollable Viewport -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+                <!-- Page Content Viewport -->
+                <main class="flex-1 p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto">
+                    @isset($slot)
+                        {{ $slot }}
+                    @else
+                        @yield('content')
+                    @endisset
+                </main>
 
-    @include('layouts.dashboard.app-parts._footer')
+                <!-- Footer -->
+                @include('layouts.dashboard.app-parts._footer')
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts & Toast Notifications & Universal Dialogs -->
     @include('layouts.dashboard.app-parts._scripts')
-
     @stack('scripts')
     @livewireScripts
     @include('layouts.dashboard.app-parts._premium_toast')
+    @include('layouts.dashboard.app-parts._confirm_dialog')
 </body>
 
 </html>

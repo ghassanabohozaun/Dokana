@@ -64,18 +64,31 @@ class ImageManagerUtils
             $file_name = $this->generateImageName($image);
         }
 
-        $manager = new ImageManager(new Driver());
-        $img = $manager->read($image->getRealPath());
-        $img->resize($width, $height);
+        $extension = strtolower($image->getClientOriginalExtension());
 
-        $encodedImage = $img->encode();
+        // For SVG and ICO vector formats, store directly without raster GD resizing
+        if (in_array($extension, ['svg', 'ico'])) {
+            $this->storeInLocal($image, $path, $file_name, $disk);
+            return $file_name;
+        }
 
-        // Ensure path ends with slash
-        $fullPath = $path ? rtrim($path, '/') . '/' . $file_name : $file_name;
-        
-        Storage::disk($disk)->put($fullPath, $encodedImage);
+        try {
+            $manager = new ImageManager(new Driver());
+            $img = $manager->read($image->getRealPath());
+            $img->scaleDown(width: $width, height: $height);
 
-        return $file_name;
+            // Encode properly matching original extension (webp, png, jpg, etc.)
+            $encodedImage = $img->encodeByExtension($extension);
+
+            $fullPath = $path ? rtrim($path, '/') . '/' . $file_name : $file_name;
+            Storage::disk($disk)->put($fullPath, (string)$encodedImage);
+
+            return $file_name;
+        } catch (\Throwable $e) {
+            // Fallback to storing original file safely if image processing engine fails
+            $this->storeInLocal($image, $path, $file_name, $disk);
+            return $file_name;
+        }
     }
 
     /**

@@ -1,33 +1,42 @@
-    <!-- 1. EXTERNAL LIBRARIES  -->
+    <!-- 1. CORE JS LIBRARIES & APPS  -->
     <script src="{!! asset('assets/dashbaord') !!}/vendors/js/vendors.min.js" type="text/javascript"></script>
-    <script src="{!! asset('assets/dashbaord') !!}/vendors/js/extensions/sweetalert.min.js" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord') !!}/js/core/app-menu.js" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord') !!}/js/core/app.js" type="text/javascript"></script>
-    <script src="{!! asset('assets/dashbaord') !!}/js/scripts/customizer.js" type="text/javascript"></script>
-    <script src="{!! asset('assets/dashbaord') !!}/js/scripts/extensions/sweet-alerts.js" type="text/javascript"></script>
+    <script src="{!! asset('assets/dashbaord') !!}/js/app-dialog.js" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord') !!}/js/scripts/my-scripts.js" type="text/javascript"></script>
 
 
-    <script src="{{ asset('assets/dashbaord/vendors/js/pickers/bootstrap-datepicker/bootstrap-datepicker.min.js') }}">
-    </script>
+    <!-- Flatpickr (Modern Luxury Datepicker) -->
+    <script src="{{ asset('assets/dashbaord/vendors/flatpickr/flatpickr.min.js') }}"></script>
     @if (Lang() == 'ar')
-        <script
-            src="{{ asset('assets/dashbaord/vendors/js/pickers/bootstrap-datepicker/locales/bootstrap-datepicker.ar.min.js') }}">
-        </script>
+        <script src="{{ asset('assets/dashbaord/vendors/flatpickr/ar.js') }}"></script>
     @endif
-    <script src="{{ asset('assets/dashbaord/js/datepicker-initializer.js') }}?v=1.1"></script>
+    <script>
+        $(document).ready(function() {
+            function initFlatpickrInputs() {
+                $('.flatpickr-date').each(function() {
+                    if (!this._flatpickr) {
+                        flatpickr(this, {
+                            dateFormat: "Y-m-d",
+                            locale: "{{ Lang() == 'ar' ? 'ar' : 'default' }}",
+                            disableMobile: "true",
+                            monthSelectorType: "static",
+                            animate: true
+                        });
+                    }
+                });
+            }
+            initFlatpickrInputs();
+            $(document).ajaxComplete(function() {
+                initFlatpickrInputs();
+            });
+        });
+    </script>
 
     <script src="{{ asset('assets/dashbaord/vendors/js/forms/select/select2.full.min.js') }}"></script>
-    <script src="{!! asset('vendor/fileInput/js/fileinput.min.js') !!}" type="text/javascript"></script>
-    <script src="{!! asset('vendor/fileInput/themes/fa5/theme.min.js') !!}" type="text/javascript"></script>
-    @if (Lang() == 'ar')
-        <script src="{!! asset('vendor/fileInput/js/locales/ar.js') !!}" type="text/javascript"></script>
-    @endif
-
     <script src="{!! asset('assets/dashbaord/js/ajax-table.js') !!}?v={{ time() }}" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord/js/premium-ajax-form.js') !!}?v={{ time() }}" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord/js/generic-select2.js') !!}?v={{ time() }}" type="text/javascript"></script>
-    <script src="{!! asset('assets/dashbaord/js/premium-fileinput-initializer.js') !!}?v={{ time() }}" type="text/javascript"></script>
 
     <!-- 2. INLINE SCRIPTS & CONFIGURATIONS -->
     <script type="text/javascript">

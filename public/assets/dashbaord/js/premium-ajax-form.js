@@ -68,8 +68,8 @@ $(document).ready(function () {
             beforeSend: function () {
                 saveBtn.prop("disabled", true);
                 if (spinner.length) {
-                    spinner.removeClass("d-none");
-                    saveBtn.find("i:not(.spinner_loading)").addClass("d-none");
+                    spinner.removeClass("d-none hidden");
+                    saveBtn.find("i:not(.spinner_loading)").addClass("d-none hidden");
                 }
             },
             success: function (response) {
@@ -274,11 +274,27 @@ $(document).ready(function () {
             complete: function () {
                 saveBtn.prop("disabled", false);
                 if (spinner.length) {
-                    spinner.addClass("d-none");
-                    saveBtn.find("i:not(.spinner_loading)").removeClass("d-none");
+                    spinner.addClass("d-none hidden");
+                    saveBtn.find("i:not(.spinner_loading)").removeClass("d-none hidden");
                 }
             },
         });
+    });
+
+    // Real-time error clearing when user types or changes input
+    $("body").on("input change", "form.ajax-form input, form.ajax-form select, form.ajax-form textarea", function () {
+        let field = $(this);
+        field.removeClass("is-invalid-premium");
+        field.closest(".premium-input-wrapper").removeClass("is-invalid-premium");
+        if (field.hasClass("select2-hidden-accessible")) {
+            field.next(".select2-container").find(".select2-selection").removeClass("is-invalid-premium");
+        }
+        
+        let fieldName = field.attr("name");
+        if (fieldName) {
+            let errorKey = fieldName.replace(/\[/g, "_").replace(/\]/g, "").replace(/\./g, "_");
+            field.closest("form").find("." + errorKey + "_error, #" + errorKey + "_error").text("");
+        }
     });
 
     // Auto-reset forms when modals are closed
@@ -286,11 +302,6 @@ $(document).ready(function () {
         let form = $(this).find("form.ajax-form");
         if (form.length) {
             form[0].reset();
-
-            // Reset FileInput if exists
-            if (typeof $.fn.fileinput !== "undefined") {
-                form.find('input[type="file"]').fileinput("clear");
-            }
 
             // Reset Select2 if exists
             if (typeof $.fn.select2 !== "undefined") {
@@ -315,8 +326,9 @@ $(document).ready(function () {
             // Reset Buttons (Spinner/Icons)
             let saveBtn = form.find('button[type="submit"]');
             saveBtn.prop("disabled", false);
-            saveBtn.find(".spinner_loading").addClass("d-none");
-            saveBtn.find("i:not(.spinner_loading)").removeClass("d-none");
+            saveBtn.find(".spinner_loading").addClass("d-none hidden");
+            saveBtn.find("i:not(.spinner_loading)").removeClass("d-none hidden");
         }
     });
 });
+

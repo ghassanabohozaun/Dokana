@@ -1,144 +1,145 @@
-<div class="modal modal-pop" id="updateStoreTransactionModal" tabindex="-1" role="dialog"
+<div class="modal fade" id="updateStoreTransactionModal" tabindex="-1" role="dialog"
     aria-labelledby="updateStoreTransactionModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <form class="form ajax-form" action="" method="POST" enctype="multipart/form-data"
-            id='update_store_transaction_form' data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
+        <form class="ajax-form w-full" action="" method="POST" enctype="multipart/form-data"
+            id="update_store_transaction_form" data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
             data-table-id="#table_data" novalidate>
             @csrf
             @method('PUT')
-            <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
+            <div class="modal-content rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
-                <!--begin::modal header-->
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title font-weight-bold text-dark d-flex align-items-center" id="updateStoreTransactionModalLabel">
-                        <i class="fas fa-edit text-primary mr-2 icon-size-18"></i> {!! __('store_transactions.update_store_transaction') !!}
-                    </h6>
-                    <button type="button" class="close premium-modal-close" data-dismiss="modal" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="updateStoreTransactionModalLabel">
+                            {!! __('store_transactions.update_store_transaction') !!}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-icon-action" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
-                <!--end::modal header-->
 
-                <!--begin::modal body-->
-                <div class="modal-body my-2">
-                    <div class="row">
-                        <input type="hidden" id="id_edit" name="id">
-                        @if(isset($stores))
-                        <div class="col-md-12 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="store_id_dept_edit">{!! __('stores.store') !!} <span class="text-danger">*</span></label>
-                                <input type="hidden" name="store_id" id="hidden_store_id_edit">
-                                <select class="form-control premium-input select2 shadow-none" id='store_id_dept_edit' disabled>
-                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                    @foreach ($stores as $store)
-                                        <option value="{{ $store->id }}">{{ $store->name }}</option>
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    <input type="hidden" id="id_edit" name="id">
+                    <input type="hidden" name="store_id" id="hidden_store_id_edit">
+                    <input type="hidden" name="store_customer_id" id="hidden_store_customer_id_edit">
+
+                    @if(isset($stores))
+                    <!-- Store Select (for admin - disabled visual) -->
+                    <div>
+                        <label class="form-label-modern" for="store_id_dept_edit">
+                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="store_id_dept_edit" class="form-input-modern select2" disabled>
+                            <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
+                            @foreach ($stores as $store)
+                                <option value="{{ $store->id }}">{{ $store->name }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-xs text-rose-500 error-text store_id_error block mt-1"></span>
+                    </div>
+                    @endif
+
+                    <!-- Customer & Type Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="store_customer_id_edit">
+                                {!! __('store_customers.store_customer') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="store_customer_id_edit" class="form-input-modern select2" disabled>
+                                <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
+                                @if(isset($customers))
+                                    @foreach ($customers as $customer)
+                                        <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
                                     @endforeach
-                                </select>
-                                <span class="text-danger error-text store_id_error"></span>
-                            </div>
-                        </div>
-                        @endif
-
-                        <!-- Customer -->
-                        <div class="col-md-6 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="store_customer_id_edit">{!! __('store_customers.store_customer') !!} <span class="text-danger">*</span></label>
-                                <input type="hidden" name="store_customer_id" id="hidden_store_customer_id_edit">
-                                <select class="form-control premium-input select2 shadow-none" id='store_customer_id_edit' disabled>
-                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                    @if(isset($customers))
-                                        @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <span class="text-danger error-text store_customer_id_error"></span>
-                            </div>
+                                @endif
+                            </select>
+                            <span class="text-xs text-rose-500 error-text store_customer_id_error block mt-1"></span>
                         </div>
 
-                        <!-- Type -->
-                        <div class="col-md-6 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="type_edit">{!! __('store_transactions.type') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input shadow-none" id='type_edit' name="type">
-                                    <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
-                                    <option value="debt">{!! __('store_transactions.debt') !!}</option>
-                                    <option value="payment">{!! __('store_transactions.payment') !!}</option>
-                                </select>
-                                <span class="text-danger error-text type_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Bank Account (Conditional) -->
-                        <div class="col-md-12 mb-1 d-none" id="bank_account_container_edit">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="store_bank_account_id_edit">{!! __('bank_accounts.bank_account') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input select2 shadow-none" id='store_bank_account_id_edit' name="store_bank_account_id" style="width: 100%;">
-                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                    @if(isset($bankAccounts) && !isset($stores))
-                                        @foreach($bankAccounts as $account)
-                                            @php
-                                                $entityName = optional($account->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
-                                                $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
-                                            @endphp
-                                            <option value="{{ $account->id }}">{{ $accountName }}</option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                <span class="text-danger error-text store_bank_account_id_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Amount -->
-                        <div class="col-md-6 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="amount_edit">{!! __('store_transactions.amount') !!} <span class="text-danger">*</span></label>
-                                <input type="number" id="amount_edit" name="amount" step="0.01" min="0"
-                                    class="form-control premium-input shadow-none" autocomplete="off">
-                                <span class="text-danger error-text amount_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Transaction Date -->
-                        <div class="col-md-6 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_date_edit">{!! __('store_transactions.date') !!} <span class="text-danger">*</span></label>
-                                <div class="position-relative">
-                                    <i class="fas fa-calendar-alt text-primary position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 4; pointer-events: none;"></i>
-                                    <input type="text" id="transaction_date_edit" name="transaction_date"
-                                        class="form-control premium-input shadow-none ptc-datepicker" style="padding-left: 35px;" autocomplete="off">
-                                </div>
-                                <span class="text-danger error-text transaction_date_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="col-md-12 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="description_edit">{!! __('store_transactions.description') !!}</label>
-                                <input type="text" id="description_edit" name="description"
-                                    class="form-control premium-input shadow-none" autocomplete="off">
-                                <span class="text-danger error-text description_error"></span>
-                            </div>
+                        <div>
+                            <label class="form-label-modern" for="type_edit">
+                                {!! __('store_transactions.type') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <select name="type" id="type_edit" class="form-input-modern">
+                                <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
+                                <option value="debt">{!! __('store_transactions.debt') !!} (دين عليه)</option>
+                                <option value="payment">{!! __('store_transactions.payment') !!} (سداد منه)</option>
+                            </select>
+                            <span class="text-xs text-rose-500 error-text type_error block mt-1"></span>
                         </div>
                     </div>
-                </div>
-                <!--end::modal body-->
 
-                <div class="modal-footer border-0 pt-0 premium-modal-footer">
-                    <button type="submit" id="saveBtnEdit" class="btn btn-premium-save font-weight-bold">
-                        <i class="fas fa-save mr-2"></i>
-                        <i class="fas fa-spinner fa-spin d-none spinner_loading mr-2"></i>
-                        {{ __('general.save') }}
-                    </button>
+                    <!-- Bank Account (Conditional for Payment) -->
+                    <div class="hidden" id="bank_account_container_edit">
+                        <label class="form-label-modern" for="store_bank_account_id_edit">
+                            {!! __('bank_accounts.bank_account') !!} <span class="text-rose-500">*</span>
+                        </label>
+                        <select name="store_bank_account_id" id="store_bank_account_id_edit" class="form-input-modern select2">
+                            <option value="" selected>{!! __('general.select_from_list') !!}</option>
+                            @if(isset($bankAccounts))
+                                @foreach($bankAccounts as $account)
+                                    @php
+                                        $entityName = (optional($account->paymentEntity)->getTranslation('name', app()->getLocale())) ?: optional($account->paymentEntity)->getTranslation('name', 'ar');
+                                        $accountName = $account->account_type === 'cash' ? $entityName : $entityName . ' - ' . $account->account_number;
+                                    @endphp
+                                    <option value="{{ $account->id }}">{{ $accountName }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        <span class="text-xs text-rose-500 error-text store_bank_account_id_error block mt-1"></span>
+                    </div>
 
-                    <button type="button" class="btn btn-premium-secondary font-weight-bold"
-                        data-dismiss="modal">
-                        <i class="fas fa-times-circle mr-2"></i> {{ __('general.cancel') }}
+                    <!-- Amount & Transaction Date Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="amount_edit">
+                                {!! __('store_transactions.amount') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="number" id="amount_edit" name="amount" step="0.01" min="0"
+                                class="form-input-modern" placeholder="0.00" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text amount_error block mt-1"></span>
+                        </div>
+
+                        <div>
+                            <label class="form-label-modern" for="transaction_date_edit">
+                                {!! __('store_transactions.date') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="transaction_date_edit" name="transaction_date"
+                                class="form-input-modern flatpickr-date" placeholder="YYYY-MM-DD" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text transaction_date_error block mt-1"></span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="form-label-modern" for="description_edit">
+                            {!! __('store_transactions.description') !!}
+                        </label>
+                        <textarea id="description_edit" name="description" rows="2"
+                            class="form-input-modern" placeholder="{!! __('store_transactions.description') !!}" autocomplete="off"></textarea>
+                        <span class="text-xs text-rose-500 error-text description_error block mt-1"></span>
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <button type="submit" class="btn-primary-gradient text-xs">
+                        <i class="fas fa-save text-xs"></i>
+                        <i class="fas fa-spinner fa-spin spinner_loading text-xs hidden d-none"></i>
+                        <span>{!! __('general.save') !!}</span>
+                    </button>
+                    <button type="button" class="btn-secondary-modern text-xs" data-dismiss="modal">
+                        {!! __('general.cancel') !!}
                     </button>
                 </div>
-                <!--end::modal footer-->
 
             </div>
         </form>
@@ -148,153 +149,94 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
-            // Show edit modal and populate data dynamically
-            $('body').on('click', '.edit_store_transaction_button', function(e) {
+            // Show edit modal and populate data dynamically via event delegation
+            $(document).on('click', '.editStoreTransactionBtn', function(e) {
                 e.preventDefault();
                 
-                let store_transaction_id = $(this).attr('store_transaction-id');
-                let store_transaction_store_customer_id = $(this).attr('store_transaction-store-customer-id');
-                let store_transaction_type = $(this).attr('store_transaction-type');
-                let store_transaction_amount = $(this).attr('store_transaction-amount');
-                let store_transaction_description = $(this).attr('store_transaction-description');
-                let store_transaction_store_id = $(this).attr('store_transaction-store-id');
-                let store_transaction_date = $(this).attr('store_transaction-date');
-                let store_transaction_customer_name = $(this).attr('store_transaction-customer-name');
-                let store_transaction_bank_account_id = $(this).attr('store_transaction-bank-account-id');
-                let store_transaction_bank_account_name = $(this).attr('store_transaction-bank-account-name');
+                let $btn = $(this);
+                let transaction_id = $btn.data('id');
+                let customer_id = $btn.data('store_customer_id');
+                let customer_name = $btn.data('customer_name');
+                let store_id = $btn.data('store_id');
+                let type = $btn.data('type');
+                let amount = $btn.data('amount');
+                let description = $btn.data('description');
+                let bank_account_id = $btn.data('bank_account_id');
+                let bank_account_name = $btn.data('bank_account_name');
+                let date = $btn.data('date');
 
                 // Populate form fields
-                $('#id_edit').val(store_transaction_id);
-                $('#type_edit').val(store_transaction_type).trigger('change');
-                $('#amount_edit').val(store_transaction_amount);
-                $('#description_edit').val(store_transaction_description);
-                $('#transaction_date_edit').val(store_transaction_date);
-                
-                // Set hidden inputs
-                $('#hidden_store_id_edit').val(store_transaction_store_id);
-                $('#hidden_store_customer_id_edit').val(store_transaction_store_customer_id);
+                $('#id_edit').val(transaction_id);
+                $('#hidden_store_id_edit').val(store_id);
+                $('#hidden_store_customer_id_edit').val(customer_id);
+                $('#amount_edit').val(amount);
+                $('#description_edit').val(description);
+                $('#type_edit').val(type);
 
-                // Populate Select2 for Customer
-                if ($('#store_customer_id_edit').length && !$('#store_id_dept_edit').length) {
-                    if (store_transaction_store_customer_id) {
-                        if ($('#store_customer_id_edit').find("option[value='" + store_transaction_store_customer_id + "']").length == 0) {
-                            $('#store_customer_id_edit').append(new Option(store_transaction_customer_name, store_transaction_store_customer_id, true, true));
+                // Set Flatpickr date or input value
+                let dateInput = document.querySelector('#transaction_date_edit');
+                if (dateInput && dateInput._flatpickr) {
+                    dateInput._flatpickr.setDate(date, true);
+                } else {
+                    $('#transaction_date_edit').val(date);
+                }
+
+                // Handle Bank Account Container
+                if (type === 'payment') {
+                    $('#bank_account_container_edit').removeClass('hidden');
+                } else {
+                    $('#bank_account_container_edit').addClass('hidden');
+                }
+
+                // Populate Customer Select2
+                if ($('#store_customer_id_edit').length) {
+                    if (customer_id) {
+                        if ($('#store_customer_id_edit').find("option[value='" + customer_id + "']").length == 0) {
+                            let newOpt = new Option(customer_name, customer_id, true, true);
+                            $('#store_customer_id_edit').append(newOpt);
                         }
-                        $('#store_customer_id_edit').val(store_transaction_store_customer_id).trigger('change');
-                    } else {
-                        $('#store_customer_id_edit').val(null).trigger('change');
+                        $('#store_customer_id_edit').val(customer_id).trigger('change.select2');
                     }
                 }
 
-                // Populate Select2 for Bank Account
-                if ($('#store_bank_account_id_edit').length && !$('#store_id_dept_edit').length) {
-                    if (store_transaction_bank_account_id) {
-                        if ($('#store_bank_account_id_edit').find("option[value='" + store_transaction_bank_account_id + "']").length == 0) {
-                            $('#store_bank_account_id_edit').append(new Option(store_transaction_bank_account_name, store_transaction_bank_account_id, true, true));
+                // Populate Bank Account Select2
+                if ($('#store_bank_account_id_edit').length) {
+                    if (bank_account_id) {
+                        if ($('#store_bank_account_id_edit').find("option[value='" + bank_account_id + "']").length == 0) {
+                            let newOpt = new Option(bank_account_name, bank_account_id, true, true);
+                            $('#store_bank_account_id_edit').append(newOpt);
                         }
-                        $('#store_bank_account_id_edit').val(store_transaction_bank_account_id).trigger('change');
+                        $('#store_bank_account_id_edit').val(bank_account_id).trigger('change.select2');
                     } else {
-                        $('#store_bank_account_id_edit').val(null).trigger('change');
+                        $('#store_bank_account_id_edit').val(null).trigger('change.select2');
                     }
                 }
 
-                // Populate Select2 for Store
+                // Populate Store Select2
                 if ($('#store_id_dept_edit').length) {
-                    if (store_transaction_store_id) {
-                        $('#store_id_dept_edit').val(store_transaction_store_id).trigger('change', [{
-                            customer_id: store_transaction_store_customer_id,
-                            bank_account_id: store_transaction_bank_account_id
-                        }]);
-                    } else {
-                        $('#store_id_dept_edit').val(null).trigger('change');
+                    if (store_id) {
+                        $('#store_id_dept_edit').val(store_id).trigger('change.select2');
                     }
                 }
 
                 // Update form action URL dynamically
-                let url = "{!! route('dashboard.store-transactions.update', 'id') !!}".replace('id', store_transaction_id);
+                let url = "{!! route('dashboard.store-transactions.update', ':id') !!}".replace(':id', transaction_id);
                 $('#update_store_transaction_form').attr('action', url);
                 
-                // Show modal
+                $('#update_store_transaction_form').find('.error-text').text('');
+                $('#update_store_transaction_form').find('.form-input-modern').removeClass('border-rose-500');
                 $('#updateStoreTransactionModal').modal('show');
             });
 
-            // Toggle Bank Account visibility based on Type
+            // Toggle Bank Account visibility based on Type in edit modal
             $('#type_edit').on('change', function() {
                 if ($(this).val() === 'payment') {
-                    $('#bank_account_container_edit').removeClass('d-none');
+                    $('#bank_account_container_edit').removeClass('hidden');
                 } else {
-                    $('#bank_account_container_edit').addClass('d-none');
-                    $('#store_bank_account_id_edit').val('').trigger('change');
-                }
-            });
-
-            // Initialize Select2
-            if ($('#store_id_dept_edit').length) {
-                $('#store_id_dept_edit').select2({
-                    dropdownParent: $('#updateStoreTransactionModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-            if ($('#store_customer_id_edit').length) {
-                $('#store_customer_id_edit').select2({
-                    dropdownParent: $('#updateStoreTransactionModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-            if ($('#store_bank_account_id_edit').length) {
-                $('#store_bank_account_id_edit').select2({
-                    dropdownParent: $('#updateStoreTransactionModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-
-            // Fetch customers and bank accounts by store on change
-            $('#store_id_dept_edit').on('change', function(e, initData) {
-                let store_id = $(this).val();
-                let customerSelect = $('#store_customer_id_edit');
-                let bankAccountSelect = $('#store_bank_account_id_edit');
-                
-                if (store_id) {
-                    $.ajax({
-                        url: "{!! route('dashboard.store-customers.by-store') !!}",
-                        type: 'GET',
-                        data: { store_id: store_id },
-                        success: function(data) {
-                            customerSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
-                            $.each(data, function(key, customer) {
-                                customerSelect.append('<option value="' + customer.id + '">' + customer.name + ' - ' + (customer.phone || '') + '</option>');
-                            });
-                            if (initData && initData.customer_id) {
-                                customerSelect.val(initData.customer_id).trigger('change.select2');
-                            }
-                        }
-                    });
-
-                    $.ajax({
-                        url: "{!! route('dashboard.bank-accounts.by-store') !!}",
-                        type: 'GET',
-                        data: { store_id: store_id },
-                        success: function(data) {
-                            bankAccountSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
-                            data.sort((a, b) => b.id - a.id);
-                            $.each(data, function(key, account) {
-                                let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
-                                let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
-                                let newOption = new Option(accountName, account.id, false, false);
-                                bankAccountSelect.append(newOption);
-                            });
-                            if (initData && initData.bank_account_id) {
-                                bankAccountSelect.val(initData.bank_account_id).trigger('change.select2');
-                            }
-                        }
-                    });
+                    $('#bank_account_container_edit').addClass('hidden');
+                    $('#store_bank_account_id_edit').val('').trigger('change.select2');
                 }
             });
         });
     </script>
 @endpush
-
-

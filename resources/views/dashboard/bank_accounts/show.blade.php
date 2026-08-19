@@ -3,180 +3,166 @@
 @section('title', $title)
 
 @section('content')
-<div class="app-content content">
-    <div class="content-wrapper">
-        
-        <!-- Breadcrumbs -->
-        <div class="content-header row mb-2">
-            <div class="content-header-left col-md-6 col-12">
-                <div class="row breadcrumbs-top">
-                    <div class="breadcrumb-wrapper col-12">
-                        <ol class="breadcrumb premium-breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a href="{!! route('dashboard.index') !!}"><i class="fas fa-home"></i> {!! __('dashboard.home') !!}</a>
-                            </li>
-                            <li class="breadcrumb-item">
-                                <a href="{!! route('dashboard.bank-accounts.index') !!}">{!! __('bank_accounts.bank_accounts') !!}</a>
-                            </li>
-                            <li class="breadcrumb-item active font-weight-bold">
-                                {!! $account->paymentEntity ? $account->paymentEntity->getTranslation('name', app()->getLocale()) : '' !!}
-                                {!! $account->account_type == 'bank' ? ' - ' . $account->account_number : '' !!}
-                            </li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            <div class="content-header-right col-md-6 col-12 text-md-right">
-                <a href="{!! route('dashboard.bank-accounts.index') !!}" class="btn btn-premium-secondary shadow-sm">
-                    <i class="fas fa-arrow-right ml-1"></i> {!! __('general.back') !!}
-                </a>
-            </div>
-        </div>
+<div class="space-y-6">
+    <!-- Top Header & Actions -->
+    <div class="flex items-center justify-between gap-4">
+        <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <i class="fas fa-home text-xs"></i>
+                <span>{!! __('dashboard.home') !!}</span>
+            </a>
+            <span>/</span>
+            <a href="{!! route('dashboard.bank-accounts.index') !!}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                {!! __('bank_accounts.bank_accounts') !!}
+            </a>
+            <span>/</span>
+            <span class="text-slate-700 dark:text-slate-200 font-bold">
+                {!! $account->paymentEntity ? $account->paymentEntity->getTranslation('name', app()->getLocale()) : '' !!}
+            </span>
+        </nav>
 
-        <div class="content-body">
-            <!-- Top Banner -->
-            <div class="profile-banner mb-4" style="background: linear-gradient(135deg, #0f172a 0%, #334155 100%); box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.4);">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                    <div class="d-flex align-items-center">
-                        <div class="profile-avatar-box mr-3 ml-3">
-                            @if($account->account_type == 'wallet')
-                                <i class="fas fa-wallet text-white"></i>
-                            @else
-                                <i class="fas fa-university text-white"></i>
-                            @endif
-                        </div>
-                        <div>
-                            <h2 class="mb-1 text-white font-weight-bold" style="font-size: 26px;">
-                                {!! $account->paymentEntity ? $account->paymentEntity->getTranslation('name', app()->getLocale()) : '' !!}
-                            </h2>
-                            <div class="d-flex flex-wrap" style="gap: 16px;">
-                                @if($account->account_number)
-                                <div class="profile-meta-item">
-                                    <i class="fas fa-hashtag text-info"></i>
-                                    <span dir="ltr">{!! $account->account_number !!}</span>
-                                </div>
-                                @endif
-                                <div class="profile-meta-item">
-                                    <i class="fas fa-user text-success"></i>
-                                    <span>{!! $account->account_holder_name !!}</span>
-                                </div>
-                                @if(isset($account->store))
-                                <div class="profile-meta-item">
-                                    <i class="fas fa-store text-warning"></i>
-                                    <span>{!! $account->store->name !!}</span>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-2 mt-md-0">
+        <div class="flex items-center gap-2">
+            <a href="{!! route('dashboard.bank-accounts.index') !!}" class="btn-secondary-modern text-xs">
+                <i class="fas fa-arrow-right text-xs"></i>
+                <span>{!! __('general.back') !!}</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Hero Identity Banner Card -->
+    <div class="dash-card p-6 relative overflow-hidden">
+        <!-- Background Ambient Gradient Glow -->
+        <div class="absolute -top-24 -end-24 w-72 h-72 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -start-24 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <!-- Icon Badge -->
+                <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl {{ $account->account_type == 'wallet' ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/60' : ($account->account_type == 'cash' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/60' : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60') }} text-2xl shadow-sm">
+                    <i class="fas {{ $account->account_type == 'wallet' ? 'fa-wallet' : ($account->account_type == 'cash' ? 'fa-money-bill-wave' : 'fa-university') }}"></i>
+                </div>
+
+                <!-- Titles & Meta Badges -->
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-lg md:text-xl font-bold text-slate-800 dark:text-white">
+                            {!! $account->paymentEntity ? $account->paymentEntity->getTranslation('name', app()->getLocale()) : '' !!}
+                        </h1>
+
                         @if($account->is_default)
-                            <div class="profile-badge-status" style="background-color: rgba(255, 193, 7, 0.2); color: #ffc107; border-color: rgba(255, 193, 7, 0.3);">
-                                <i class="fas fa-star"></i> {!! __('bank_accounts.is_default') !!}
-                            </div>
+                            <span class="badge-pill badge-pill-warning text-[11px]">
+                                <i class="fas fa-star text-[10px] me-1"></i> {!! __('bank_accounts.is_default') !!}
+                            </span>
+                        @endif
+
+                        <span class="badge-pill {{ $account->account_type == 'wallet' ? 'badge-pill-info' : 'badge-pill-primary' }} text-[11px]">
+                            {!! $account->account_type == 'wallet' ? __('bank_accounts.type_wallet') : __('bank_accounts.type_bank') !!}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 flex-wrap">
+                        <span class="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300" dir="ltr">
+                            <i class="fas fa-hashtag text-[10px] text-slate-400"></i> {{ $account->account_number }}
+                        </span>
+                        <span>•</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <i class="fas fa-user text-[10px] text-slate-400"></i> {{ $account->account_holder_name }}
+                        </span>
+                        @if(isset($account->store))
+                            <span>•</span>
+                            <span class="inline-flex items-center gap-1.5 font-medium text-indigo-600 dark:text-indigo-400">
+                                <i class="fas fa-store text-[10px]"></i> {{ $account->store->name }}
+                            </span>
                         @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Main Grid -->
-            <div class="row">
-                <!-- Left Sidebar: Financial Summary -->
-                <div class="col-md-4 d-flex flex-column" id="left-profile-column">
-                    <div class="profile-card">
-                        <div class="profile-card-header">
-                            <i class="fas fa-wallet"></i> {!! __('store_customers.financial_summary') !!}
-                        </div>
-                        <div class="profile-card-body">
-                            <div class="row">
-                                <div class="col-6 pr-2">
-                                    <div class="finance-summary-block">
-                                        <div class="finance-summary-title">{!! __('bank_accounts.total_deposits') !!}</div>
-                                        <div class="finance-summary-amount finance-payment-text">{!! number_format($totalDeposits, 2) !!}</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 pl-2">
-                                    <div class="finance-summary-block">
-                                        <div class="finance-summary-title">{!! __('bank_accounts.total_withdrawals') !!}</div>
-                                        <div class="finance-summary-amount finance-debt-text">{!! number_format($totalWithdrawals, 2) !!}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="finance-total-block">
-                                <div class="finance-summary-title text-dark">{!! __('general.balance') !!}</div>
-                                <div class="finance-summary-amount {{ $currentBalance >= 0 ? 'finance-payment-text' : 'finance-debt-text' }}">
-                                    {!! number_format(abs($currentBalance), 2) !!} <small>₪</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- IBAN Banner (if available) -->
+            @if($account->iban)
+            <div class="w-full md:w-auto p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">{!! __('bank_accounts.iban') !!}</span>
+                <span class="text-xs font-mono font-bold text-slate-700 dark:text-slate-200 select-all" dir="ltr">
+                    {{ $account->formatted_iban }}
+                </span>
+            </div>
+            @endif
+        </div>
+    </div>
 
-                    <div class="profile-card flex-grow-1 mb-0 d-flex flex-column">
-                        <div class="profile-card-header">
-                            <i class="fas fa-info-circle"></i> {!! __('bank_accounts.account_details') !!}
-                        </div>
-                        <div class="profile-card-body flex-grow-1">
-                            <div class="details-grid">
-                                <div class="detail-box">
-                                    <div class="detail-box-label"><i class="fas fa-calendar-alt text-primary mr-1"></i> {!! __('general.created_at') !!}</div>
-                                    <div class="detail-box-value" dir="ltr">{!! $account->created_at->format('Y-m-d') !!}</div>
-                                </div>
-                                <div class="detail-box">
-                                    <div class="detail-box-label"><i class="fas fa-user-plus text-warning mr-1"></i> {!! __('departments.created_by') !!}</div>
-                                    <div class="detail-box-value text-primary">{!! $account->creator->name ?? '---' !!}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Financial Stats Grid (3 Summary Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Current Balance -->
+        <div class="dash-card p-5">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{!! __('general.balance') !!}</span>
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl {{ $currentBalance >= 0 ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' }} text-xs">
+                    <i class="fas fa-coins"></i>
                 </div>
+            </div>
+            <div class="text-2xl font-black {{ $currentBalance >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' }}" dir="ltr">
+                {{ number_format($currentBalance, 2) }} <span class="text-xs font-semibold text-slate-400">₪</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">الرصيد الفعلي المتوفر في هذا الحساب</div>
+        </div>
 
-                <!-- Right Content: Transactions -->
-                <div class="col-md-8 mb-4 d-flex flex-column">
-                    <div class="profile-card flex-grow-1 mb-0 d-flex flex-column" id="right-transactions-card">
-                        <div class="profile-card-header p-0 border-bottom">
-                            <ul class="nav nav-tabs nav-justified w-100 m-0 border-0" id="accountTabs" role="tablist" style="border-radius: 12px 12px 0 0; overflow: hidden;">
-                                <li class="nav-item">
-                                    <a class="nav-link font-weight-bold py-3 active" id="deposits-tab" data-toggle="tab" href="#deposits" role="tab" aria-controls="deposits" aria-selected="true" data-tab="deposits" style="border:none; border-right: 1px solid #e2e8f0; border-radius: 0;">
-                                        <i class="fas fa-arrow-down text-success mr-1"></i> {!! __('bank_accounts.deposits_and_payments') !!}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link font-weight-bold py-3" id="withdrawals-tab" data-toggle="tab" href="#withdrawals" role="tab" aria-controls="withdrawals" aria-selected="false" data-tab="withdrawals" style="border:none; border-right: 1px solid #e2e8f0; border-radius: 0;">
-                                        <i class="fas fa-arrow-up text-danger mr-1"></i> {!! __('bank_accounts.withdrawals') !!}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link font-weight-bold py-3" id="adjustments-tab" data-toggle="tab" href="#adjustments" role="tab" aria-controls="adjustments" aria-selected="false" data-tab="adjustments" style="border:none; border-radius: 0;">
-                                        <i class="fas fa-balance-scale text-warning mr-1"></i> {!! __('bank_accounts.adjustments') !!}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="table-loader-container mt-3" style="min-height: 300px;">
-                                <div class="table-loader-overlay" id="tableLoader">
-                                    <span class="premium-loader"></span>
-                                </div>
-                                <div class="tab-content" id="accountTabsContent">
-                                    <div class="tab-pane show active" id="deposits" role="tabpanel" aria-labelledby="deposits-tab">
-                                        <div id="deposits_table_data">
-                                            @include('dashboard.bank_accounts.partials._deposits_table')
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane" id="withdrawals" role="tabpanel" aria-labelledby="withdrawals-tab">
-                                        <div id="withdrawals_table_data"></div>
-                                    </div>
-                                    <div class="tab-pane" id="adjustments" role="tabpanel" aria-labelledby="adjustments-tab">
-                                        <div id="adjustments_table_data"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Total Deposits -->
+        <div class="dash-card p-5">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{!! __('bank_accounts.total_deposits') !!}</span>
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs">
+                    <i class="fas fa-arrow-down"></i>
                 </div>
+            </div>
+            <div class="text-2xl font-black text-slate-800 dark:text-white" dir="ltr">
+                {{ number_format($totalDeposits, 2) }} <span class="text-xs font-semibold text-slate-400">₪</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">إجمالي الحركات المالية الواردة</div>
+        </div>
 
+        <!-- Total Withdrawals -->
+        <div class="dash-card p-5">
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400">{!! __('bank_accounts.total_withdrawals') !!}</span>
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+            </div>
+            <div class="text-2xl font-black text-slate-800 dark:text-white" dir="ltr">
+                {{ number_format($totalWithdrawals, 2) }} <span class="text-xs font-semibold text-slate-400">₪</span>
+            </div>
+            <div class="text-[11px] text-slate-400 mt-1">إجمالي السحوبات والمصروفات الصادرة</div>
+        </div>
+    </div>
+
+    <!-- Interactive Activity Tabs Card -->
+    <div class="dash-card overflow-hidden">
+        <!-- Segmented Tab Header -->
+        <div class="flex items-center border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80 p-2 gap-1.5 overflow-x-auto">
+            <button type="button" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-2xs" data-tab="deposits">
+                <i class="fas fa-arrow-down text-emerald-500 text-xs"></i>
+                <span>{!! __('bank_accounts.deposits_and_payments') !!}</span>
+            </button>
+
+            <button type="button" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/40" data-tab="withdrawals">
+                <i class="fas fa-arrow-up text-rose-500 text-xs"></i>
+                <span>{!! __('bank_accounts.withdrawals') !!}</span>
+            </button>
+
+            <button type="button" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/40" data-tab="adjustments">
+                <i class="fas fa-balance-scale text-amber-500 text-xs"></i>
+                <span>{!! __('bank_accounts.adjustments') !!}</span>
+            </button>
+        </div>
+
+        <!-- Tab Body Container with Smooth AJAX Loading -->
+        <div class="relative min-h-[220px]" id="tabContentWrapper">
+            <div class="table-loader-overlay absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xs flex items-center justify-center z-10 hidden" id="tableLoader">
+                <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent"></div>
+            </div>
+
+            <div id="dynamicTabContent">
+                @include('dashboard.bank_accounts.partials._deposits_table')
             </div>
         </div>
     </div>
@@ -185,51 +171,53 @@
 
 @push('scripts')
 <script>
-    // Handle tab change and pagination
-    let currentTab = 'deposits';
-    
-    // Function to fetch data
-    function fetchTabData(page = 1) {
-        $('#tableLoader').css('display', 'flex').hide().fadeIn(200);
-        
-        $.ajax({
-            url: window.location.pathname + "?tab=" + currentTab + "&page=" + page,
-            type: "GET",
-            success: function(response) {
-                if (currentTab === 'deposits') {
-                    $('#deposits_table_data').html(response);
-                } else if (currentTab === 'withdrawals') {
-                    $('#withdrawals_table_data').html(response);
-                } else if (currentTab === 'adjustments') {
-                    $('#adjustments_table_data').html(response);
+    $(document).ready(function() {
+        let currentTab = 'deposits';
+        let tabCache = {
+            'deposits': $('#dynamicTabContent').html()
+        };
+
+        function fetchTabData(tab, page = 1) {
+            $('#tableLoader').removeClass('hidden');
+            
+            $.ajax({
+                url: window.location.pathname + "?tab=" + tab + "&page=" + page,
+                type: "GET",
+                success: function(response) {
+                    $('#dynamicTabContent').html(response);
+                    tabCache[tab] = response;
+                    $('#tableLoader').addClass('hidden');
+                },
+                error: function() {
+                    $('#tableLoader').addClass('hidden');
                 }
-                $('#tableLoader').fadeOut(200);
-            },
-            error: function() {
-                $('#tableLoader').fadeOut(200);
+            });
+        }
+
+        // Tab Switching
+        $('.tab-btn').on('click', function() {
+            let $btn = $(this);
+            currentTab = $btn.data('tab');
+
+            $('.tab-btn').removeClass('bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-2xs')
+                .addClass('text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/40');
+            
+            $btn.addClass('bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-2xs')
+                .removeClass('text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100/70 dark:hover:bg-slate-800/40');
+
+            if (tabCache[currentTab]) {
+                $('#dynamicTabContent').html(tabCache[currentTab]);
+            } else {
+                fetchTabData(currentTab, 1);
             }
         });
-    }
 
-    // When clicking on a tab
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        currentTab = $(e.target).data('tab');
-        
-        // Check if content is empty before fetching
-        if (currentTab === 'withdrawals' && $.trim($('#withdrawals_table_data').html()) === '') {
-            fetchTabData(1);
-        } else if (currentTab === 'adjustments' && $.trim($('#adjustments_table_data').html()) === '') {
-            fetchTabData(1);
-        } else if (currentTab === 'deposits' && $.trim($('#deposits_table_data').html()) === '') {
-            fetchTabData(1);
-        }
-    });
-
-    // Handle pagination clicks within the tabs
-    $(document).on('click', '.custom-pagination a', function(e) {
-        e.preventDefault();
-        let page = $(this).attr('href').split('page=')[1];
-        fetchTabData(page);
+        // Tab Pagination Clicks
+        $(document).on('click', '#dynamicTabContent .custom-pagination a', function(e) {
+            e.preventDefault();
+            let page = $(this).attr('href').split('page=')[1];
+            fetchTabData(currentTab, page);
+        });
     });
 </script>
 @endpush

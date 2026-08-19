@@ -13,17 +13,20 @@ class UserRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('user');
+        $userParam = $this->route('user');
+        $id = $userParam instanceof \App\Models\User ? $userParam->id : ($userParam ?? $this->id);
 
         $rules = [
             'name.ar' => 'required|string|max:255',
             'name.en' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => $id ? 'nullable|min:6' : 'required|min:6',
-            'password_confirm' => $id ? 'nullable|same:password' : 'required|same:password',
+            'password_confirm' => $id ? 'nullable|required_with:password|same:password' : 'required|same:password',
+            'password_confirmation' => $id ? 'nullable|same:password' : 'nullable|same:password',
             'role_id' => 'required|exists:roles,id',
             'mobile' => 'required|string|max:10|unique:users,mobile,' . $id,
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status' => 'nullable|in:0,1',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'delete_photo' => 'nullable',
         ];
 

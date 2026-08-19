@@ -64,4 +64,31 @@ class StoreBankAccountRequest extends FormRequest
         return $rules;
     }
 
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes(): array
+    {
+        return [
+            'store_id' => __('stores.store'),
+            'account_type' => __('bank_accounts.account_type') ?? 'نوع الحساب',
+            'payment_entity_id' => __('bank_accounts.bank_name') ?? 'اسم البنك / المحفظة',
+            'account_holder_name.ar' => __('bank_accounts.account_holder_name_ar') ?? 'اسم صاحب الحساب بالعربية',
+            'account_holder_name.en' => __('bank_accounts.account_holder_name_en') ?? 'اسم صاحب الحساب بالإنجليزية',
+            'account_number' => __('bank_accounts.account_number') ?? 'رقم الحساب',
+            'iban' => __('bank_accounts.iban') ?? 'الآيبان',
+            'opening_balance' => __('bank_accounts.opening_balance') ?? 'الرصيد الافتتاحي',
+        ];
+    }
+
+    /**
+     * Get custom messages for validator errors.
+     */
+    public function messages(): array
+    {
+        return [
+            'account_type.required' => __('bank_accounts.account_type_required') ?? 'نوع الحساب مطلوب.',
+            'payment_entity_id.required' => __('bank_accounts.payment_entity_id_required') ?? 'اسم البنك / المحفظة مطلوب.',
+        ];
+    }
 }

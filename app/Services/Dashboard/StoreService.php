@@ -164,12 +164,18 @@ class StoreService
             return false;
         }
 
-        // Check for restrictive relations (e.g., users, bank accounts)
+        // Check for restrictive relations (e.g., users, transactions)
         $store->checkRestrictiveRelations();
 
         if ($store->logo) {
             $this->imageManagerUtils->removeImageFromLocal($store->logo, 'stores');
         }
+
+        // Clean up store default accounts, customers, and settings
+        $store->bankAccounts()->delete();
+        $store->customers()->delete();
+        Setting::where('store_id', $store->id)->delete();
+
         return $this->repository->delete($id);
     }
 

@@ -1,68 +1,99 @@
-<div class="table-responsive">
-    <table class="table table-hover mb-0">
-        <thead class="bg-white">
+<div class="overflow-x-auto">
+    <table class="table-modern w-full">
+        <thead>
             <tr>
-                <th class="text-center align-middle py-3 border-top-0">#</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('general.date') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('departments.created_by') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.previous_balance') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.actual_balance_title') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.difference_adjustment') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.notes') !!}</th>
+                <th class="w-12 text-center">#</th>
+                <th>{!! __('general.date') !!}</th>
+                <th class="hidden sm:table-cell">{!! __('departments.created_by') !!}</th>
+                <th class="text-center">{!! __('bank_accounts.previous_balance') !!}</th>
+                <th class="text-center">{!! __('bank_accounts.actual_balance_title') !!}</th>
+                <th class="text-center">{!! __('bank_accounts.difference_adjustment') !!}</th>
+                <th>{!! __('bank_accounts.notes') !!}</th>
             </tr>
         </thead>
-        <tbody>
-            @forelse ($transactions as $key => $transaction)
-                <tr>
-                    <td class="text-center align-middle">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
-                            {!! $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() !!}
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+            @forelse ($transactions as $transaction)
+                <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                            {{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}
                         </span>
                     </td>
-                    <td class="text-center align-middle font-weight-bold" dir="ltr">
-                        {!! $transaction->created_at ? $transaction->created_at->format('Y-m-d h:i A') : '' !!}
+
+                    <!-- Date -->
+                    <td>
+                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300" dir="ltr">
+                            {{ $transaction->created_at ? $transaction->created_at->format('Y-m-d h:i A') : '—' }}
+                        </span>
                     </td>
-                    <td class="text-center align-middle text-muted">
-                        <i class="fas fa-user-circle mr-1"></i> {!! optional($transaction->creator)->name ?? '---' !!}
-                    </td>
-                    <td class="text-center align-middle text-muted">
-                        {!! number_format($transaction->old_balance, 2) !!}
-                    </td>
-                    <td class="text-center align-middle text-dark font-weight-bold">
-                        {!! number_format($transaction->new_balance, 2) !!}
-                    </td>
-                    <td class="text-center align-middle">
-                        @if($transaction->amount > 0)
-                            <span class="premium-store-badge store-badge-payment">
-                                <i class="fas fa-arrow-down"></i> {!! number_format(abs($transaction->amount), 2) !!}
+
+                    <!-- Created By -->
+                    <td class="hidden sm:table-cell">
+                        @if($transaction->creator)
+                            <span class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                <i class="fas fa-user-tie text-[10px] text-slate-400"></i>
+                                {{ $transaction->creator->name }}
                             </span>
-                            <br><small class="text-success">{!! __('bank_accounts.surplus') !!}</small>
-                        @elseif($transaction->amount < 0)
-                            <span class="premium-store-badge store-badge-debt">
-                                <i class="fas fa-arrow-up"></i> {!! number_format(abs($transaction->amount), 2) !!}
-                            </span>
-                            <br><small class="text-danger">{!! __('bank_accounts.deficit') !!}</small>
                         @else
-                            <span class="text-muted">0.00</span>
+                            <span class="text-xs text-slate-400">—</span>
                         @endif
                     </td>
-                    <td class="align-middle">
-                        <div class="font-weight-bold">{!! $transaction->notes ?: __('general.no_description') !!}</div>
+
+                    <!-- Old Balance -->
+                    <td class="text-center" dir="ltr">
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold">
+                            {{ number_format($transaction->old_balance, 2) }}
+                        </span>
+                    </td>
+
+                    <!-- New Actual Balance -->
+                    <td class="text-center" dir="ltr">
+                        <span class="text-xs text-slate-900 dark:text-white font-bold">
+                            {{ number_format($transaction->new_balance, 2) }}
+                        </span>
+                    </td>
+
+                    <!-- Difference Adjustment Badge -->
+                    <td class="text-center">
+                        @if($transaction->amount > 0)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-black bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400" dir="ltr">
+                                <i class="fas fa-arrow-down text-[9px]"></i> +{{ number_format(abs($transaction->amount), 2) }}
+                            </span>
+                            <span class="block text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">{!! __('bank_accounts.surplus') !!}</span>
+                        @elseif($transaction->amount < 0)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-black bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400" dir="ltr">
+                                <i class="fas fa-arrow-up text-[9px]"></i> -{{ number_format(abs($transaction->amount), 2) }}
+                            </span>
+                            <span class="block text-[10px] text-rose-600 dark:text-rose-400 mt-0.5">{!! __('bank_accounts.deficit') !!}</span>
+                        @else
+                            <span class="text-xs text-slate-400 font-bold">0.00</span>
+                        @endif
+                    </td>
+
+                    <!-- Notes -->
+                    <td>
+                        <span class="text-xs text-slate-600 dark:text-slate-400">
+                            {{ $transaction->notes ?: __('general.no_description') }}
+                        </span>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="100%" class="text-center p-4 text-muted">
-                        <div class="d-flex flex-column align-items-center">
-                            <i class="fas fa-inbox font-large-2 mb-2 text-light"></i>
-                            <span>{!! __('bank_accounts.no_adjustments_yet') !!}</span>
+                    <td colspan="7" class="text-center py-12">
+                        <div class="flex h-12 w-12 mx-auto items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 text-lg mb-2">
+                            <i class="fas fa-inbox"></i>
                         </div>
+                        <h6 class="text-xs font-bold text-slate-600 dark:text-slate-400">{!! __('bank_accounts.no_adjustments_yet') !!}</h6>
                     </td>
                 </tr>
             @endforelse
         </tbody>
     </table>
-    <div class="float-right mt-3 custom-pagination">
+</div>
+
+@if ($transactions->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center custom-pagination">
         {!! $transactions->links() !!}
     </div>
-</div>
+@endif

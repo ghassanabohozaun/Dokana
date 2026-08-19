@@ -1,82 +1,41 @@
-<div class="query-bar-container">
-    <div class="query-bar js-query-bar">
-        <span class="query-bar-label">
-            <i class="fas fa-filter"></i> {!! __('general.filters') !!}:
-        </span>
-
-        <form class="js-filter-form d-flex align-items-center gap-2" data-container="#table_data"
-            data-loader=".table-loader-overlay">
-            <!-- Keyword Search -->
-            <div class="filter-item">
-                <div class="filter-chip js-filter-chip" data-filter-target="keyword_search_popover">
-                    <i class="fas fa-search text-primary"></i>
-                    <span class="chip-text">{!! __('general.search') !!}</span>
-                </div>
-
-                <!-- Keyword Search Popover -->
-                <div class="ptc-query-panel shadow-lg border-0 radius-16" id="keyword_search_popover">
-                    <div class="mb-3">
-                        <label class="premium-label mb-2">{!! __('bank_accounts.bank_accounts') !!}</label>
-                        <div class="premium-input-wrapper">
-                            <input type="text" class="form-control premium-input shadow-none"
-                                name="keyword" placeholder="{!! __('general.search') !!}..."
-                                autocomplete="off">
-                            <i class="fas fa-search text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="popover-actions mt-4 text-right">
-                        <button type="submit" class="btn btn-premium-blue btn-sm js-apply-filter px-4">
-                            <i class="fas fa-check-circle mr-1"></i> {!! __('general.apply') !!}
-                        </button>
-                    </div>
-                </div>
+<div class="dash-card p-4">
+    <form class="js-filter-form flex flex-col md:flex-row items-center gap-3" data-container="#table_data" data-loader=".table-loader-overlay">
+        
+        <!-- Keyword Search Input -->
+        <div class="relative flex-1 w-full">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-slate-400">
+                <i class="fas fa-search text-xs"></i>
             </div>
+            <input type="text" name="keyword" class="form-input-modern ps-9"
+                placeholder="{!! __('bank_accounts.bank_accounts') !!}..." autocomplete="off">
+        </div>
 
-            @if(isset($stores) && $stores->count() > 0)
-            <!-- Store Filter -->
-            <div class="filter-item">
-                <div class="filter-chip js-filter-chip" data-filter-target="store_search_popover">
-                    <i class="fas fa-briefcase text-primary"></i>
-                    <span class="chip-text">{!! __('stores.store') !!}</span>
-                </div>
+        @if(isset($stores) && $stores->count() > 0)
+        <!-- Store Select Filter -->
+        <div class="w-full md:w-64">
+            <select name="store_id" id="filter_store_id" class="form-input-modern select2">
+                <option value="">{!! __('general.all_stores') !!}</option>
+                @foreach ($stores as $store)
+                    <option value="{{ $store->id }}">{{ $store->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        @endif
 
-                <!-- Store Filter Popover -->
-                <div class="ptc-query-panel shadow-lg border-0 radius-16" id="store_search_popover" style="min-width: 280px;">
-                    <div class="mb-3">
-                        <label class="premium-label mb-2">{!! __('stores.store') !!}</label>
-                        <div class="premium-input-wrapper">
-                            <select name="store_id" id="filter_store_id"
-                                class="form-control premium-input shadow-none js-select2"
-                                data-placeholder="{!! __('general.all_stores') !!}"
-                                data-parent="#store_search_popover">
-                                <option value="">{!! __('general.all_stores') !!}</option>
-                                @foreach ($stores as $store)
-                                    <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                @endforeach
-                            </select>
-                            <i class="fas fa-briefcase text-primary"></i>
-                        </div>
-                    </div>
-                    <div class="popover-actions mt-4 text-right">
-                        <button type="button" class="btn btn-premium-blue btn-sm js-apply-filter px-4">
-                            <i class="fas fa-check-circle mr-1"></i> {!! __('general.apply') !!}
-                        </button>
-                    </div>
-                </div>
-            </div>
-            @endif
+        <!-- Filter Actions -->
+        <div class="flex items-center gap-2 w-full md:w-auto">
+            <button type="submit" class="btn-primary-gradient text-xs py-2.5 px-4 w-full md:w-auto">
+                <i class="fas fa-filter text-xs"></i>
+                <span>{!! __('general.apply') !!}</span>
+            </button>
 
-            <!-- Reset Button -->
-            <div class="filter-chip reset-chip js-reset-btn">
-                <i class="fas fa-sync"></i>
-                <span>{!! __('general.reset') !!}</span>
-            </div>
-        </form>
-    </div>
+            <button type="button" class="btn-secondary-modern text-xs py-2.5 px-3 js-reset-btn" title="{!! __('general.reset') !!}">
+                <i class="fas fa-sync text-xs"></i>
+            </button>
+        </div>
+    </form>
 </div>
 
 @push('scripts')
     <script src="{!! asset('assets/dashbaord/js/filter-system.js') !!}"></script>
 @endpush
-
-

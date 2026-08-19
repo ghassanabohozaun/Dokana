@@ -1,30 +1,30 @@
-<div class="d-flex justify-content-center align-items-center mb-0">
-    <div class="btn-group" role="group">
+<div class="flex items-center justify-center gap-1.5">
+    <!-- Edit -->
+    @can('store_suppliers_update')
+        <button type="button" class="btn-icon-action text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 editStoreSupplierBtn"
+            data-id="{!! $supplier->id !!}" 
+            data-name="{!! $supplier->name !!}"
+            data-mobile="{!! $supplier->mobile !!}" 
+            data-bank_name="{!! $supplier->bank_name !!}"
+            data-account_number="{!! $supplier->account_number !!}" 
+            data-email="{!! $supplier->email !!}"
+            data-address="{!! $supplier->address !!}" 
+            data-store_id="{!! $supplier->store_id !!}"
+            title="{!! __('general.edit') !!}">
+            <i class="fas fa-edit text-xs"></i>
+        </button>
+    @endcan
 
-        <!-- Edit -->
-        @can('store_suppliers_update')
-            <a href="javascript:void(0)" class="btn-premium-action btn-premium-action-edit mr-1 edit_store_supplier_button"
-                store_supplier-id="{!! $supplier->id !!}" store_supplier-name="{!! $supplier->name !!}"
-                store_supplier-mobile="{!! $supplier->mobile !!}" store_supplier-bank_name="{!! $supplier->bank_name !!}"
-                store_supplier-account_number="{!! $supplier->account_number !!}" store_supplier-email="{!! $supplier->email !!}"
-                store_supplier-address="{!! $supplier->address !!}" store_supplier-store-id="{!! $supplier->store_id !!}"
-                title="{!! __('general.edit') !!}">
-                <i class="fas fa-edit"></i>
-            </a>
-        @endcan
-
-        <!-- Delete -->
-        @can('store_suppliers_delete')
-            <a href="javascript:void(0)"
-                class="btn-premium-action btn-premium-action-danger delete-confirm text-decoration-none"
-                data-id="{!! $supplier->id !!}" data-route="{!! route('dashboard.store-suppliers.destroy') !!}"
-                data-title="{!! __('general.ask_delete_record') !!}" data-text="{!! __('general.delete_warning_text') !!}"
-                data-confirm-btn="{!! __('general.yes') !!}" data-cancel-btn="{!! __('general.no') !!}"
-                data-success-title="{!! __('general.deleted') !!}" data-success-text="{!! __('general.delete_success_message') !!}"
-                title="{!! __('general.delete') !!}">
-                <i class="fas fa-trash-alt"></i>
-            </a>
-        @endcan
-
-    </div>
+    <!-- Delete -->
+    @can('store_suppliers_delete')
+        <button type="button"
+            class="btn-icon-action text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 delete-confirm"
+            data-id="{!! $supplier->id !!}" data-route="{!! route('dashboard.store-suppliers.destroy') !!}" 
+            data-title="{!! __('general.ask_delete_record') !!}"
+            data-text="{!! __('general.delete_warning_text') !!}" data-confirm-btn="{!! __('general.yes') !!}"
+            data-cancel-btn="{!! __('general.no') !!}" data-success-title="{!! __('general.deleted') !!}"
+            data-success-text="{!! __('general.delete_success_message') !!}" title="{!! __('general.delete') !!}">
+            <i class="fas fa-trash-alt text-xs"></i>
+        </button>
+    @endcan
 </div>

@@ -119,4 +119,18 @@ class StoresController extends Controller
         $data = $this->service->autocomplete($request->get('q'));
         return response()->json($data);
     }
+
+    public function options()
+    {
+        $stores = $this->service->getActiveStoresForDropdown();
+        return response()->json([
+            'status' => true,
+            'data' => $stores->map(function ($s) {
+                return [
+                    'id' => $s->id,
+                    'name' => $s->name,
+                ];
+            })
+        ]);
+    }
 }

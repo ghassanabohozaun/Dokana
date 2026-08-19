@@ -1,23 +1,23 @@
 /**
- * Premium Toast Notification System
- * A centralized, elegant notification replacement for Flasher.
+ * DOKANA ENTERPRISE TOAST NOTIFICATION ENGINE
+ * 100% Native Pure JS, High Performance, Multi-stacking, Zero Dependencies
  */
 
- (function (window) {
+(function (window) {
     'use strict';
 
     const PremiumToast = {
         options: {
-            duration: 5000,
+            duration: 4500, // 4.5 seconds
             icons: {
-                success: 'fa-check-circle',
-                error: 'fa-exclamation-circle',
+                success: 'fa-check',
+                error: 'fa-exclamation',
                 warning: 'fa-exclamation-triangle',
-                info: 'fa-info-circle'
+                info: 'fa-info'
             }
         },
 
-        // Init the container if not exists
+        // Init or get the global container
         _getContainer: function () {
             let container = document.getElementById('premium-toast-container');
             if (!container) {
@@ -30,17 +30,25 @@
         },
 
         // Core show method
-        show: function (message, type = 'info') {
+        show: function (message, type = 'info', duration = null) {
+            if (!message) return;
+
             const container = this._getContainer();
+            const toastDuration = duration || this.options.duration;
+            const iconClass = this.options.icons[type] || 'fa-info';
             
             // Create toast element
             const toast = document.createElement('div');
             toast.className = `premium-toast toast-${type}`;
             
-            // Icon
-            const iconHtml = `<div class="toast-icon"><i class="fas ${this.options.icons[type]}"></i></div>`;
+            // Icon Badge
+            const iconHtml = `
+                <div class="toast-icon-badge">
+                    <i class="fas ${iconClass}"></i>
+                </div>
+            `;
             
-            // Body (handles arrays of messages or single string)
+            // Body Content
             let bodyContent = '';
             if (Array.isArray(message)) {
                 if (message.length === 1) {
@@ -53,40 +61,69 @@
             }
             const bodyHtml = `<div class="toast-body">${bodyContent}</div>`;
             
-            // Close button
-            const closeHtml = `<button class="toast-close" type="button"><i class="fas fa-times"></i></button>`;
+            // Close Button
+            const closeHtml = `
+                <button class="toast-close" type="button" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
 
-            toast.innerHTML = iconHtml + bodyHtml + closeHtml;
+            // Progress Bar
+            const progressHtml = `
+                <div class="toast-progress">
+                    <div class="toast-progress-bar" style="animation-duration: ${toastDuration}ms;"></div>
+                </div>
+            `;
 
-            // Append to container
+            toast.innerHTML = iconHtml + bodyHtml + closeHtml + progressHtml;
+
+            // Append toast to container
             container.appendChild(toast);
 
-            // Setup dismiss logic
+            // Dismiss logic
+            let timer = null;
             const dismiss = () => {
                 if (toast.classList.contains('toast-hide')) return;
+                if (timer) clearTimeout(timer);
                 toast.classList.add('toast-hide');
                 setTimeout(() => {
                     if (toast && toast.parentNode) {
                         toast.parentNode.removeChild(toast);
                     }
-                }, 400); // Matches CSS fade-out animation duration
+                }, 300);
             };
+
+            // Pause on hover
+            toast.addEventListener('mouseenter', () => {
+                if (timer) clearTimeout(timer);
+                const progressBar = toast.querySelector('.toast-progress-bar');
+                if (progressBar) progressBar.style.animationPlayState = 'paused';
+            });
+
+            toast.addEventListener('mouseleave', () => {
+                const progressBar = toast.querySelector('.toast-progress-bar');
+                if (progressBar) progressBar.style.animationPlayState = 'running';
+                timer = setTimeout(dismiss, 2000);
+            });
 
             // Close button click
             const closeBtn = toast.querySelector('.toast-close');
             if (closeBtn) {
-                closeBtn.addEventListener('click', dismiss);
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    dismiss();
+                });
             }
 
             // Auto dismiss
-            setTimeout(dismiss, this.options.duration);
+            timer = setTimeout(dismiss, toastDuration);
         },
 
-        // Helpers
-        success: function (message) { this.show(message, 'success'); },
-        error: function (message) { this.show(message, 'error'); },
-        warning: function (message) { this.show(message, 'warning'); },
-        info: function (message) { this.show(message, 'info'); }
+        // Helper Shorthands
+        success: function (message, duration) { this.show(message, 'success', duration); },
+        error: function (message, duration) { this.show(message, 'error', duration); },
+        warning: function (message, duration) { this.show(message, 'warning', duration); },
+        info: function (message, duration) { this.show(message, 'info', duration); }
     };
 
     // Make globally available
@@ -94,12 +131,12 @@
 
     // Backwards compatibility with old Flasher JS calls
     window.flasher = {
-        success: function(message) { window.PremiumToast.success(message); },
-        error: function(message) { window.PremiumToast.error(message); },
-        warning: function(message) { window.PremiumToast.warning(message); },
-        info: function(message) { window.PremiumToast.info(message); },
-        use: function() { return this; }, // Dummy for flasher.use('flasher').renderOptions
-        renderOptions: function() { return this; }
+        success: function (message) { window.PremiumToast.success(message); },
+        error: function (message) { window.PremiumToast.error(message); },
+        warning: function (message) { window.PremiumToast.warning(message); },
+        info: function (message) { window.PremiumToast.info(message); },
+        use: function () { return this; },
+        renderOptions: function () { return this; }
     };
 
 })(window);

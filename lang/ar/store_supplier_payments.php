@@ -29,4 +29,6 @@ return [
     'balance_exceeded_warning' => 'تنبيه: تم تجاوز الرصيد المتاح!',
     'insufficient_balance' => 'الرصيد المتوفر في الحساب (:balance) لا يكفي لإتمام عملية الدفع.',
     'amount_exceeds_invoice_remaining' => 'المبلغ المدخل (:amount) يتجاوز الرصيد المتبقي للفاتورة (:remaining).',
+    'no_payments_desc' => 'لم يتم تسجيل أي مدفوعات موردين في النظام حتى الآن. يمكنك إضافة دفعة جديدة عبر الزر أعلاه.',
 ];
+

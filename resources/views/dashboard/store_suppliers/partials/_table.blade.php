@@ -1,230 +1,166 @@
 <input type="hidden" id="store_suppliers-total-count" value="{!! $suppliers->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id='myTable'>
-        <thead class="bg-white">
+
+<div class="overflow-x-auto custom-scrollbar">
+    <table class="table-modern" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center d-none d-lg-table-cell align-middle py-3 border-top-0">#</th>
+                <th class="w-12 text-center">#</th>
                 @if (isset($stores))
-                    <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                    <th>{!! __('stores.store') !!}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.mobile') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_invoices') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_paid') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.total_remaining') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.bank_name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.account_number') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_suppliers.date') !!}</th>
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th>{!! __('store_suppliers.name') !!}</th>
+                <th>{!! __('store_suppliers.mobile') !!}</th>
+                <th class="text-center">{!! __('store_suppliers.total_invoices') !!}</th>
+                <th class="text-center">{!! __('store_suppliers.total_paid') !!}</th>
+                <th class="text-center">{!! __('store_suppliers.total_remaining') !!}</th>
+                <th>{!! __('store_suppliers.bank_name') !!}</th>
+                <th>{!! __('store_suppliers.date') !!}</th>
+                <th class="w-24 text-center">{!! __('general.actions') !!}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
             @forelse ($suppliers as $supplier)
-                <tr id="row{{ $supplier->id }}" class="premium-table-row pointer" data-row-title="{!! $supplier->name !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
-                        </span>
-
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <div class="premium-modal-header bg-danger"></div>
-
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        <div class="avatar-circle avatar-size-100 d-inline-flex align-items-center justify-content-center text-white text-uppercase shadow-sm bg-danger">
-                                            <i class="fas fa-hand-holding-usd font-40"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $supplier->name !!}</h4>
-                                    <span class="modal-role-badge badge-danger">{!! __('store_suppliers.store_supplier') !!}</span>
-                                </div>
-
-                                <!-- Detail Items List -->
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-fingerprint"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.system_id') !!}</span>
-                                            <span class="detail-info-value text-muted"># {!! $supplier->id !!}</span>
-                                        </div>
-                                    </div>
-
-                                    @if (isset($stores))
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                                <span class="detail-info-value text-muted small">
-                                                    @if ($supplier->store_id)
-                                                        <span class="badge badge-light-primary border-0">{!! optional($supplier->store)->name !!}</span>
-                                                    @else
-                                                        <span class="badge badge-light-warning border-0">{!! __('roles.global_role') !!}</span>
-                                                    @endif
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-money-bill"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.name') !!}</span>
-                                            <span class="detail-info-value text-danger font-weight-bold">{!! $supplier->name !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-mobile-alt"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.mobile') !!}</span>
-                                            <span class="detail-info-value">{!! $supplier->mobile !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-file-invoice-dollar"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.total_invoices') !!}</span>
-                                            <span class="detail-info-value font-weight-bold">{!! number_format($supplier->invoices_sum_total_amount ?: 0, 2) !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle text-success"><i class="fas fa-money-check-alt text-success"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.total_paid') !!}</span>
-                                            <span class="detail-info-value text-success font-weight-bold">{!! number_format($supplier->invoices_sum_paid_amount ?: 0, 2) !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle text-danger"><i class="fas fa-hand-holding-usd text-danger"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.total_remaining') !!}</span>
-                                            <span class="detail-info-value text-danger font-weight-bold">{!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-university"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.bank_name') !!}</span>
-                                            <span class="detail-info-value">{!! $supplier->bank_name !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-credit-card"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.account_number') !!}</span>
-                                            <span class="detail-info-value">{!! $supplier->account_number !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_suppliers.date') !!}</span>
-                                            <span class="text-secondary font-weight-bold">{{ $supplier->created_at->format('Y-m-d') }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
+                @php
+                    $totalInvoices = $supplier->invoices_sum_total_amount ?: 0;
+                    $totalPaid = $supplier->invoices_sum_paid_amount ?: 0;
+                    $totalRemaining = $supplier->invoices_sum_remaining_amount ?: 0;
+                @endphp
+                <tr id="row{{ $supplier->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
+                    
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {!! $loop->iteration + ($suppliers->currentPage() - 1) * $suppliers->perPage() !!}
                         </span>
                     </td>
 
-                    <!-- Store -->
+                    <!-- Store (if admin/multi-store) -->
                     @if (isset($stores))
-                        <td class="text-center align-middle">
-                            @if ($supplier->store_id)
-                                <a href="javascript:void(0)" class="store-chip">
-                                    <i class="fas fa-briefcase mr-1"></i>
-                                    {!! optional($supplier->store)->name !!}
-                                </a>
+                        <td>
+                            @if ($supplier->store)
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fas fa-store text-xs text-slate-400"></i>
+                                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        {{ $supplier->store->name }}
+                                    </span>
+                                </div>
                             @else
-                                <span class="badge badge-light-warning border-0">
-                                    <i class="fas fa-globe mr-1"></i> {!! __('roles.global_role') !!}
+                                <span class="badge-pill badge-pill-warning text-[10px]">
+                                    {!! __('roles.global_role') !!}
                                 </span>
                             @endif
                         </td>
                     @endif
 
-                    <!-- Name -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.store_suppliers.parts.actions', ['supplier' => $supplier])
+                    <!-- Supplier Name & Email -->
+                    <td>
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold text-slate-800 dark:text-white block truncate">
+                                    {{ $supplier->name }}
+                                </span>
+                                @if ($supplier->email)
+                                    <span class="text-[11px] text-slate-400 dark:text-slate-500 block truncate">
+                                        {{ $supplier->email }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-secondary"><i class="fas fa-mobile-alt mr-25"></i> {!! $supplier->mobile !!}</span>
-                            <span class="badge badge-light-danger"><i class="fas fa-hand-holding-usd mr-25"></i> {!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}</span>
-                            @if (isset($stores) && $supplier->store_id)
-                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($supplier->store)->name !!}</span>
-                            @endif
-                        </div>
-
-                        <span class="text-danger font-weight-bold">{!! $supplier->name !!}</span>
                     </td>
 
                     <!-- Mobile -->
-                    <td class="text-center align-middle">{!! $supplier->mobile !!}</td>
+                    <td>
+                        <a href="tel:{{ $supplier->mobile }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" dir="ltr">
+                            <i class="fas fa-phone-alt text-[10px] text-slate-400"></i>
+                            <span>{{ $supplier->mobile }}</span>
+                        </a>
+                    </td>
 
                     <!-- Total Invoices -->
-                    <td class="text-center align-middle" dir="ltr">
-                        <div class="font-weight-bold text-primary" title="{!! __('store_suppliers.total_invoices') !!}">
-                            <i class="fas fa-file-invoice-dollar mr-1"></i> {!! number_format($supplier->invoices_sum_total_amount ?: 0, 2) !!}
-                        </div>
+                    <td class="text-center font-mono font-bold text-xs text-indigo-600 dark:text-indigo-400" dir="ltr">
+                        {{ number_format($totalInvoices, 2) }}
                     </td>
 
                     <!-- Total Paid -->
-                    <td class="text-center align-middle" dir="ltr">
-                        <div class="font-weight-bold text-success" title="{!! __('store_suppliers.total_paid') !!}">
-                            <i class="fas fa-money-check-alt mr-1"></i> {!! number_format($supplier->invoices_sum_paid_amount ?: 0, 2) !!}
-                        </div>
+                    <td class="text-center font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400" dir="ltr">
+                        {{ number_format($totalPaid, 2) }}
                     </td>
 
                     <!-- Total Remaining -->
-                    <td class="text-center align-middle" dir="ltr">
-                        <div class="font-weight-bold {{ ($supplier->invoices_sum_remaining_amount ?: 0) > 0 ? 'text-danger' : 'text-muted' }}" title="{!! __('store_suppliers.total_remaining') !!}">
-                            <i class="fas fa-hand-holding-usd mr-1"></i> {!! number_format($supplier->invoices_sum_remaining_amount ?: 0, 2) !!}
-                        </div>
+                    <td class="text-center">
+                        @if ($totalRemaining > 0)
+                            <span class="badge-pill badge-pill-danger font-mono text-xs">
+                                {{ number_format($totalRemaining, 2) }}
+                            </span>
+                        @else
+                            <span class="badge-pill badge-pill-success text-xs font-bold">
+                                0.00
+                            </span>
+                        @endif
                     </td>
 
-                    <!-- Bank Name -->
-                    <td class="text-center align-middle font-weight-bold text-primary">{!! $supplier->bank_name !!}</td>
-
-                    <!-- Account Number -->
-                    <td class="text-center align-middle font-weight-bold text-info">{!! $supplier->account_number !!}</td>
+                    <!-- Bank / Account -->
+                    <td>
+                        @if ($supplier->bank_name || $supplier->account_number)
+                            <div class="text-xs">
+                                <span class="font-bold text-slate-700 dark:text-slate-200 block">
+                                    {{ $supplier->bank_name ?: '—' }}
+                                </span>
+                                @if ($supplier->account_number)
+                                    <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500 block" dir="ltr">
+                                        {{ $supplier->account_number }}
+                                    </span>
+                                @endif
+                            </div>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
+                    </td>
 
                     <!-- Date -->
-                    <td class="text-center align-middle">{!! $supplier->created_at->format('Y-m-d') !!}</td>
+                    <td>
+                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium" dir="ltr">
+                            {{ $supplier->created_at->format('Y-m-d') }}
+                        </span>
+                    </td>
 
-                    <!-- Actions Column Removed -->
+                    <!-- Actions -->
+                    <td class="text-center">
+                        @include('dashboard.store_suppliers.parts.actions', ['supplier' => $supplier])
+                    </td>
                 </tr>
             @empty
+                <!-- Ultra-Premium Empty State -->
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('store_suppliers.no_store_suppliers_found') !!}
+                    <td colspan="{{ isset($stores) ? 10 : 9 }}" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-truck-loading text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {!! __('store_suppliers.no_store_suppliers_found') !!}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            {!! __('store_suppliers.no_suppliers_desc') !!}
+                        </p>
                     </td>
                 </tr>
             @endforelse
         </tbody>
-
     </table>
-    <div class="float-right mt-2 custom-pagination">
+</div>
+
+<!-- Pagination Footer -->
+@if ($suppliers->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
         {!! $suppliers->links() !!}
     </div>
-</div>
+@endif

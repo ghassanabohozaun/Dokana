@@ -7,6 +7,10 @@ return [
     'no_photo' => 'لا يوجد صورة',
     'no_image' => 'لا يوجد صورة',
     'no_logo' => 'لا يوجد شعار',
+    'click_or_drag_to_upload' => 'انقر لاختيار صورة أو اسحبها إلى هنا',
+    'max_size' => 'الحد الأقصى',
+    'change' => 'تغيير',
+    'choose_file' => 'اختر ملف',
     'recored_exists' => 'السجل موجود مسبقاً',
     'share' => 'مشاركة',
     'print' => 'طباعة',
@@ -41,6 +45,7 @@ return [
     'input' => 'رقم الصفحة',
     'select' => 'اختار من ',
     'select_from_list' => 'اختار من القائمة',
+    'choose' => 'اختر',
     'save' => 'حفظ',
     'saveing' => 'يتم الحفظ ...',
     'show' => 'عرض',
@@ -271,4 +276,7 @@ return [
     'remaining_balance' => 'الرصيد المتبقي',
     'no_description' => 'بدون وصف',
     'default' => 'الافتراضي',
+    'records' => 'سجل',
+    'general_payment' => 'دفعة عامة (بدون فاتورة محددة)',
 ];
+

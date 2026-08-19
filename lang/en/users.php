@@ -43,4 +43,6 @@ return [
     'admin_email' => 'Email',
     'enter_admin_name' => 'Enter Admin Name',
     'enter_admin_email' => 'Enter Admin Email',
+    'no_users_desc' => 'No users have been registered yet. You can add a new user using the button above.',
 ];
+

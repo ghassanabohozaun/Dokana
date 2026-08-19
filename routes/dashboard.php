@@ -108,6 +108,7 @@ Route::group(
                 Route::post('/stores/destroy', [StoresController::class, 'destroy'])->name('stores.destroy');
                 Route::post('/stores/status', [StoresController::class, 'updateStatus'])->name('stores.status');
                 Route::get('/stores-autocomplete', [StoresController::class, 'autocomplete'])->name('stores.autocomplete');
+                Route::get('/stores-options', [StoresController::class, 'options'])->name('stores.options');
             });
             // ########################################## bank accounts routes #############################################################
             Route::group(['middleware' => 'can:bank_accounts_read'], function () {

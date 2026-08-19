@@ -1,136 +1,105 @@
-<div class="modal modal-pop" id="updateDepartmentModal" tabindex="-1" role="dialog"
-    aria-labelledby="updateDepartmentModalLabel" aria-hidden="true">
-
+<div class="modal fade" id="updateDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="updateDepartmentModalLabel" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <form class="form ajax-form" action="" method="POST" enctype="multipart/form-data"
-            id='update_department_form' data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
-            data-table-id="#table_data" novalidate>
+        <form class="ajax-form w-full" action="" method="POST" enctype="multipart/form-data"
+            id="update_department_form" novalidate data-success-msg="{!! __('general.update_success_message') !!}"
+            data-success-action="reload-table" data-table-id="#table_data">
             @csrf
             @method('PUT')
-            <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
-
-                <!--begin::modal header-->
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title font-weight-bold text-dark d-flex align-items-center" id="updateDepartmentModalLabel">
-                        <i class="fas fa-edit text-primary mr-2 icon-size-18"></i> {!! __('departments.update_department') !!}
-                    </h6>
-                    <button type="button" class="close premium-modal-close" data-dismiss="modal" aria-label="Close">
-                        <i class="fas fa-times"></i>
+            <div class="modal-content rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+                
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm">
+                            <i class="fas fa-edit"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="updateDepartmentModalLabel">
+                            {!! __('departments.update_department') !!}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-icon-action" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
-                <!--end::modal header-->
 
-                <!--begin::modal body-->
-                <div class="modal-body my-2">
-                    @if(isset($stores))
-                    <div class="row">
-                        <div class="col-md-12 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="store_id_dept_edit">{!! __('stores.store') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input select2 shadow-none" id='store_id_dept_edit' name="store_id">
-                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                    @foreach ($stores as $store)
-                                        <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger error-text store_id_error"></span>
-                            </div>
-                        </div>
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
+                    <input type="hidden" id="id_edit" name="id">
+
+                    @if(isset($stores) && $stores->count() > 0)
+                    <!-- Store Select (for admin) -->
+                    <div>
+                        <label class="form-label-modern" for="store_id_dept_edit">
+                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                        </label>
+                        <select name="store_id" id="store_id_dept_edit" class="form-input-modern select2">
+                            <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
+                            @foreach ($stores as $store)
+                                <option value="{{ $store->id }}">{{ $store->name }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-xs text-rose-500 error-text store_id_error block mt-1"></span>
                     </div>
                     @endif
 
-                    <div class="row">
-                        <input type="hidden" id="id_edit" name="id">
-
-                        <!-- Name Arabic -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="name_ar_edit">{!! __('departments.name_ar') !!} <span class="text-danger">*</span></label>
-                                <input type="text" id="name_ar_edit" name="name[ar]"
-                                    class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('departments.enter_name_ar') !!}">
-                                <span class="text-danger error-text name_ar_error"></span>
-                            </div>
+                    <!-- Arabic Name & English Name -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="name_ar_edit">
+                                {!! __('departments.name_ar') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="name_ar_edit" name="name[ar]" class="form-input-modern"
+                                placeholder="{!! __('departments.enter_name_ar') !!}" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text name_ar_error block mt-1"></span>
                         </div>
 
-                        <!-- Name English -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="name_en_edit">{!! __('departments.name_en') !!} <span class="text-danger">*</span></label>
-                                <input type="text" id="name_en_edit" name="name[en]"
-                                    class="form-control premium-input shadow-none" autocomplete="off"
-                                    placeholder="{!! __('departments.enter_name_en') !!}">
-                                <span class="text-danger error-text name_en_error"></span>
-                            </div>
+                        <div>
+                            <label class="form-label-modern" for="name_en_edit">
+                                {!! __('departments.name_en') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="name_en_edit" name="name[en]" class="form-input-modern"
+                                placeholder="{!! __('departments.enter_name_en') !!}" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text name_en_error block mt-1"></span>
                         </div>
                     </div>
+
                 </div>
-                <!--end::modal body-->
 
-                <div class="modal-footer border-0 pt-0 premium-modal-footer">
-                    <button type="submit" id="saveBtnEdit" class="btn btn-premium-save font-weight-bold">
-                        <i class="fas fa-save mr-2"></i>
-                        <i class="fas fa-spinner fa-spin d-none spinner_loading mr-2"></i>
-                        {{ __('general.save') }}
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <button type="submit" class="btn-primary-gradient text-xs">
+                        <i class="fas fa-save text-xs"></i>
+                        <i class="fas fa-spinner fa-spin spinner_loading text-xs hidden d-none"></i>
+                        <span>{!! __('general.save') !!}</span>
                     </button>
-
-                    <button type="button" class="btn btn-premium-secondary font-weight-bold"
-                        data-dismiss="modal">
-                        <i class="fas fa-times-circle mr-2"></i> {{ __('general.cancel') }}
+                    <button type="button" class="btn-secondary-modern text-xs" data-dismiss="modal">
+                        {!! __('general.cancel') !!}
                     </button>
                 </div>
-                <!--end::modal footer-->
-
             </div>
         </form>
     </div>
 </div>
 
 @push('scripts')
-    <script type="text/javascript">
-        $(document).ready(function() {
-            // Show edit modal and populate data dynamically
-            $('body').on('click', '.edit_department_button', function(e) {
-                e.preventDefault();
-                
-                let department_id = $(this).attr('department-id');
-                let department_name_ar = $(this).attr('department-name-ar');
-                let department_name_en = $(this).attr('department-name-en');
-                let department_store_id = $(this).attr('department-store-id');
-                let department_store_name = $(this).attr('department-store-name');
+<script>
+    function openEditDepartmentModal(data) {
+        $('#id_edit').val(data.id);
+        $('#name_ar_edit').val(data.name_ar);
+        $('#name_en_edit').val(data.name_en);
 
-                // Populate form fields
-                $('#id_edit').val(department_id);
-                $('#name_ar_edit').val(department_name_ar);
-                $('#name_en_edit').val(department_name_en);
+        if ($('#store_id_dept_edit').length) {
+            $('#store_id_dept_edit').val(data.store_id || '').trigger('change.select2');
+        }
 
-                // Populate Select2 for Store
-                if ($('#store_id_dept_edit').length) {
-                    if (department_store_id) {
-                        $('#store_id_dept_edit').val(department_store_id).trigger('change');
-                    } else {
-                        $('#store_id_dept_edit').val(null).trigger('change');
-                    }
-                }
+        // Set action route
+        let url = "{{ route('dashboard.departments.update', ':id') }}".replace(':id', data.id);
+        $('#update_department_form').attr('action', url);
 
-                // Update form action URL dynamically
-                let url = "{!! route('dashboard.departments.update', 'id') !!}".replace('id', department_id);
-                $('#update_department_form').attr('action', url);
-                
-                // Show modal
-                $('#updateDepartmentModal').modal('show');
-            });
-
-            // Initialize Select2
-            if ($('#store_id_dept_edit').length) {
-                $('#store_id_dept_edit').select2({
-                    dropdownParent: $('#updateDepartmentModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-        });
-    </script>
+        // Reset errors and show modal
+        $('#update_department_form').find('.error-text').text('');
+        $('#update_department_form').find('.form-input-modern').removeClass('border-rose-500');
+        $('#updateDepartmentModal').modal('show');
+    }
+</script>
 @endpush
-
-

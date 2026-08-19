@@ -14,4 +14,8 @@ return [
     'insufficient_balance' => 'Available balance in the account (:balance) is insufficient to complete the withdrawal.',
     'reason_required' => 'Please enter the reason for withdrawal',
     'balance_exceeded_warning' => 'Sorry, the requested amount exceeds the available balance!',
+    'enter_withdrawal_reason' => 'Enter withdrawal reason...',
+    'no_withdrawals_desc' => 'No withdrawal transactions have been recorded yet. You can add a new withdrawal using the button above.',
 ];
+
+

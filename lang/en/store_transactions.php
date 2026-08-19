@@ -13,6 +13,12 @@ return [
     'date' => 'Date',
     'no_store_transactions_found' => 'No store transactions found.',
     'choose_type' => 'Choose Type',
+    'total_payments' => 'Total Payments',
+    'total_debts' => 'Total Debts',
+    'net_balance' => 'Net Balance',
+    'total_transactions_count' => 'Total Transactions',
+    'transaction' => 'Transaction',
+    'no_transactions_desc' => 'No customer transactions have been recorded yet. You can add a new transaction using the button above.',
     
     // Validation
     'store_required' => 'The store field is required.',
@@ -29,3 +35,4 @@ return [
     'debt_age_exceeded_limit' => 'Cannot add new debt. This customer has an outstanding debt older than 10 days (Current debt age: :days days).',
     'debt_limit_exceeded' => 'Cannot add debt, the customer debt limit is :limit and their debt will reach :expected.',
 ];
+

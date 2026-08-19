@@ -1,192 +1,134 @@
-<input type="hidden" id="store_withdrawals-total-count" value="{!! $withdrawals->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id='myTable'>
-        <thead class="bg-white">
+<input type="hidden" id="store_withdrawals-total-count" value="{{ $withdrawals->total() }}">
+
+<div class="overflow-x-auto">
+    <table class="table-modern w-full" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center d-none d-lg-table-cell align-middle py-3 border-top-0">#</th>
+                <th class="w-12 text-center">#</th>
                 @if (isset($stores))
-                    <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                    <th>{{ __('stores.store') }}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('bank_accounts.bank_account') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_withdrawals.amount') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_withdrawals.reason') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_withdrawals.date') !!}</th>
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th>{{ __('bank_accounts.bank_account') }}</th>
+                <th class="text-center">{{ __('store_withdrawals.amount') }}</th>
+                <th>{{ __('store_withdrawals.reason') }}</th>
+                <th>{{ __('store_withdrawals.date') }}</th>
+                <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
+                <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
             @forelse ($withdrawals as $withdrawal)
-                <tr id="row{{ $withdrawal->id }}" class="premium-table-row pointer" data-row-title="{!! __('store_withdrawals.store_withdrawal') !!} - {!! $withdrawal->amount !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
-                        </span>
-
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <div class="premium-modal-header bg-danger"></div>
-
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        <div class="avatar-circle avatar-size-100 d-inline-flex align-items-center justify-content-center text-white text-uppercase shadow-sm bg-danger">
-                                            <i class="fas fa-hand-holding-usd font-40"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $withdrawal->amount !!}</h4>
-                                    <span class="modal-role-badge badge-danger">{!! __('store_withdrawals.store_withdrawal') !!}</span>
-                                </div>
-
-                                <!-- Detail Items List -->
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-fingerprint"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.system_id') !!}</span>
-                                            <span class="detail-info-value text-muted"># {!! $withdrawal->id !!}</span>
-                                        </div>
-                                    </div>
-
-                                    @if (isset($stores))
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                                <span class="detail-info-value text-muted small">
-                                                    @if ($withdrawal->store_id)
-                                                        <span class="badge badge-light-primary border-0">{!! optional($withdrawal->store)->name !!}</span>
-                                                    @else
-                                                        <span class="badge badge-light-warning border-0">{!! __('roles.global_role') !!}</span>
-                                                    @endif
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-university"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('bank_accounts.bank_account') !!}</span>
-                                            <div class="detail-info-value mt-1">
-                                                @if($withdrawal->bankAccount)
-                                                    @php
-                                                        $entityName = optional($withdrawal->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($withdrawal->bankAccount->paymentEntity)->getTranslation('name', 'ar');
-                                                        $accountName = $withdrawal->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $withdrawal->bankAccount->account_number;
-                                                    @endphp
-                                                    <span class="badge badge-light-info border-0">{!! $accountName !!}</span>
-                                                @else
-                                                    ---
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-money-bill"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_withdrawals.amount') !!}</span>
-                                            <span class="detail-info-value text-danger font-weight-bold">{!! $withdrawal->amount !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-align-left"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_withdrawals.reason') !!}</span>
-                                            <span class="detail-info-value">{!! $withdrawal->reason ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-calendar-alt"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_withdrawals.date') !!}</span>
-                                            <span class="text-secondary font-weight-bold">{{ $withdrawal->withdrawal_date ? \Carbon\Carbon::parse($withdrawal->withdrawal_date)->format('Y-m-d') : $withdrawal->created_at->format('Y-m-d') }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
-                            {!! $loop->iteration + ($withdrawals->currentPage() - 1) * $withdrawals->perPage() !!}
+                <tr id="row{{ $withdrawal->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                            {{ $loop->iteration + ($withdrawals->currentPage() - 1) * $withdrawals->perPage() }}
                         </span>
                     </td>
 
-                    <!-- Store -->
+                    <!-- Store (if admin/multi-store) -->
                     @if (isset($stores))
-                        <td class="text-center align-middle">
-                            @if ($withdrawal->store_id)
-                                <a href="javascript:void(0)" class="store-chip">
-                                    <i class="fas fa-briefcase mr-1"></i>
-                                    {!! optional($withdrawal->store)->name !!}
-                                </a>
-                            @else
-                                <span class="badge badge-light-warning border-0">
-                                    <i class="fas fa-globe mr-1"></i> {!! __('roles.global_role') !!}
-                                </span>
-                            @endif
-                        </td>
+                    <td>
+                        @if($withdrawal->store)
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                <i class="fas fa-store text-[10px] text-indigo-500"></i>
+                                {{ $withdrawal->store->name }}
+                            </span>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
+                    </td>
                     @endif
 
-                    <!-- Bank Account -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.store_withdrawals.parts.actions', ['withdrawal' => $withdrawal])
-                        </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-light-danger"><i class="fas fa-money-bill mr-25"></i> {!! $withdrawal->amount !!}</span>
-                            <span class="badge badge-secondary"><i class="fas fa-calendar-alt mr-25"></i> {!! $withdrawal->withdrawal_date ? \Carbon\Carbon::parse($withdrawal->withdrawal_date)->format('Y-m-d') : $withdrawal->created_at->format('Y-m-d') !!}</span>
-                            @if (isset($stores) && $withdrawal->store_id)
-                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($withdrawal->store)->name !!}</span>
-                            @endif
-                        </div>
-
-                        <span class="font-weight-bold text-primary">
+                    <!-- Bank Account / Wallet Info -->
+                    <td>
                         @if($withdrawal->bankAccount)
                             @php
                                 $entityName = optional($withdrawal->bankAccount->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional($withdrawal->bankAccount->paymentEntity)->getTranslation('name', 'ar');
                                 $accountName = $withdrawal->bankAccount->account_type === 'cash' ? $entityName : $entityName . ' - ' . $withdrawal->bankAccount->account_number;
+                                $isWallet = $withdrawal->bankAccount->account_type === 'wallet';
                             @endphp
-                            {!! $accountName !!}
+                            <div class="flex items-center gap-2">
+                                <div class="flex h-7 w-7 items-center justify-center rounded-lg {{ $isWallet ? 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400' : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400' }} text-[11px]">
+                                    <i class="fas {{ $isWallet ? 'fa-wallet' : 'fa-university' }}"></i>
+                                </div>
+                                <span class="font-bold text-xs text-slate-800 dark:text-white">
+                                    {{ $accountName }}
+                                </span>
+                            </div>
                         @else
-                            ---
+                            <span class="text-xs text-slate-400">—</span>
                         @endif
-                        </span>
                     </td>
 
                     <!-- Amount -->
-                    <td class="text-center align-middle">
-                        <span class="text-danger font-weight-bold">{!! $withdrawal->amount !!}</span>
+                    <td class="text-center">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/60" dir="ltr">
+                            <i class="fas fa-arrow-up text-[10px]"></i>
+                            {{ number_format($withdrawal->amount, 2) }}
+                        </span>
                     </td>
 
                     <!-- Reason -->
-                    <td class="text-center align-middle">{!! $withdrawal->reason ?? '---' !!}</td>
+                    <td>
+                        <span class="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                            {{ $withdrawal->reason ?? '—' }}
+                        </span>
+                    </td>
 
                     <!-- Date -->
-                    <td class="text-center align-middle">{!! $withdrawal->withdrawal_date ? \Carbon\Carbon::parse($withdrawal->withdrawal_date)->format('Y-m-d') : $withdrawal->created_at->format('Y-m-d') !!}</td>
+                    <td>
+                        <span class="text-xs font-bold text-slate-600 dark:text-slate-400" dir="ltr">
+                            {{ $withdrawal->withdrawal_date ? \Carbon\Carbon::parse($withdrawal->withdrawal_date)->format('Y-m-d') : $withdrawal->created_at->format('Y-m-d') }}
+                        </span>
+                    </td>
 
-                    <!-- Actions Column Removed -->
+                    <!-- Created By -->
+                    <td class="hidden sm:table-cell">
+                        @if($withdrawal->creator)
+                            <span class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                <i class="fas fa-user-tie text-[10px] text-slate-400"></i>
+                                {{ $withdrawal->creator->name }}
+                            </span>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="text-center">
+                        @include('dashboard.store_withdrawals.parts.actions')
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('store_withdrawals.no_store_withdrawals_found') !!}
+                    <td colspan="{{ isset($stores) ? 8 : 7 }}" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-hand-holding-usd text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {!! __('store_withdrawals.no_store_withdrawals_found') !!}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            {!! __('store_withdrawals.no_withdrawals_desc') !!}
+                        </p>
                     </td>
                 </tr>
             @endforelse
-        </tbody>
 
+        </tbody>
     </table>
-    <div class="float-right mt-2 custom-pagination">
+</div>
+
+<!-- Pagination Footer -->
+@if ($withdrawals->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
         {!! $withdrawals->links() !!}
     </div>
-</div>
+@endif

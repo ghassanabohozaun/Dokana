@@ -1,149 +1,123 @@
-<input type="hidden" id="stores-total-count" value="{!! $stores->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id="myTable">
-        <thead class="bg-white">
+<input type="hidden" id="stores-total-count" value="{{ $stores->total() }}">
+
+<div class="overflow-x-auto">
+    <table class="table-modern w-full" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center d-none d-lg-table-cell align-middle py-3 border-top-0">#</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('stores.logo') !!}
-                </th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store_name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('stores.email') !!}
-                </th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('stores.created_by') !!}
-                </th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-xl-table-cell">{!! __('stores.phone') !!}
-                </th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('stores.status') !!}</th>
+                <th class="w-12 text-center">#</th>
+                <th class="w-16 text-center">{{ __('stores.logo') }}</th>
+                <th>{{ __('stores.store_name') }}</th>
+                <th class="hidden sm:table-cell">{{ __('stores.email') }} / {{ __('stores.phone') }}</th>
+                <th class="text-center">{{ __('stores.subscription_plan') }}</th>
+                <th class="text-center">{{ __('stores.status') }}</th>
                 @can('stores_update')
-                <th class="text-center align-middle py-3 border-top-0">{!! __('stores.manage_status') !!}</th>
+                <th class="text-center">{{ __('stores.manage_status') }}</th>
                 @endcan
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
             @forelse($stores as $store)
-                <tr id="row{{ $store->id }}" class="premium-table-row pointer" data-row-title="{!! $store->name !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
-                        </span>
-
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <div class="premium-modal-header"></div>
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        @include('dashboard.stores.parts.logo', ['size' => 100])
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $store->name !!}</h4>
-                                    <span class="modal-role-badge">{!! __('stores.plan_' . strtolower($store->subscription_plan)) !!}</span>
-                                </div>
-
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-user-plus"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.created_by') !!}</span>
-                                            <span class="detail-info-value text-muted">{!! $store->creator->name ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-envelope"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.email') !!}</span>
-                                            <span class="detail-info-value text-muted">{!! $store->email ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-phone"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.phone') !!}</span>
-                                            <span class="detail-info-value text-muted">{!! $store->phone ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-map-marker"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.address') !!}</span>
-                                            <span class="detail-info-value text-muted">{!! $store->address ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
-                            {!! $loop->iteration + ($stores->currentPage() - 1) * $stores->perPage() !!}
+                <tr id="row{{ $store->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                            {{ $loop->iteration + ($stores->currentPage() - 1) * $stores->perPage() }}
                         </span>
                     </td>
 
                     <!-- Logo -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
+                    <td class="text-center">
                         @include('dashboard.stores.parts.logo')
                     </td>
 
-                    <!-- Name -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.stores.parts.actions')
+                    <!-- Store Name & Creator -->
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs md:text-sm text-slate-800 dark:text-white">
+                                {{ $store->name }}
+                            </span>
                         </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-light-primary"><i class="fas fa-envelope mr-25"></i> {!! $store->email ?? '---' !!}</span>
-                            <span class="badge badge-light-info"><i class="fas fa-phone mr-25"></i> {!! $store->phone ?? '---' !!}</span>
-                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $store->creator->name ?? '---' !!}</span>
-                        </div>
-
-                        <a href="javascript:void(0)" class="store-chip">
-                            <i class="fas fa-briefcase mr-1"></i>
-                            {!! $store->name !!}
-                        </a>
+                        @if($store->creator)
+                            <span class="text-[11px] text-slate-400 dark:text-slate-500 flex items-center gap-1 mt-0.5">
+                                <i class="fas fa-user-tie text-[9px]"></i> {{ $store->creator->name }}
+                            </span>
+                        @endif
                     </td>
 
-                    <!-- Email -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">{!! $store->email ?? '---' !!}</td>
+                    <!-- Email & Phone -->
+                    <td class="hidden sm:table-cell">
+                        <div class="text-xs text-slate-700 dark:text-slate-300 font-medium">
+                            {{ $store->email ?? '—' }}
+                        </div>
+                        @if($store->phone)
+                            <div class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5" dir="ltr">
+                                <i class="fas fa-phone text-[9px] me-1"></i>{{ $store->phone }}
+                            </div>
+                        @endif
+                    </td>
 
-                    <!-- Created By -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">{!! $store->creator->name ?? '---' !!}</td>
+                    <!-- Subscription Plan -->
+                    <td class="text-center">
+                        @php
+                            $plan = strtolower($store->subscription_plan);
+                            $planBadge = match($plan) {
+                                'enterprise' => 'badge-pill-warning',
+                                'premium' => 'badge-pill-success',
+                                default => 'badge-pill-info',
+                            };
+                        @endphp
+                        <span class="badge-pill {{ $planBadge }}">
+                            {{ __('stores.plan_' . $plan) }}
+                        </span>
+                    </td>
 
-                    <!-- Phone (XL and above) -->
-                    <td class="text-center align-middle d-none d-xl-table-cell">{!! $store->phone ?? '---' !!}</td>
-
-                    <!-- Status -->
-                    <td class="text-center align-middle">
+                    <!-- Status Badge -->
+                    <td class="text-center">
                         @include('dashboard.stores.parts.status')
                     </td>
 
-                    <!-- Manage Status -->
+                    <!-- Manage Status Toggle Switch -->
                     @can('stores_update')
-                    <td class="text-center align-middle">
+                    <td class="text-center">
                         @include('dashboard.stores.parts.manage_status')
                     </td>
                     @endcan
 
-                    <!-- Actions Column Removed -->
+                    <!-- Row Action Buttons -->
+                    <td class="text-center">
+                        @include('dashboard.stores.parts.actions')
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('stores.no_stores_found') !!}
+                    <td colspan="8" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-store-slash text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {{ __('stores.no_stores_found') }}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            لم يتم تسجيل أي دكاكين في النظام حتى الآن. يمكنك إضافة دكانة جديدة من الزر أعلاه.
+                        </p>
                     </td>
                 </tr>
             @endforelse
+
         </tbody>
     </table>
-    <div class="float-right mt-2 custom-pagination">
-        {!! $stores->links() !!}
-    </div>
 </div>
 
-
-
+<!-- Pagination Footer -->
+@if ($stores->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
+        {!! $stores->links() !!}
+    </div>
+@endif

@@ -29,4 +29,6 @@ return [
     'balance_exceeded_warning' => 'Warning: Available balance exceeded!',
     'insufficient_balance' => 'The available balance in this account (:balance) is not enough to complete this payment.',
     'amount_exceeds_invoice_remaining' => 'The entered amount (:amount) exceeds the remaining invoice balance (:remaining).',
+    'no_payments_desc' => 'No supplier payments have been recorded yet. You can add a new payment using the button above.',
 ];
+

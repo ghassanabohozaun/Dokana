@@ -1,172 +1,114 @@
-<input type="hidden" id="departments-total-count" value="{!! $departments->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id='myTable'>
-        <thead class="bg-white">
+<input type="hidden" id="departments-total-count" value="{{ $departments->total() }}">
+
+<div class="overflow-x-auto">
+    <table class="table-modern w-full" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center d-none d-lg-table-cell align-middle py-3 border-top-0">#</th>
+                <th class="w-12 text-center">#</th>
                 @if(isset($stores))
-                <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                <th>{{ __('stores.store') }}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('departments.name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0 d-none d-lg-table-cell">{!! __('departments.created_by') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('departments.status') !!}</th>
+                <th>{{ __('departments.name') }}</th>
+                <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
+                <th class="text-center">{{ __('departments.status') }}</th>
                 @can('departments_update')
-                <th class="text-center align-middle py-3 border-top-0">{!! __('departments.manage_status') !!}</th>
+                <th class="text-center">{{ __('departments.manage_status') }}</th>
                 @endcan
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
-        <tbody>
-            @forelse ($departments as $key=>$department)
-                <tr id="row{{ $department->id }}" class="premium-table-row pointer" data-row-title="{!! $department->name !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
-                        </span>
-
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <!-- Header Gradient -->
-                                <div class="premium-modal-header"></div>
-
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        <div class="avatar-circle avatar-size-100 d-inline-flex align-items-center justify-content-center text-white text-uppercase shadow-sm bg-indigo-alt">
-                                            <i class="fas fa-briefcase font-40"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $department->name !!}</h4>
-                                    <span class="modal-role-badge">{!! __('departments.department') !!}</span>
-                                </div>
-
-                                <!-- Detail Items List -->
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-fingerprint"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.system_id') !!}</span>
-                                            <span class="detail-info-value text-muted"># {!! $department->id !!}</span>
-                                        </div>
-                                    </div>
-
-                                    @if(isset($stores))
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                            <span class="detail-info-value text-muted small">
-                                                @if($department->store_id)
-                                                    <span class="badge badge-light-primary border-0">{!! optional($department->store)->name !!}</span>
-                                                @else
-                                                    <span class="badge badge-light-warning border-0">{!! __('roles.global_role') !!}</span>
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-                                    @endif
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-check-circle"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('departments.status') !!}</span>
-                                            <div class="detail-info-value mt-1">
-                                                @if ($department->status == 1)
-                                                    <span class="badge badge-success badge-glow badge-pill px-2">{!! __('general.enable') !!}</span>
-                                                @else
-                                                    <span class="badge badge-danger badge-glow badge-pill px-2">{!! __('general.disabled') !!}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-user-plus"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('departments.created_by') !!}</span>
-                                            <span class="detail-info-value">{!! $department->creator->name ?? '---' !!}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
-                            {!! $loop->iteration + ($departments->currentPage() - 1) * $departments->perPage() !!}
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+            @forelse($departments as $department)
+                <tr id="row{{ $department->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                            {{ $loop->iteration + ($departments->currentPage() - 1) * $departments->perPage() }}
                         </span>
                     </td>
 
-                    <!-- Store -->
+                    <!-- Store (if admin/multi-store) -->
                     @if(isset($stores))
-                    <td class="text-center align-middle">
+                    <td>
                         @if($department->store_id)
-                            <a href="javascript:void(0)" class="store-chip">
-                                <i class="fas fa-briefcase mr-1"></i>
-                                {!! optional($department->store)->name !!}
-                            </a>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                <i class="fas fa-store text-[10px] text-indigo-500"></i>
+                                {{ optional($department->store)->name }}
+                            </span>
                         @else
-                            <span class="badge badge-light-warning border-0">
-                                <i class="fas fa-globe mr-1"></i> {!! __('roles.global_role') !!}
+                            <span class="badge-pill badge-pill-warning text-[10px]">
+                                <i class="fas fa-globe text-[9px] me-1"></i> {{ __('roles.global_role') ?? 'عام' }}
                             </span>
                         @endif
                     </td>
                     @endif
 
-                    <!-- Name -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.departments.parts.actions')
+                    <!-- Department Name -->
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-xs md:text-sm text-slate-800 dark:text-white">
+                                {{ $department->name }}
+                            </span>
                         </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-secondary"><i class="fas fa-user-plus mr-25"></i> {!! $department->creator->name ?? '---' !!}</span>
-                            @if($department->store_id)
-                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($department->store)->name !!}</span>
-                            @endif
-                        </div>
-
-                        <span class="font-weight-bold text-primary">{!! $department->name !!}</span>
                     </td>
 
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="text-muted small">{!! $department->creator->name ?? '---' !!}</span>
+                    <!-- Created By -->
+                    <td class="hidden sm:table-cell">
+                        @if($department->creator)
+                            <span class="text-xs text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                <i class="fas fa-user-tie text-[10px] text-slate-400"></i> {{ $department->creator->name }}
+                            </span>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
                     </td>
 
-                    <!-- Status -->
-                    <td class="text-center align-middle">
+                    <!-- Status Badge -->
+                    <td class="text-center">
                         @include('dashboard.departments.parts.status')
                     </td>
 
-                    <!-- Manage Status -->
+                    <!-- Manage Status Toggle Switch -->
                     @can('departments_update')
-                    <td class="text-center align-middle">
+                    <td class="text-center">
                         @include('dashboard.departments.parts.manage_status')
                     </td>
                     @endcan
 
-                    <!-- Actions Column Removed -->
+                    <!-- Row Action Buttons -->
+                    <td class="text-center">
+                        @include('dashboard.departments.parts.actions')
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('departments.no_departments_found') !!}
+                    <td colspan="{{ isset($stores) ? 7 : 6 }}" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-sitemap text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {{ __('departments.no_departments_found') }}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            لم يتم تسجيل أي أقسام في النظام حتى الآن. يمكنك إضافة قسم جديد من الزر أعلاه.
+                        </p>
                     </td>
                 </tr>
             @endforelse
-        </tbody>
 
+        </tbody>
     </table>
-    <div class="float-right mt-2 custom-pagination">
-        {!! $departments->links() !!}
-    </div>
 </div>
 
-
-
+<!-- Pagination Footer -->
+@if ($departments->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
+        {!! $departments->links() !!}
+    </div>
+@endif

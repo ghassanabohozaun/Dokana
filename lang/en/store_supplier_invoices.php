@@ -34,4 +34,6 @@ return [
     'search_by_invoice_number' => 'Search by invoice number...',
     'balance_exceeded_warning' => 'Warning: Available balance exceeded!',
     'invoice_has_payments' => 'Cannot delete invoice because there are payments associated with it.',
+    'no_invoices_desc' => 'No supplier invoices have been registered yet. You can add a new invoice using the button above.',
 ];
+

@@ -1,175 +1,209 @@
-<div class="modal modal-pop" id="updateUserModal" role="dialog" aria-labelledby="updateUserModalLabel" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="updateUserModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <form class="form ajax-form" action="" method="POST" enctype="multipart/form-data" id='update_user_form'
-            novalidate data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
-            data-table-id="#table_data">
+        <form class="ajax-form w-full" action="" method="POST" enctype="multipart/form-data"
+            id="update_user_form" data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
+            data-table-id="#table_data" novalidate>
             @csrf
             @method('PUT')
-            <div class="modal-content border-0">
+            <div class="modal-content rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
-                <!--begin::modal header-->
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title font-weight-bold text-dark d-flex align-items-center"
-                        id="updateUserModalLabel">
-                        <i class="fas fa-edit text-primary mr-2 icon-size-18"></i> {!! __('users.update_user') !!}
-                    </h6>
-                    <button type="button" class="close premium-modal-close" data-dismiss="modal" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="updateUserModalLabel">
+                            {!! __('users.update_user') !!}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-icon-action" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
-                <!--end::modal header-->
 
-                <!--begin::modal body-->
-                <div class="modal-body my-2">
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     <input type="hidden" id="id_edit" name="id">
+                    <input type="hidden" id="delete_photo_edit" name="delete_photo" value="0">
 
-                    <!-- First Row: Store (Full Width if Admin) -->
-                    @if ($stores)
-                        <div class="row">
-                            <div class="col-md-12 mb-1">
-                                <div class="premium-form-group">
-                                    <label class="premium-label" for="store_id_edit">{!! __('stores.store') !!} <span
-                                            class="text-danger">*</span></label>
-                                    <select class="form-control premium-input shadow-none select2"
-                                        id='store_id_edit' name="store_id">
-                                        <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                        @foreach ($stores as $store)
-                                            <option value="{{ $store->id }}">{{ $store->name }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="text-danger error-text store_id_error"></span>
-                                </div>
-                            </div>
-                        </div>
+                    @if(isset($stores))
+                    <!-- Store Select (for admin) -->
+                    <div>
+                        <label class="form-label-modern" for="store_id_edit">
+                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                        </label>
+                        <select name="store_id" id="store_id_edit" class="form-input-modern select2">
+                            <option value="" disabled>{!! __('general.select_from_list') !!}</option>
+                            @foreach ($stores as $store)
+                                <option value="{{ $store->id }}">{{ $store->name }}</option>
+                            @endforeach
+                        </select>
+                        <span class="text-xs text-rose-500 error-text store_id_error block mt-1"></span>
+                    </div>
                     @endif
 
-                    <!-- Second Row: Names and Mobile (3 Columns) -->
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="name_ar_edit">{!! __('users.name_ar') !!} <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control premium-input shadow-none"
-                                    id="name_ar_edit" name="name[ar]" placeholder="{!! __('users.enter_name_ar') !!}"
-                                    autocomplete="off">
-                                <span class="text-danger error-text name_ar_error"></span>
-                            </div>
+                    <!-- Names Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="name_ar_edit">
+                                {!! __('users.name_ar') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="name_ar_edit" name="name[ar]"
+                                class="form-input-modern" placeholder="{!! __('users.enter_name_ar') !!}" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text name_ar_error block mt-1"></span>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="name_en_edit">{!! __('users.name_en') !!} <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control premium-input shadow-none"
-                                    id="name_en_edit" name="name[en]" placeholder="{!! __('users.enter_name_en') !!}"
-                                    autocomplete="off">
-                                <span class="text-danger error-text name_en_error"></span>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="mobile_edit">{!! __('users.mobile') !!} <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control premium-input shadow-none text-left"
-                                    id="mobile_edit" name="mobile" placeholder="{!! __('users.enter_mobile') !!}"
-                                    dir="ltr" autocomplete="off" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
-                                <span class="text-danger error-text mobile_error"></span>
-                            </div>
+                        <div>
+                            <label class="form-label-modern" for="name_en_edit">
+                                {!! __('users.name_en') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="name_en_edit" name="name[en]"
+                                class="form-input-modern" placeholder="{!! __('users.enter_name_en') !!}" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text name_en_error block mt-1"></span>
                         </div>
                     </div>
 
-                    <!-- Third Row: Email, Password, Password Confirm (3 Columns) -->
-                    <div class="row">
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="email_edit">{!! __('users.email') !!} <span
-                                        class="text-danger">*</span></label>
-                                <input type="email" class="form-control premium-input shadow-none text-left"
-                                    id="email_edit" name="email" placeholder="{!! __('users.enter_email') !!}"
-                                    dir="ltr" autocomplete="off">
-                                <span class="text-danger error-text email_error"></span>
-                            </div>
+                    <!-- Mobile & Email Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="mobile_edit">
+                                {!! __('users.mobile') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="mobile_edit" name="mobile"
+                                class="form-input-modern" placeholder="0599000000" autocomplete="off"
+                                maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').substring(0, 10);" dir="ltr">
+                            <span class="text-xs text-rose-500 error-text mobile_error block mt-1"></span>
                         </div>
 
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="password_edit">{!! __('users.password') !!}</label>
-                                <div class="position-relative">
-                                    <i class="fas fa-eye pointer text-primary premium-icon-opposite"
-                                        style="{{ Lang() == 'ar' ? 'left: 1.15rem !important; right: auto !important;' : 'right: 1.15rem !important; left: auto !important;' }} position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; font-size: 1.35rem; cursor: pointer;"
-                                        onclick="togglePassword('password_edit', this);"></i>
-                                    <input type="password" class="form-control premium-input shadow-none"
-                                        id="password_edit" name="password" placeholder="{!! __('users.enter_password') !!}"
-                                        autocomplete="new-password">
+                        <div>
+                            <label class="form-label-modern" for="email_edit">
+                                {!! __('users.email') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="email" id="email_edit" name="email"
+                                class="form-input-modern" placeholder="user@example.com" autocomplete="off" dir="ltr">
+                            <span class="text-xs text-rose-500 error-text email_error block mt-1"></span>
+                        </div>
+                    </div>
+
+                    <!-- Passwords Grid (Optional for Edit) -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="password_edit">
+                                {!! __('users.password') !!} <span class="text-slate-400 text-[10px]">({!! __('general.optional') ?? 'اختياري للتغيير' !!})</span>
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="password_edit" name="password"
+                                    class="form-input-modern pe-10" placeholder="••••••••" autocomplete="new-password">
+                                <button type="button" class="absolute inset-y-0 end-0 pe-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                                    onclick="togglePassword('password_edit', this);">
+                                    <i class="fas fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                            <span class="text-xs text-rose-500 error-text password_error block mt-1"></span>
+                        </div>
+
+                        <div>
+                            <label class="form-label-modern" for="password_confirm_edit">
+                                {!! __('users.password_confirm') !!}
+                            </label>
+                            <div class="relative">
+                                <input type="password" id="password_confirm_edit" name="password_confirm"
+                                    class="form-input-modern pe-10" placeholder="••••••••" autocomplete="new-password">
+                                <button type="button" class="absolute inset-y-0 end-0 pe-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                                    onclick="togglePassword('password_confirm_edit', this);">
+                                    <i class="fas fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                            <span class="text-xs text-rose-500 error-text password_confirm_error block mt-1"></span>
+                        </div>
+                    </div>
+
+                    <!-- Role & Status Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="role_id_edit">
+                                {!! __('users.role_id') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <select name="role_id" id="role_id_edit" class="form-input-modern select2">
+                                <option value="" disabled>{!! __('general.select_from_list') !!}</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-xs text-rose-500 error-text role_id_error block mt-1"></span>
+                        </div>
+
+                        <div>
+                            <label class="form-label-modern" for="status_edit">
+                                {!! __('users.status') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <select name="status" id="status_edit" class="form-input-modern select2">
+                                <option value="1">{!! __('general.enable') !!}</option>
+                                <option value="0">{!! __('general.disabled') !!}</option>
+                            </select>
+                            <span class="text-xs text-rose-500 error-text status_error block mt-1"></span>
+                        </div>
+                    </div>
+
+                    <!-- Photo Upload (Modern Tailwind Dropzone with Preview) -->
+                    <div>
+                        <label class="form-label-modern">{!! __('users.photo') !!}</label>
+                        <div class="relative">
+                            <input type="file" name="photo" id="photo_edit" class="sr-only" accept="image/*,.webp,.png,.jpg,.jpeg">
+                            
+                            <!-- Empty State Dropzone -->
+                            <div id="dropzone_empty_user_edit"
+                                onclick="document.getElementById('photo_edit').click()"
+                                class="group flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 rounded-2xl bg-slate-50/60 dark:bg-slate-800/40 hover:bg-indigo-50/20 dark:hover:bg-indigo-950/20 cursor-pointer transition-all duration-200 text-center">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-1.5 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-cloud-upload-alt text-base"></i>
                                 </div>
-                                <span class="text-danger error-text password_error"></span>
+                                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-0.5">
+                                    {!! __('general.click_or_drag_to_upload') !!}
+                                </p>
+                                <p class="text-[11px] text-slate-400 dark:text-slate-500">
+                                    PNG, JPG, WEBP ({!! __('general.max_size') !!}: 5MB)
+                                </p>
                             </div>
-                        </div>
 
-                        <div class="col-md-4 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="password_confirm_edit">{!! __('users.password_confirm') !!}</label>
-                                <div class="position-relative">
-                                    <i class="fas fa-eye pointer text-primary premium-icon-opposite"
-                                        style="{{ Lang() == 'ar' ? 'left: 1.15rem !important; right: auto !important;' : 'right: 1.15rem !important; left: auto !important;' }} position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; font-size: 1.35rem; cursor: pointer;"
-                                        onclick="togglePassword('password_confirm_edit', this);"></i>
-                                    <input type="password" class="form-control premium-input shadow-none"
-                                        id="password_confirm_edit" name="password_confirm"
-                                        placeholder="{!! __('users.enter_password_confirm') !!}" autocomplete="new-password">
+                            <!-- Preview State -->
+                            <div id="dropzone_preview_user_edit" class="hidden items-center justify-between p-3 border border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50/70 dark:bg-slate-800/60">
+                                <div class="flex items-center gap-3">
+                                    <img id="preview_img_user_edit" src="" alt="Preview" class="h-12 w-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shadow-2xs">
+                                    <div>
+                                        <span id="preview_name_user_edit" class="text-xs font-bold text-slate-800 dark:text-white block truncate max-w-[200px] sm:max-w-xs"></span>
+                                        <span id="preview_size_user_edit" class="text-[10px] text-slate-400 dark:text-slate-500"></span>
+                                    </div>
                                 </div>
-                                <span class="text-danger error-text password_confirm_error"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Fourth Row: Role (Full Width) -->
-                    <div class="row">
-                        <div class="col-md-12 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="role_id_edit">{!! __('users.role_id') !!} <span
-                                        class="text-danger">*</span></label>
-                                <select class="form-control premium-input shadow-none select2" id='role_id_edit'
-                                    name="role_id">
-                                    <option value="" selected="">{!! __('general.select_from_list') !!}</option>
-                                    @foreach ($roles as $role)
-                                        <option value="{!! $role->id !!}">{!! $role->name !!}</option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger error-text role_id_error"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Fourth Row: Photo (Full Width) -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="premium-form-group mb-0">
-                                <label class="font-weight-bold text-dark">{!! __('users.photo') !!}</label>
-                                <div class="premium-photo-container">
-                                    <input type="hidden" name="delete_photo" id="delete_photo_edit" value="0">
-                                    <input type="file" name="photo" id="photo_edit" class="form-control"
-                                        accept="image/*">
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="document.getElementById('photo_edit').click()" class="btn-icon-action text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40" title="{!! __('general.change') !!}">
+                                        <i class="fas fa-sync text-xs"></i>
+                                    </button>
+                                    <button type="button" id="remove_photo_edit_btn" class="btn-icon-action text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40" title="{!! __('general.delete') !!}">
+                                        <i class="fas fa-trash-alt text-xs"></i>
+                                    </button>
                                 </div>
-                                <span class="text-danger error-text photo_error"></span>
                             </div>
                         </div>
+                        <span class="text-xs text-rose-500 error-text photo_error block mt-1"></span>
                     </div>
+
                 </div>
-                <!--end::modal body-->
 
-                <div class="modal-footer border-0 pt-0 premium-modal-footer">
-                    <button type="submit" id="saveBtnEdit" class="btn btn-premium-save font-weight-bold">
-                        <i class="fas fa-save mr-2"></i>
-                        <i class="fas fa-spinner fa-spin d-none spinner_loading mr-2"></i>
-                        {{ __('general.save') }}
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <button type="submit" class="btn-primary-gradient text-xs">
+                        <i class="fas fa-save text-xs"></i>
+                        <i class="fas fa-spinner fa-spin spinner_loading text-xs hidden d-none"></i>
+                        <span>{!! __('general.save') !!}</span>
                     </button>
-
-                    <button type="button" class="btn btn-premium-secondary font-weight-bold"
-                        data-dismiss="modal">
-                        <i class="fas fa-times-circle mr-2"></i> {{ __('general.cancel') }}
+                    <button type="button" class="btn-secondary-modern text-xs" data-dismiss="modal">
+                        {!! __('general.cancel') !!}
                     </button>
                 </div>
-                <!--end::modal footer-->
 
             </div>
         </form>
@@ -178,90 +212,107 @@
 
 @push('scripts')
     <script type="text/javascript">
-
-
         $(document).ready(function() {
-            let lang = "{!! Lang() !!}";
+            const $photoInputEdit = $('#photo_edit');
+            const $dropzoneEmptyEdit = $('#dropzone_empty_user_edit');
+            const $dropzonePreviewEdit = $('#dropzone_preview_user_edit');
+            const $previewImgEdit = $('#preview_img_user_edit');
+            const $previewNameEdit = $('#preview_name_user_edit');
+            const $previewSizeEdit = $('#preview_size_user_edit');
+            const $deletePhotoInput = $('#delete_photo_edit');
 
-            // Show edit modal and populate data dynamically
-            $('body').on('click', '.edit_user_button', function() {
-                let user_id = $(this).attr('user-id');
-                let user_name_ar = $(this).attr('user-name-ar');
-                let user_name_en = $(this).attr('user-name-en');
-                let user_email = $(this).attr('user-email');
-                let user_mobile = $(this).attr('user-mobile');
-                let user_role_id = $(this).attr('user-role-id');
-                let user_photo_url = $(this).attr('user-photo-url');
-                let user_photo = $(this).attr('user-photo');
+            // Photo change listener
+            $photoInputEdit.on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        $previewImgEdit.attr('src', event.target.result);
+                        $previewNameEdit.text(file.name);
+                        $previewSizeEdit.text((file.size / 1024).toFixed(1) + ' KB');
+                        $dropzoneEmptyEdit.addClass('hidden');
+                        $dropzonePreviewEdit.removeClass('hidden').addClass('flex');
+                        $deletePhotoInput.val('0');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
-                let user_store_id = $(this).attr('user-store-id');
-                let user_store_name = $(this).attr('user-store-name');
+            // Remove photo button
+            $('#remove_photo_edit_btn').on('click', function(e) {
+                e.stopPropagation();
+                $photoInputEdit.val('');
+                $previewImgEdit.attr('src', '');
+                $dropzonePreviewEdit.removeClass('flex').addClass('hidden');
+                $dropzoneEmptyEdit.removeClass('hidden');
+                $deletePhotoInput.val('1');
+            });
 
-                // Populate fields
+            // Show edit modal and populate data dynamically via event delegation (0ms lag)
+            $(document).on('click', '.editUserBtn', function(e) {
+                e.preventDefault();
+                
+                let $btn = $(this);
+                let user_id = $btn.data('id');
+                let name_ar = $btn.data('name_ar');
+                let name_en = $btn.data('name_en');
+                let email = $btn.data('email');
+                let mobile = $btn.data('mobile');
+                let role_id = $btn.data('role_id');
+                let status = $btn.data('status');
+                let store_id = $btn.data('store_id');
+                let photo_url = $btn.data('photo_url');
+
+                // Populate form fields
                 $('#id_edit').val(user_id);
-                $('#delete_photo_edit').val(0);
-                $('#name_ar_edit').val(user_name_ar);
-                $('#name_en_edit').val(user_name_en);
-                $('#email_edit').val(user_email);
-                $('#mobile_edit').val(user_mobile);
-                $('#role_id_edit').val(user_role_id).trigger('change');
+                $('#name_ar_edit').val(name_ar);
+                $('#name_en_edit').val(name_en);
+                $('#email_edit').val(email);
+                $('#mobile_edit').val(mobile);
+                $('#password_edit').val('');
+                $('#password_confirm_edit').val('');
+                $deletePhotoInput.val('0');
+                $photoInputEdit.val('');
 
-                // Pre-populate Select2 for Store without Extra AJAX Call
+                // Populate Status Select2
+                if ($('#status_edit').length) {
+                    $('#status_edit').val(status).trigger('change.select2');
+                }
+
+                // Populate Role Select2
+                if ($('#role_id_edit').length) {
+                    $('#role_id_edit').val(role_id).trigger('change.select2');
+                }
+
+                // Populate Store Select2
                 if ($('#store_id_edit').length) {
-                    if (user_store_id) {
-                        $('#store_id_edit').val(user_store_id).trigger('change');
+                    if (store_id) {
+                        $('#store_id_edit').val(store_id).trigger('change.select2');
                     } else {
-                        $('#store_id_edit').val(null).trigger('change');
+                        $('#store_id_edit').val(null).trigger('change.select2');
                     }
+                }
+
+                // Handle Photo Preview State
+                if (photo_url && photo_url.trim() !== '' && !photo_url.includes('default') && !photo_url.endsWith('/')) {
+                    $previewImgEdit.attr('src', photo_url);
+                    $previewNameEdit.text("{!! __('users.photo') !!}");
+                    $previewSizeEdit.text('');
+                    $dropzoneEmptyEdit.addClass('hidden');
+                    $dropzonePreviewEdit.removeClass('hidden').addClass('flex');
+                } else {
+                    $previewImgEdit.attr('src', '');
+                    $dropzonePreviewEdit.removeClass('flex').addClass('hidden');
+                    $dropzoneEmptyEdit.removeClass('hidden');
                 }
 
                 // Update form action URL dynamically
-                let url = "{!! route('dashboard.users.update', 'id') !!}".replace('id', user_id);
+                let url = "{!! route('dashboard.users.update', ':id') !!}".replace(':id', user_id);
                 $('#update_user_form').attr('action', url);
-
-                // Re-initialize FileInput using Global Generic Pattern
-                let photoOptions = {};
-                if (user_photo && user_photo_url && !user_photo_url.includes('default')) {
-                    photoOptions = {
-                        initialPreview: [user_photo_url],
-                        initialPreviewAsData: true
-                    };
-                }
-                window.PremiumFileInput.init("#photo_edit", photoOptions);
-            });
-
-            // Initialize Generic Select2 for Store & Role in Edit Modal
-            if ($('#store_id_edit').length) {
-                $('#store_id_edit').select2({
-                    dropdownParent: $('#updateUserModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-            if ($('#role_id_edit').length) {
-                $('#role_id_edit').select2({
-                    dropdownParent: $('#updateUserModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
-
-            // Handle Header Update after successful profile edit
-            $('#update_user_form').on('ajax-form-success', function(e, response) {
-                let user_id = $('#id_edit').val();
-                let auth_id = "{{ user()->id }}";
-
-                if (user_id == auth_id && response.status) {
-                    let userName = response.data.name[lang] || response.data.name['en'] || response.data
-                        .name['ar'];
-                    $('.user-name-text').text(userName);
-                    $('.dropdown-header-premium .user-name').text(userName);
-                    if (response.photo_url) {
-                        let imgHtml = '<img src="' + response.photo_url + '?t=' + new Date().getTime() +
-                            '" alt="avatar" class="avatar-img-premium shadow-sm">';
-                        $('.avatar-wrapper-premium').html(imgHtml);
-                    }
-                }
+                
+                $('#update_user_form').find('.error-text').text('');
+                $('#update_user_form').find('.form-input-modern').removeClass('border-rose-500');
+                $('#updateUserModal').modal('show');
             });
         });
     </script>

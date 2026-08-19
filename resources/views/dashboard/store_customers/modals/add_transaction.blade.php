@@ -1,134 +1,115 @@
-<div class="modal modal-pop" id="addCustomerTransactionModal" tabindex="-1" role="dialog"
+<div class="modal fade" id="addCustomerTransactionModal" tabindex="-1" role="dialog"
     aria-labelledby="addCustomerTransactionModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
 
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <form class="form ajax-form" action="{!! route('dashboard.store-transactions.store') !!}" method="POST" enctype="multipart/form-data"
-            id='add_customer_transaction_form' novalidate
+        <form class="ajax-form w-full" action="{!! route('dashboard.store-transactions.store') !!}" method="POST" enctype="multipart/form-data"
+            id="add_customer_transaction_form" novalidate
             data-success-msg="{!! __('general.add_success_message') !!}"
             data-success-action="reload-table"
             data-table-id="#table_data">
             @csrf
             
-            <!-- Hidden inputs for submission since disabled fields don't submit -->
+            <!-- Hidden inputs for submission -->
             <input type="hidden" name="store_id" id="hidden_store_id_create">
             <input type="hidden" name="store_customer_id" id="hidden_store_customer_id_create">
 
-            <div class="modal-content shadow-lg border-0" style="border-radius: 20px;">
+            <div class="modal-content rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
-                <!--begin::modal header-->
-                <div class="modal-header border-0 pb-0">
-                    <h6 class="modal-title font-weight-bold text-dark d-flex align-items-center" id="addCustomerTransactionModalLabel">
-                        <i class="fas fa-hand-holding-usd text-success mr-2 icon-size-18"></i> {!! __('store_transactions.create_new_store_transaction') !!}
-                    </h6>
-                    <button type="button" class="close premium-modal-close" data-dismiss="modal" aria-label="Close">
-                        <i class="fas fa-times"></i>
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-sm">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white" id="addCustomerTransactionModalLabel">
+                            {!! __('store_transactions.create_new_store_transaction') ?? 'إضافة حركة مالية للعميل' !!}
+                        </h4>
+                    </div>
+                    <button type="button" class="btn-icon-action" data-dismiss="modal" aria-label="Close">
+                        <i class="fas fa-times text-xs"></i>
                     </button>
                 </div>
-                <!--end::modal header-->
 
-                <!--begin::modal body-->
-                <div class="modal-body my-2">
+                <!-- Modal Body -->
+                <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
                     
-                    @if(isset($stores))
-                    <div class="row">
-                        <!-- Store (Readonly) -->
-                        <div class="col-md-12 mb-1">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="visible_store_id_create">{!! __('stores.store') !!}</label>
-                                <input type="text" id="visible_store_id_create" class="form-control premium-input shadow-none bg-light" disabled>
-                            </div>
-                        </div>
-                    </div>
-                    @endif
-
-                    <div class="row">
-                        <!-- Customer (Readonly) -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="visible_store_customer_id_create">{!! __('store_customers.store_customer') !!}</label>
-                                <input type="text" id="visible_store_customer_id_create" class="form-control premium-input shadow-none bg-light" disabled>
-                            </div>
+                    <!-- Customer & Type Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="visible_store_customer_id_create">
+                                {!! __('store_customers.store_customer') !!}
+                            </label>
+                            <input type="text" id="visible_store_customer_id_create" class="form-input-modern bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold" disabled>
                         </div>
 
-                        <!-- Type -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_type_create">{!! __('store_transactions.type') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input shadow-none" id='transaction_type_create' name="type">
-                                    <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
-                                    <option value="debt">{!! __('store_transactions.debt') !!}</option>
-                                    <option value="payment">{!! __('store_transactions.payment') !!}</option>
-                                </select>
-                                <span class="text-danger error-text type_error"></span>
-                            </div>
+                        <div>
+                            <label class="form-label-modern" for="transaction_type_create">
+                                {!! __('store_transactions.type') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <select class="form-input-modern" id="transaction_type_create" name="type">
+                                <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
+                                <option value="debt">{!! __('store_transactions.debt') !!} (دين عليه)</option>
+                                <option value="payment">{!! __('store_transactions.payment') !!} (سداد منه)</option>
+                            </select>
+                            <span class="text-xs text-rose-500 error-text type_error block mt-1"></span>
                         </div>
                     </div>
 
-                    <!-- Bank Account (Conditional) -->
-                    <div class="row d-none" id="transaction_bank_account_container_create">
-                        <div class="col-md-12 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_store_bank_account_id_create">{!! __('bank_accounts.bank_account') !!} <span class="text-danger">*</span></label>
-                                <select class="form-control premium-input select2 shadow-none" id='transaction_store_bank_account_id_create' name="store_bank_account_id" style="width: 100%;">
-                                    <option value="" selected>{!! __('general.select_from_list') !!}</option>
-                                </select>
-                                <span class="text-danger error-text store_bank_account_id_error"></span>
-                            </div>
+                    <!-- Bank Account (Conditional for Payment) -->
+                    <div class="hidden" id="transaction_bank_account_container_create">
+                        <label class="form-label-modern" for="transaction_store_bank_account_id_create">
+                            {!! __('bank_accounts.bank_account') !!} <span class="text-rose-500">*</span>
+                        </label>
+                        <select class="form-input-modern select2" id="transaction_store_bank_account_id_create" name="store_bank_account_id">
+                            <option value="" selected>{!! __('general.select_from_list') !!}</option>
+                        </select>
+                        <span class="text-xs text-rose-500 error-text store_bank_account_id_error block mt-1"></span>
+                    </div>
+
+                    <!-- Amount & Date Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label-modern" for="transaction_amount_create">
+                                {!! __('store_transactions.amount') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="number" id="transaction_amount_create" name="amount" step="0.01" min="0"
+                                class="form-input-modern" placeholder="0.00" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text amount_error block mt-1"></span>
+                        </div>
+
+                        <div>
+                            <label class="form-label-modern" for="transaction_date_create">
+                                {!! __('store_transactions.date') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="transaction_date_create" name="transaction_date"
+                                class="form-input-modern flatpickr-date" value="{{ date('Y-m-d') }}" placeholder="YYYY-MM-DD" autocomplete="off">
+                            <span class="text-xs text-rose-500 error-text transaction_date_error block mt-1"></span>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <!-- Amount -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_amount_create">{!! __('store_transactions.amount') !!} <span class="text-danger">*</span></label>
-                                <input type="number" id="transaction_amount_create" name="amount" step="0.01" min="0"
-                                    class="form-control premium-input shadow-none" autocomplete="off">
-                                <span class="text-danger error-text amount_error"></span>
-                            </div>
-                        </div>
-
-                        <!-- Transaction Date -->
-                        <div class="col-md-6 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_date_create">{!! __('store_transactions.date') !!} <span class="text-danger">*</span></label>
-                                <div class="position-relative">
-                                    <i class="fas fa-calendar-alt text-primary position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); z-index: 4; pointer-events: none;"></i>
-                                    <input type="text" id="transaction_date_create" name="transaction_date"
-                                        class="form-control premium-input shadow-none ptc-datepicker" style="padding-left: 35px;" value="{{ date('Y-m-d') }}" autocomplete="off">
-                                </div>
-                                <span class="text-danger error-text transaction_date_error"></span>
-                            </div>
-                        </div>
+                    <!-- Description -->
+                    <div>
+                        <label class="form-label-modern" for="transaction_description_create">
+                            {!! __('store_transactions.description') !!}
+                        </label>
+                        <textarea id="transaction_description_create" name="description" rows="2"
+                            class="form-input-modern" placeholder="{!! __('store_transactions.description') !!}" autocomplete="off"></textarea>
+                        <span class="text-xs text-rose-500 error-text description_error block mt-1"></span>
                     </div>
 
-                    <div class="row">
-                        <!-- Description -->
-                        <div class="col-md-12 mb-2">
-                            <div class="premium-form-group">
-                                <label class="premium-label" for="transaction_description_create">{!! __('store_transactions.description') !!}</label>
-                                <input type="text" id="transaction_description_create" name="description"
-                                    class="form-control premium-input shadow-none" autocomplete="off">
-                                <span class="text-danger error-text description_error"></span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <!--end::modal body-->
 
-                <div class="modal-footer border-0 pt-0 premium-modal-footer">
-                    <button type="submit" id="saveTransactionBtn" class="btn btn-premium-save font-weight-bold">
-                        <i class="fas fa-save mr-2"></i>
-                        <i class="fas fa-spinner fa-spin d-none spinner_loading mr-2"></i>
-                        {{ __('general.save') }}
+                <!-- Modal Footer -->
+                <div class="flex items-center justify-end gap-2.5 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/90">
+                    <button type="submit" class="btn-primary-gradient text-xs">
+                        <i class="fas fa-save text-xs"></i>
+                        <i class="fas fa-spinner fa-spin spinner_loading text-xs hidden d-none"></i>
+                        <span>{!! __('general.save') !!}</span>
                     </button>
-
-                    <button type="button" class="btn btn-premium-secondary font-weight-bold"
-                        data-dismiss="modal">
-                        <i class="fas fa-times-circle mr-2"></i> {{ __('general.cancel') }}
+                    <button type="button" class="btn-secondary-modern text-xs" data-dismiss="modal">
+                        {!! __('general.cancel') !!}
                     </button>
                 </div>
-                <!--end::modal footer-->
 
             </div>
         </form>
@@ -138,14 +119,6 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for Bank Accounts
-            if ($('#transaction_store_bank_account_id_create').length) {
-                $('#transaction_store_bank_account_id_create').select2({
-                    dropdownParent: $('#addCustomerTransactionModal'),
-                    width: '100%',
-                    dir: $('html').attr('data-textdirection') || 'ltr'
-                });
-            }
             // Toggle Bank Account visibility based on Type
             $('#transaction_type_create').on('change', function() {
                 let type = $(this).val();
@@ -153,16 +126,16 @@
                 let bankSelect = $('#transaction_store_bank_account_id_create');
 
                 if (type === 'payment') {
-                    bankContainer.removeClass('d-none');
+                    bankContainer.removeClass('hidden');
                 } else {
-                    bankContainer.addClass('d-none');
-                    bankSelect.val('').trigger('change');
+                    bankContainer.addClass('hidden');
+                    bankSelect.val('').trigger('change.select2');
                 }
             });
 
-            // Load Bank Accounts immediately when the modal is shown
+            // Load Bank Accounts when modal is shown
             $('#addCustomerTransactionModal').on('show.bs.modal', function () {
-                $('#transaction_bank_account_container_create').addClass('d-none');
+                $('#transaction_bank_account_container_create').addClass('hidden');
                 
                 let bankSelect = $('#transaction_store_bank_account_id_create');
                 bankSelect.empty().append('<option value="" selected>{!! __('general.select_from_list') !!}</option>');
@@ -175,14 +148,14 @@
                         data: { store_id: storeId },
                         success: function(data) {
                             $.each(data, function(key, account) {
-                                let entityName = account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar;
-                                let isDefault = account.is_default ? "({!! __('general.default') !!})" : "";
+                                let entityName = (account.payment_entity && account.payment_entity.name) ? (account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar) : '';
+                                let isDefault = account.is_default ? " ({!! __('general.default') !!})" : "";
                                 let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
                                 
-                                let newOption = new Option(accountName + ' ' + isDefault, account.id, account.is_default, account.is_default);
+                                let newOption = new Option(accountName + isDefault, account.id, account.is_default, account.is_default);
                                 bankSelect.append(newOption);
                             });
-                            bankSelect.trigger('change');
+                            bankSelect.trigger('change.select2');
                         }
                     });
                 }

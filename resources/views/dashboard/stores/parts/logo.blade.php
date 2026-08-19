@@ -1,19 +1,15 @@
 @php
-    $size = $size ?? 45;
+    $size = $size ?? 40;
     $logoUrl = $store->logo_url;
 @endphp
 
 @if ($logoUrl)
-    <div class="premium-avatar-wrapper mx-auto"
-        style="width: {!! $size !!}px; height: {!! $size !!}px;">
-        <img src="{!! $logoUrl !!}" alt="{!! $store->name !!}" class="premium-avatar shadow-sm"
-            style="width:100%; height:100%; border-radius: 8px; object-fit: cover;">
+    <div class="h-10 w-10 shrink-0 mx-auto rounded-xl overflow-hidden border border-slate-200/80 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 shadow-2xs">
+        <img src="{{ $logoUrl }}" alt="{{ $store->name }}" class="h-full w-full object-cover">
     </div>
 @else
-    <div class="avatar-circle avatar-size-{!! $size !!} d-inline-flex align-items-center justify-content-center text-white shadow-sm"
-        style="background-color: {!! $store->getAvatarColor() !!}; width: {!! $size !!}px; height: {!! $size !!}px; border-radius: 8px; font-weight: bold; font-size: {!! $size / 2.5 !!}px;">
-        {!! $store->initials !!}
+    <div class="h-10 w-10 shrink-0 mx-auto rounded-xl flex items-center justify-center text-white font-bold text-xs shadow-2xs"
+        style="background-color: {{ $store->getAvatarColor() }};">
+        {{ $store->initials }}
     </div>
 @endif
-
-

@@ -28,11 +28,6 @@ class HeaderNotifications extends Component
         if (Auth::check()) {
             $user = Auth::user();
             $query = $user->unreadNotifications();
-            
-            // Filter by tab if not 'all'
-            if ($this->activeTab !== 'all') {
-                $query->where('data->category', $this->activeTab);
-            }
 
             $this->unreadCount = $query->count();
             $this->notifications = $query->take(10)->get();

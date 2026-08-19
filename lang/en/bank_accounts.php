@@ -40,6 +40,11 @@ return [
     'no_bank_accounts_found' => 'No bank accounts found!',
     
     // Errors
+    'account_type_required' => 'Account type is required',
+    'payment_entity_id_required' => 'Please select the bank or wallet',
+    'account_number_required' => 'Account number is required',
+    'account_holder_name_ar_required' => 'Account holder name in Arabic is required',
+    'account_holder_name_en_required' => 'Account holder name in English is required',
     'store_required' => 'Please select a store',
     'bank_account_has_transactions' => 'Cannot delete the bank account or wallet because there are transactions associated with it.',
     'bank_account_has_withdrawals' => 'Cannot delete the bank account or wallet because there are withdrawals associated with it.',

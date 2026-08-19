@@ -40,5 +40,7 @@ return [
     'cannot_delete_has_guarantors' => 'Cannot delete this store because it has guarantors linked to it.',
     'cannot_delete_has_maintenances' => 'Cannot delete this store because it has maintenance requests linked to it.',
     'choose_store' => 'Choose Store',
+    'store_required' => 'Please select the store.',
     'iban_unique_error' => 'The IBAN is already registered in the system.',
 ];
+

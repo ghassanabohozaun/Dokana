@@ -36,5 +36,7 @@ return [
     'cannot_delete_has_transactions' => 'لا يمكن حذف هذه الدكانة لوجود حركات مالية مرتبطة بها حالياً.',
     'cannot_delete_has_withdrawals' => 'لا يمكن حذف هذه الدكانة لوجود سحوبات مالية مرتبطة بها حالياً.',
     'choose_store' => 'اختر الدكانة',
+    'store_required' => 'يرجى اختيار الدكانة.',
     'iban_unique_error' => 'رقم الآيبان (IBAN) مسجل مسبقاً في النظام.',
 ];
+

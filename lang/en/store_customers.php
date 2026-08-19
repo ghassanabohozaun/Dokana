@@ -38,4 +38,7 @@ return [
     'bypass_debt_limit_desc' => 'Allow customer to buy on credit even if they have overdue debt',
     'max_debt_limit' => 'Max Debt Limit',
     'opening_balance' => 'Opening Balance',
+    'cannot_delete_walk_in' => 'Direct cash customer (Walk-in) cannot be deleted.',
+    'no_customers_desc' => 'No customers have been registered yet. You can add a new customer using the button above.',
 ];
+

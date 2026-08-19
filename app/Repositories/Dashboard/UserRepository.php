@@ -46,7 +46,7 @@ class UserRepository
             'email' => $data['email'],
             'password' => $data['password'],
             'mobile' => $data['mobile'] ?? null,
-            'status' => 1,
+            'status' => isset($data['status']) ? (int)$data['status'] : 1,
             'photo' => $data['photo'] ?? null,
         ]);
     }
@@ -64,7 +64,8 @@ class UserRepository
             'email' => $data['email'],
             'password' => empty($data['password']) ? $user->password : $data['password'],
             'mobile' => $data['mobile'] ?? $user->mobile,
-            'photo' => $data['photo'] ?? $user->photo,
+            'status' => isset($data['status']) ? (int)$data['status'] : $user->status,
+            'photo' => array_key_exists('photo', $data) ? $data['photo'] : $user->photo,
         ]);
     }
 

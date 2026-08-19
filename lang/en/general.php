@@ -7,6 +7,11 @@ return [
     'page_not_found' => 'Sorry , Page Not Found',
     'no_photo' => 'No Photo',
     'no_image' => 'No Image',
+    'no_logo' => 'No Logo',
+    'click_or_drag_to_upload' => 'Click to upload or drag & drop',
+    'max_size' => 'Max size',
+    'change' => 'Change',
+    'choose_file' => 'Choose File',
     'welcome' => 'Welcome',
     'from_date' => 'From Date',
     'to_date' => 'To Date',
@@ -34,6 +39,7 @@ return [
     'input' => 'Page number',
     'select' => 'Select',
     'select_from_list' => 'Selection From List',
+    'choose' => 'Choose',
     'save' => 'Save',
     'saveing' => 'Saveing ...',
 
@@ -261,5 +267,9 @@ return [
     'remaining_balance' => 'Remaining Balance',
     'no_description' => 'No Description',
     'default' => 'Default',
+    'records' => 'Records',
+    'general_payment' => 'General Payment (No Specific Invoice)',
 ];
+
+
 

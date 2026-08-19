@@ -10,8 +10,8 @@ class NotificationCenter extends Component
 {
     use WithPagination;
 
-    // Optional: use bootstrap pagination
-    protected $paginationTheme = 'bootstrap';
+    // Tailwind pagination
+    protected $paginationTheme = 'tailwind';
 
     public $activeTab = 'all';
     public $selectedNotifications = [];

@@ -40,6 +40,11 @@ return [
     'no_bank_accounts_found' => 'لم يتم العثور على حسابات بنكية!',
     
     // Errors
+    'account_type_required' => 'نوع الحساب مطلوب',
+    'payment_entity_id_required' => 'يرجى اختيار البنك أو المحفظة',
+    'account_number_required' => 'رقم الحساب أو الجوال مطلوب',
+    'account_holder_name_ar_required' => 'اسم صاحب الحساب بالعربية مطلوب',
+    'account_holder_name_en_required' => 'اسم صاحب الحساب بالإنجليزية مطلوب',
     'store_required' => 'يرجى تحديد الدكانة',
     'bank_account_has_transactions' => 'لا يمكن حذف الحساب البنكي أو المحفظة لوجود حركات مالية مرتبطة به.',
     'bank_account_has_withdrawals' => 'لا يمكن حذف الحساب البنكي أو المحفظة لوجود سحوبات مالية مرتبطة به.',

@@ -34,6 +34,11 @@ return [
     'search_by_phone' => 'Search by name or mobile...',
     'balance_exceeded_warning' => 'Sorry, insufficient balance!',
     'mobile_invalid' => 'The mobile number must be exactly 10 digits (e.g. 0599000000).',
+    'total_invoices' => 'Total Invoices',
+    'total_paid' => 'Total Paid',
+    'total_remaining' => 'Total Remaining',
     'supplier_has_invoices' => 'Cannot delete supplier because there are invoices associated with them.',
     'supplier_has_payments' => 'Cannot delete supplier because there are payments associated with them.',
+    'no_suppliers_desc' => 'No suppliers have been registered yet. You can add a new supplier using the button above.',
 ];
+

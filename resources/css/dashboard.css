@@ -1,0 +1,871 @@
+/* ==========================================================================
+   DOKANA ENTERPRISE DASHBOARD - TAILWIND CORE STYLES (100% LOCAL / NO EXTERNAL CDN)
+   ========================================================================== */
+
+/* 1. Local Fonts Definitions */
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Tajawal-300.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Tajawal-400.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Tajawal-500.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Tajawal-700.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Tajawal-800.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Manrope-400.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Manrope-500.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Manrope-600.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/assets/dashbaord/fonts/Manrope-700.ttf') format('truetype');
+}
+
+/* 2. Tailwind Directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3. Base Elements & Typography */
+@layer base {
+    :root {
+        --font-primary: 'Tajawal', 'Manrope', system-ui, -apple-system, sans-serif;
+    }
+
+    html {
+        font-family: var(--font-primary);
+        -webkit-tap-highlight-color: transparent;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        @apply bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen overflow-x-hidden;
+    }
+
+    /* Custom Modern Slim Scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-slate-300 dark:bg-slate-700 rounded-full transition-colors hover:bg-slate-400 dark:hover:bg-slate-600;
+    }
+}
+
+/* 4. Dashboard Core Components */
+@layer components {
+    /* Glassmorphism Surface */
+    .glass-surface {
+        @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 shadow-sm;
+    }
+
+    /* Standard Dashboard Card */
+    .dash-card {
+        @apply bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/70 dark:border-slate-800/70 shadow-sm transition-all duration-200;
+    }
+
+    .dash-card-hover {
+        @apply hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5;
+    }
+
+    /* Stat KPI Card */
+    .stat-card {
+        @apply relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 p-5 border border-slate-200/70 dark:border-slate-800/70 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1;
+    }
+
+    /* Modern Buttons */
+    .btn-primary-gradient {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:via-indigo-700 hover:to-blue-800 shadow-sm hover:shadow shadow-blue-500/20 active:scale-[0.98] transition-all duration-150;
+    }
+
+    .btn-secondary-modern {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm active:scale-[0.98] transition-all duration-150;
+    }
+
+    .btn-icon-action {
+        @apply inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors;
+    }
+
+    /* Form Elements */
+    .form-input-modern {
+        @apply w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/90 px-3.5 py-2.5 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:focus:border-indigo-400 transition-all duration-150 outline-none;
+    }
+
+    .form-label-modern {
+        @apply block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1.5 uppercase tracking-wider;
+    }
+
+    /* Badges & Status Pills */
+    .badge-pill {
+        @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .badge-pill-success {
+        @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40;
+    }
+
+    .badge-pill-warning {
+        @apply bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40;
+    }
+
+    .badge-pill-danger {
+        @apply bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/40;
+    }
+
+    .badge-pill-info {
+        @apply bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40;
+    }
+
+    .badge-pill-neutral {
+        @apply bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700;
+    }
+
+    /* Table Styling */
+    .table-modern {
+        @apply w-full text-start border-collapse;
+    }
+
+    .table-modern thead th {
+        @apply px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800;
+    }
+
+    .table-modern tbody tr {
+        @apply border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50/60 dark:hover:bg-slate-800/50 transition-colors;
+    }
+
+    .table-modern tbody td {
+        @apply px-4 py-3 text-sm text-slate-700 dark:text-slate-200 align-middle;
+    }
+}
+
+/* ==========================================================================
+   Enterprise Modal System (100% Top-Level & Standalone Compatible)
+   ========================================================================== */
+.modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1050 !important;
+    display: none !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    outline: 0 !important;
+    background-color: rgba(15, 23, 42, 0.75) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    padding: 1.25rem !important;
+}
+
+.modal.fade {
+    opacity: 0;
+    transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.modal.fade.show,
+.modal.fade.in {
+    opacity: 1 !important;
+}
+
+.modal.show,
+.modal.in,
+.modal[style*="display: block"] {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.modal-open {
+    overflow: hidden !important;
+}
+
+.modal-dialog {
+    position: relative !important;
+    width: 100% !important;
+    margin: auto !important;
+    pointer-events: auto !important;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out !important;
+    transform: scale(0.95) translateY(-10px);
+    opacity: 0;
+}
+
+.modal.show .modal-dialog,
+.modal.in .modal-dialog,
+.modal[style*="display: block"] .modal-dialog {
+    transform: scale(1) translateY(0) !important;
+    opacity: 1 !important;
+}
+
+.modal-dialog.modal-lg {
+    max-width: 800px !important;
+}
+
+.modal-dialog.modal-sm {
+    max-width: 400px !important;
+}
+
+.modal-dialog.modal-md {
+    max-width: 600px !important;
+}
+
+.modal-backdrop {
+    display: none !important;
+}
+
+/* ==========================================================================
+   Select2 Tailwind Styling (RTL & LTR Flawless)
+   ========================================================================== */
+.select2-container {
+    width: 100% !important;
+    display: block;
+}
+
+.select2-container--default .select2-selection--single {
+    @apply h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 flex items-center px-3 outline-none transition-all;
+    font-size: 0.8125rem !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    @apply text-slate-700 dark:text-slate-200 leading-normal;
+    font-size: 0.8125rem !important;
+    padding: 0 0.5rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 100%;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    @apply h-10 flex items-center justify-center;
+    width: 1.75rem !important;
+    position: absolute;
+    top: 0;
+}
+
+/* RTL Arrow strictly on left */
+[dir="rtl"] .select2-container .select2-selection__arrow,
+[data-textdirection="rtl"] .select2-container .select2-selection__arrow,
+.select2-container--rtl .select2-selection__arrow {
+    left: 0.5rem !important;
+    right: auto !important;
+}
+
+/* LTR Arrow strictly on right */
+[dir="ltr"] .select2-container .select2-selection__arrow,
+[data-textdirection="ltr"] .select2-container .select2-selection__arrow,
+.select2-container--ltr .select2-selection__arrow {
+    right: 0.5rem !important;
+    left: auto !important;
+}
+
+/* Prevent double arrows from native select */
+select.form-input-modern,
+select.select2-hidden-accessible {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: none !important;
+    font-size: 0.8125rem !important;
+}
+
+.select2-dropdown {
+    @apply rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-xl overflow-hidden z-[1060] text-xs;
+    margin-top: 4px;
+}
+
+.select2-container--default .select2-search--dropdown {
+    padding: 0.5rem;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    @apply w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 outline-none;
+}
+
+.select2-container--default .select2-results > .select2-results__options {
+    max-height: 240px;
+    overflow-y: auto;
+    padding: 0.25rem;
+}
+
+.select2-container--default .select2-results__option {
+    @apply px-3.5 py-2.5 rounded-lg text-xs text-slate-700 dark:text-slate-200 cursor-pointer transition-colors;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    @apply bg-indigo-600 text-white font-medium !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected="true"] {
+    @apply bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold;
+}
+
+/* ==========================================================================
+   Utility Helpers & Spinner
+   ========================================================================== */
+.d-none {
+    display: none !important;
+}
+
+/* ==========================================================================
+   Validation Error Tooltips & Invalid Field System
+   ========================================================================== */
+.is-invalid-premium,
+.form-input-modern.is-invalid-premium,
+.select2-container .select2-selection.is-invalid-premium {
+    border-color: #f43f5e !important; /* rose-500 */
+    box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15) !important;
+}
+
+.error-text:not(:empty) {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #e11d48; /* rose-600 */
+    background-color: #fff1f2; /* rose-50 */
+    border: 1px solid #fecdd3; /* rose-200 */
+    border-radius: 0.625rem; /* 10px */
+    padding: 0.2rem 0.55rem;
+    margin-top: 0.35rem;
+    box-shadow: 0 1px 2px 0 rgba(225, 29, 72, 0.06);
+    animation: slideDownIn 0.2s ease-out;
+}
+
+.dark .error-text:not(:empty) {
+    color: #fda4af; /* rose-300 */
+    background-color: rgba(76, 5, 25, 0.45); /* rose-950/45 */
+    border-color: rgba(159, 18, 57, 0.4); /* rose-800/40 */
+}
+
+.error-text:not(:empty)::before {
+    content: "\f06a"; /* FontAwesome exclamation-circle */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 0.65rem;
+}
+
+@keyframes slideDownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-shake {
+    animation: dialogShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes dialogShake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+    40%, 60% { transform: translate3d(3px, 0, 0); }
+}
+
+/* Sidebar Luxury Brand Container & Shimmer Effect */
+.brand-glow-badge {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(168, 85, 247, 0.18));
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    box-shadow: 0 4px 15px -2px rgba(99, 102, 241, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-glow-badge:hover {
+    transform: scale(1.05);
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 6px 20px -2px rgba(168, 85, 247, 0.4), inset 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+/* Moving Luxury Shimmer Light Beam Effect */
+.brand-glow-badge::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -70%;
+    width: 45%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.65) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(25deg);
+    animation: brandShimmer 3.5s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes brandShimmer {
+    0% {
+        left: -90%;
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    35% {
+        left: 150%;
+        opacity: 0;
+    }
+    100% {
+        left: 150%;
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+   Luxury Custom Scrollbar
+   ========================================================================== */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 9999px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
+}
+
+.dark .custom-scrollbar {
+    scrollbar-color: rgba(71, 85, 105, 0.5) transparent;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(71, 85, 105, 0.45);
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(129, 140, 248, 0.6);
+}
+
+/* ==========================================================================
+   Modern Pagination Styles (Laravel Bootstrap Pagination Compatibility)
+   ========================================================================== */
+.pagination {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.375rem !important;
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.pagination .page-item {
+    display: inline-block !important;
+}
+
+.pagination .page-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 2.25rem !important;
+    height: 2.25rem !important;
+    padding: 0.25rem 0.625rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid #e2e8f0 !important;
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.pagination .page-link:hover {
+    border-color: #6366f1 !important;
+    color: #4f46e5 !important;
+    background-color: #f8fafc !important;
+    transform: translateY(-1px) !important;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35) !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.45 !important;
+    pointer-events: none !important;
+    background-color: #f1f5f9 !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    box-shadow: none !important;
+}
+
+/* Dark Mode Pagination */
+.dark .pagination .page-link {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #cbd5e1 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark .pagination .page-link:hover {
+    border-color: #818cf8 !important;
+    color: #a5b4fc !important;
+    background-color: #0f172a !important;
+}
+
+.dark .pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+.dark .pagination .page-item.disabled .page-link {
+    background-color: #0f172a !important;
+    border-color: #1e293b !important;
+    color: #64748b !important;
+}
+
+/* ==========================================================================
+   Bespoke Luxury Flatpickr Theme (Dokana Design System)
+   ========================================================================== */
+.flatpickr-calendar {
+    font-family: inherit !important;
+    border-radius: 1.25rem !important;
+    border: 1px solid rgba(226, 232, 240, 0.9) !important;
+    box-shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.02) !important;
+    padding: 0.75rem !important;
+    background: #ffffff !important;
+    width: 295px !important;
+    direction: inherit;
+    animation: fpFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes fpFadeIn {
+    from { opacity: 0; transform: translateY(-5px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.flatpickr-months {
+    position: relative !important;
+    height: 38px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding-bottom: 0.35rem !important;
+    margin-bottom: 0.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.flatpickr-month {
+    height: 38px !important;
+    color: #1e293b !important;
+}
+
+.flatpickr-current-month {
+    padding: 0 !important;
+    font-size: 0.8125rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.25rem !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    line-height: 1 !important;
+}
+
+/* Kill all rectangle borders and shadows on header elements */
+.flatpickr-current-month select,
+.flatpickr-current-month input,
+.flatpickr-current-month .cur-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    border: 0 !important;
+    border-color: transparent !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+.flatpickr-current-month .cur-month,
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    font-size: 0.8125rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: default !important;
+}
+
+.flatpickr-current-month input.cur-year {
+    font-size: 0.8125rem !important;
+    font-weight: 800 !important;
+    color: #6366f1 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    width: 48px !important;
+    text-align: center !important;
+}
+
+.flatpickr-current-month .numInputWrapper span {
+    display: none !important;
+}
+
+/* Sleek Circular Navigation Arrow Buttons */
+.flatpickr-prev-month, .flatpickr-next-month {
+    position: static !important;
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 0.5rem !important;
+    background: #f8fafc !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #64748b !important;
+    fill: #64748b !important;
+    padding: 0 !important;
+    transition: all 0.15s ease !important;
+}
+
+.flatpickr-prev-month:hover, .flatpickr-next-month:hover {
+    background: #eef2ff !important;
+    color: #4f46e5 !important;
+    fill: #4f46e5 !important;
+}
+
+.flatpickr-prev-month svg, .flatpickr-next-month svg {
+    width: 11px !important;
+    height: 11px !important;
+}
+
+/* Weekday Labels */
+.flatpickr-weekdays {
+    height: 28px !important;
+    border: none !important;
+}
+
+span.flatpickr-weekday {
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase !important;
+}
+
+/* Days Container & Grid (Clean, No Old Grid Lines) */
+.flatpickr-days {
+    width: 100% !important;
+    border: none !important;
+}
+
+.dayContainer {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: space-around !important;
+}
+
+.flatpickr-day {
+    border: none !important;
+    width: 34px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+    max-width: 34px !important;
+    border-radius: 0.625rem !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    margin: 1.5px 0 !important;
+    color: #334155 !important;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.flatpickr-day:hover:not(.selected):not(.today) {
+    background: #f1f5f9 !important;
+    color: #4f46e5 !important;
+    transform: scale(1.06) !important;
+}
+
+.flatpickr-day.today {
+    border: 1.5px solid #818cf8 !important;
+    color: #4f46e5 !important;
+    font-weight: 800 !important;
+    background: transparent !important;
+}
+
+.flatpickr-day.today:hover {
+    background: #eef2ff !important;
+}
+
+.flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35) !important;
+    transform: scale(1.05) !important;
+}
+
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+    color: #cbd5e1 !important;
+    opacity: 0.4 !important;
+}
+
+/* ==========================================================================
+   Dark Mode Support for Flatpickr
+   ========================================================================== */
+.dark .flatpickr-calendar {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark .flatpickr-months {
+    border-color: #1e293b !important;
+}
+
+.dark .flatpickr-current-month .cur-month,
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months {
+    color: #f8fafc !important;
+}
+
+.dark .flatpickr-current-month input.cur-year {
+    color: #a5b4fc !important;
+}
+
+.dark .flatpickr-prev-month, .dark .flatpickr-next-month {
+    background: #1e293b !important;
+    color: #cbd5e1 !important;
+    fill: #cbd5e1 !important;
+}
+
+.dark .flatpickr-prev-month:hover, .dark .flatpickr-next-month:hover {
+    background: #312e81 !important;
+    color: #a5b4fc !important;
+    fill: #a5b4fc !important;
+}
+
+.dark span.flatpickr-weekday {
+    color: #64748b !important;
+}
+
+.dark .flatpickr-day {
+    color: #cbd5e1 !important;
+}
+
+.dark .flatpickr-day:hover:not(.selected):not(.today) {
+    background: #1e293b !important;
+    color: #a5b4fc !important;
+}
+
+.dark .flatpickr-day.today {
+    border-color: #818cf8 !important;
+    color: #a5b4fc !important;
+}
+
+.dark .flatpickr-day.prevMonthDay, .dark .flatpickr-day.nextMonthDay {
+    color: #475569 !important;
+}
+
+
+
+
+
+
+

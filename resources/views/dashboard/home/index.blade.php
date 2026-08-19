@@ -1,450 +1,440 @@
 @extends('layouts.dashboard.app')
+
 @section('title')
     {!! $title !!}
 @endsection
 
-@push('style')
-    <link rel="stylesheet" href="{{ asset('assets/dashbaord/css/dashboard-home.css') }}">
-@endpush
-
 @section('content')
-    <div class="app-content content">
-        <div class="content-wrapper mt-n2 dashboard-revolution-wrapper">
-            <div class="content-body">
+<div class="space-y-6">
+    <!-- 1. Welcome Enterprise Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 text-white shadow-xl border border-slate-800/80">
+        <!-- Background Ambient Glow -->
+        <div class="absolute -top-24 -end-24 w-72 h-72 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -start-24 w-72 h-72 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
 
-                <!-- 1. Header Banner -->
-                <div class="row mt-n1 mb-2">
-                    <div class="col-12">
-                        <div class="card dokana-welcome-banner">
-                            <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap" style="position: relative; z-index: 2;">
-                                <!-- Right side text (First in RTL) -->
-                                <div class="d-flex align-items-center text-white">
-                                    <div class="avatar bg-rgba-white-20 p-2 m-0" style="border-radius: 8px; display:flex; align-items:center; justify-content:center; width:45px; height:45px; margin-inline-end: 12px !important;">
-                                        <h3 class="mb-0 text-white font-weight-bolder">{{ mb_substr(user()->name, 0, 1) }}</h3>
-                                    </div>
-                                    <div>
-                                        <h3 class="dokana-welcome-title mb-0">{!! greeting() !!} <span class="text-warning">{!! user()->name !!}</span>! 👋</h3>
-                                        <p class="dokana-welcome-subtitle mb-0">{{ auth()->user()->store ? auth()->user()->store->name : (setting()->site_name ?? __('dashboard.dashboard')) }}</p>
-                                    </div>
-                                </div>
-                                
-                                <!-- Left side date (Second in RTL) -->
-                                <div class="dokana-welcome-date d-flex align-items-center text-white mt-2 mt-md-0">
-                                    <i class="fas fa-calendar-alt dokana-icon-spacing"></i>
-                                    <span style="font-size: 0.95rem;">{{ date('l, d F Y') }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-white font-extrabold text-xl shadow-inner">
+                    {{ mb_substr(user()->name, 0, 1) }}
                 </div>
-
-                <!-- 2. Clean Stats Cards -->
-                <div class="row d-flex align-items-stretch">
-                    @if ($isSuperAdmin)
-                        <!-- Super Admin Cards -->
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-stores h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value">{!! $stats['stores_count'] !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.stores_count') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-store"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-users h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value">{!! $stats['users_count'] !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.system_users') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-customers h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value">{!! $stats['customers_count'] !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.system_customers') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-user-tag"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-debts h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value text-danger">{!! number_format($stats['total_debt']) !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.total_debts') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        <!-- Store Admin Cards -->
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-collections h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value text-success">{!! number_format($stats['today_collections']) !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.today_collections') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-hand-holding-usd"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-debts h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value text-danger">{!! number_format($stats['total_debt']) !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.total_debts') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-file-invoice-dollar"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-customers h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value">{!! $stats['customers_count'] !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.customers') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-3 col-md-6 col-12 mb-3">
-                            <div class="card dokana-glass-card card-users h-100">
-                                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                                    <div>
-                                        <h2 class="dokana-stat-value">{!! $stats['users_count'] ?? 0 !!}</h2>
-                                        <h6 class="dokana-stat-title">{{ __('dashboard.employees') }}</h6>
-                                    </div>
-                                    <div class="dokana-avatar-wrapper">
-                                        <i class="fas fa-user-tie"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold tracking-tight">
+                        {!! greeting() !!} <span class="text-amber-400 font-extrabold">{!! user()->name !!}</span>! 👋
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-300 mt-0.5">
+                        {{ auth()->user()->store ? auth()->user()->store->name : (setting()->site_name ?? __('dashboard.dashboard')) }}
+                    </p>
                 </div>
+            </div>
 
-                <!-- 3. Tables Section -->
-                <div class="row mt-2">
-                    @if($isSuperAdmin)
-                        <!-- Super Admin Tables (3-column layout) -->
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-users-slash text-danger dokana-icon-spacing"></i>{{ __('dashboard.late_debts_customers') }}
-                                    </h5>
-                                    <div class="badge badge-light-danger badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $topDebtors->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('store_customers.name') }}</th>
-                                                        <th>{{ __('store_customers.balance') }}</th>
-                                                        <th>{{ __('store_customers.max_debt_limit') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($topDebtors as $customer)
-                                                        <tr>
-                                                            <td>
-                                                                <h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6>
-                                                                @if($customer->store)
-                                                                    <span class="badge badge-light-primary border-0 small mt-1" style="font-size: 0.75rem;">
-                                                                        <i class="fas fa-store"></i> {{ $customer->store->name }}
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                            <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
-                                                            <td>
-                                                                @if($customer->max_debt_limit !== null)
-                                                                    <span class="text-primary font-weight-bold">{{ $customer->max_debt_limit }}</span>
-                                                                @else
-                                                                    <span class="badge badge-light-secondary border-0 text-muted">
-                                                                        {{ __('general.unlimited') }}
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="3" class="text-center text-muted p-4">{{ __('dashboard.no_debts') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-store text-primary dokana-icon-spacing"></i>{{ __('dashboard.recent_stores') }}
-                                    </h5>
-                                    <div class="badge badge-light-primary badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $recentStores->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('stores.store_name') }}</th>
-                                                        <th>{{ __('stores.subscription_plan') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($recentStores as $store)
-                                                        <tr>
-                                                            <td><h6 class="mb-0 font-weight-bold">{{ $store->name }}</h6></td>
-                                                            <td>
-                                                                <span class="badge @if(strtolower($store->subscription_plan) == 'premium') badge-light-success @else badge-light-primary @endif">
-                                                                    {{ __('stores.plan_'.strtolower($store->subscription_plan)) }}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('stores.no_stores_found') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-users text-info dokana-icon-spacing"></i>{{ __('dashboard.recent_users') }}
-                                    </h5>
-                                    <div class="badge badge-light-info badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $recentUsers->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('users.name') }}</th>
-                                                        <th>{{ __('users.email') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($recentUsers as $user)
-                                                        <tr>
-                                                            <td><h6 class="mb-0 font-weight-bold">{{ $user->name }}</h6></td>
-                                                            <td><small class="text-muted">{{ $user->email }}</small></td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('users.no_users_found') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        <!-- Store Admin Tables (3-column layout) -->
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-users-slash text-danger dokana-icon-spacing"></i>{{ __('dashboard.late_debts_customers') }}
-                                    </h5>
-                                    <div class="badge badge-light-danger badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $topDebtors->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('store_customers.name') }}</th>
-                                                        <th>{{ __('store_customers.balance') }}</th>
-                                                        <th>{{ __('store_customers.max_debt_limit') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($topDebtors as $customer)
-                                                        <tr>
-                                                            <td><h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6></td>
-                                                            <td><span class="text-danger font-weight-bold">{{ number_format($customer->balance) }}</span></td>
-                                                            <td>
-                                                                @if($customer->max_debt_limit !== null)
-                                                                    <span class="text-primary font-weight-bold">{{ $customer->max_debt_limit }}</span>
-                                                                @else
-                                                                    <span class="badge badge-light-secondary border-0 text-muted">
-                                                                        {{ __('general.unlimited') }}
-                                                                    </span>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="3" class="text-center text-muted p-4">{{ __('dashboard.no_debts') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-exchange-alt text-primary dokana-icon-spacing"></i>{{ __('dashboard.recent_transactions') }}
-                                    </h5>
-                                    <div class="badge badge-light-primary badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $recentTransactions->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('dashboard.tx_number') }}</th>
-                                                        <th>{{ __('store_customers.balance') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($recentTransactions as $tx)
-                                                        <tr>
-                                                            <td>
-                                                                <h6 class="mb-0 font-weight-bold">{{ $tx->customer->name ?? 'غير معروف' }}</h6>
-                                                                 <small class="text-muted">#{{ $tx->id }}</small>
-                                                            </td>
-                                                            <td>
-                                                                @if($tx->type == 'payment')
-                                                                    <span class="text-success font-weight-bold">+{{ number_format($tx->amount) }}</span>
-                                                                @else
-                                                                    <span class="text-danger font-weight-bold">-{{ number_format($tx->amount) }}</span>
-                                                                @endif
-                                                            </td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('dashboard.no_recent_transactions') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                            <div class="card dokana-table-card h-100">
-                                <div class="card-header d-flex justify-content-between align-items-center">
-                                    <h5 class="mb-0 font-weight-bolder text-dark">
-                                        <i class="fas fa-user-plus text-success dokana-icon-spacing"></i>{{ __('dashboard.recent_customers') }}
-                                    </h5>
-                                    <div class="badge badge-light-success badge-pill font-weight-bold px-2 py-1" style="font-size: 0.9rem;">{{ $recentCustomers->count() }}</div>
-                                </div>
-                                <div class="card-body p-0">
-                                    <div class="dokana-scroll-container">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover mb-0">
-                                                <thead>
-                                                    <tr>
-                                                        <th>{{ __('store_customers.name') }}</th>
-                                                        <th>{{ __('store_customers.phone') }}</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @forelse($recentCustomers as $customer)
-                                                        <tr>
-                                                            <td><h6 class="mb-0 font-weight-bold">{{ $customer->name }}</h6></td>
-                                                            <td><small class="text-muted">{{ $customer->phone ?? '-' }}</small></td>
-                                                        </tr>
-                                                    @empty
-                                                        <tr><td colspan="2" class="text-center text-muted p-4">{{ __('store_customers.no_store_customers_found') }}</td></tr>
-                                                    @endforelse
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                <!-- 4. Chart Section -->
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card dokana-table-card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 font-weight-bolder text-dark">
-                                    <i class="fas fa-chart-line text-info dokana-icon-spacing"></i>{{ __('dashboard.financial_trend') }}
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div id="dashboard-trend-chart" style="min-height: 350px;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Date Badge -->
+            <div class="inline-flex items-center gap-2 self-start md:self-auto rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 text-xs font-semibold text-slate-200">
+                <i class="fas fa-calendar-alt text-indigo-400"></i>
+                <span>{{ date('l, d F Y') }}</span>
             </div>
         </div>
     </div>
+
+    <!-- 2. Clean Metric KPI Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
+        @if ($isSuperAdmin)
+            <!-- Super Admin Card 1: Stores Count -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.stores_count') }}</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['stores_count'] !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-store"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-80"></div>
+            </div>
+
+            <!-- Super Admin Card 2: Users Count -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.system_users') }}</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['users_count'] !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80"></div>
+            </div>
+
+            <!-- Super Admin Card 3: Customers Count -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.system_customers') }}</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['customers_count'] !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-80"></div>
+            </div>
+
+            <!-- Super Admin Card 4: Total Debts -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.total_debts') }}</p>
+                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">{!! number_format($stats['total_debt']) !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-amber-500 opacity-80"></div>
+            </div>
+        @else
+            <!-- Store Admin Card 1: Today Collections -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.today_collections') }}</p>
+                        <h3 class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">{!! number_format($stats['today_collections']) !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-80"></div>
+            </div>
+
+            <!-- Store Admin Card 2: Total Debt -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.total_debts') }}</p>
+                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">{!! number_format($stats['total_debt']) !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-amber-500 opacity-80"></div>
+            </div>
+
+            <!-- Store Admin Card 3: Customers Count -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.customers') }}</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['customers_count'] !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-80"></div>
+            </div>
+
+            <!-- Store Admin Card 4: Employees Count -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.employees') }}</p>
+                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['users_count'] ?? 0 !!}</h3>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80"></div>
+            </div>
+        @endif
+    </div>
+
+    <!-- 3. Tables 3-Column Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        @if ($isSuperAdmin)
+            <!-- Table 1: Late Debts Customers -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-users-slash text-rose-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.late_debts_customers') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-danger">{{ $topDebtors->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('store_customers.name') }}</th>
+                                <th>{{ __('store_customers.balance') }}</th>
+                                <th>{{ __('store_customers.max_debt_limit') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topDebtors as $customer)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
+                                        @if($customer->store)
+                                            <span class="text-[10px] text-indigo-500 block">
+                                                <i class="fas fa-store text-[9px] me-1"></i>{{ $customer->store->name }}
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="font-bold text-xs text-rose-600 dark:text-rose-400">{{ number_format($customer->balance) }}</span>
+                                    </td>
+                                    <td>
+                                        @if($customer->max_debt_limit !== null)
+                                            <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ $customer->max_debt_limit }}</span>
+                                        @else
+                                            <span class="text-[11px] text-slate-400">{{ __('general.unlimited') }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_debts') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table 2: Recent Stores -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-store text-blue-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_stores') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-info">{{ $recentStores->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('stores.store_name') }}</th>
+                                <th>{{ __('stores.subscription_plan') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentStores as $store)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $store->name }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="badge-pill {{ strtolower($store->subscription_plan) == 'premium' ? 'badge-pill-success' : 'badge-pill-info' }}">
+                                            {{ __('stores.plan_'.strtolower($store->subscription_plan)) }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('stores.no_stores_found') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Table 3: Recent Users -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-users text-purple-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_users') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-neutral">{{ $recentUsers->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('users.name') }}</th>
+                                <th>{{ __('users.email') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentUsers as $user)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $user->name }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="text-xs text-slate-400">{{ $user->email }}</span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('users.no_users_found') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @else
+            <!-- Store Admin Table 1: Late Debts Customers -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-users-slash text-rose-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.late_debts_customers') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-danger">{{ $topDebtors->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('store_customers.name') }}</th>
+                                <th>{{ __('store_customers.balance') }}</th>
+                                <th>{{ __('store_customers.max_debt_limit') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($topDebtors as $customer)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="font-bold text-xs text-rose-600 dark:text-rose-400">{{ number_format($customer->balance) }}</span>
+                                    </td>
+                                    <td>
+                                        @if($customer->max_debt_limit !== null)
+                                            <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ $customer->max_debt_limit }}</span>
+                                        @else
+                                            <span class="text-[11px] text-slate-400">{{ __('general.unlimited') }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_debts') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Store Admin Table 2: Recent Transactions -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exchange-alt text-blue-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_transactions') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-info">{{ $recentTransactions->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('dashboard.tx_number') }}</th>
+                                <th>{{ __('store_customers.balance') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentTransactions as $tx)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $tx->customer->name ?? 'غير معروف' }}</p>
+                                        <span class="text-[10px] text-slate-400">#{{ $tx->id }}</span>
+                                    </td>
+                                    <td>
+                                        @if($tx->type == 'payment')
+                                            <span class="font-bold text-xs text-emerald-600 dark:text-emerald-400">+{{ number_format($tx->amount) }}</span>
+                                        @else
+                                            <span class="font-bold text-xs text-rose-600 dark:text-rose-400">-{{ number_format($tx->amount) }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_recent_transactions') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Store Admin Table 3: Recent Customers -->
+            <div class="dash-card flex flex-col overflow-hidden">
+                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-user-plus text-emerald-500"></i>
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_customers') }}</h4>
+                    </div>
+                    <span class="badge-pill badge-pill-success">{{ $recentCustomers->count() }}</span>
+                </div>
+                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
+                    <table class="table-modern">
+                        <thead>
+                            <tr>
+                                <th>{{ __('store_customers.name') }}</th>
+                                <th>{{ __('store_customers.phone') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($recentCustomers as $customer)
+                                <tr>
+                                    <td>
+                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="text-xs text-slate-400">{{ $customer->phone ?? '-' }}</span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('store_customers.no_store_customers_found') }}</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- 4. Financial Trend Chart Card -->
+    <div class="dash-card p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-chart-line text-indigo-500"></i>
+                <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.financial_trend') }}</h4>
+            </div>
+        </div>
+        <div id="dashboard-trend-chart" class="w-full" style="min-height: 350px;"></div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
     <script src="{{ asset('assets/dashbaord/vendors/js/charts/apexcharts.min.js') }}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            var isDarkMode = document.documentElement.classList.contains('dark');
+            var textColor = isDarkMode ? '#94a3b8' : '#64748b';
+            var gridColor = isDarkMode ? '#1e293b' : '#f1f5f9';
+
             var options = {
                 chart: {
                     type: 'area',
                     height: 350,
                     toolbar: { show: false },
-                    zoom: { enabled: false }
+                    zoom: { enabled: false },
+                    fontFamily: 'Tajawal, Manrope, sans-serif'
                 },
                 series: [
                     {
@@ -456,7 +446,7 @@
                         data: @json($chartPayments)
                     }
                 ],
-                colors: ['#ef4444', '#10b981'],
+                colors: ['#f43f5e', '#10b981'],
                 dataLabels: { enabled: false },
                 stroke: { curve: 'smooth', width: 3 },
                 fill: {
@@ -474,38 +464,44 @@
                     axisTicks: { show: false },
                     labels: {
                         style: {
-                            colors: '#64748b',
+                            colors: textColor,
                             fontSize: '12px',
-                            fontFamily: 'Tajawal, sans-serif'
+                            fontFamily: 'Tajawal, Manrope, sans-serif'
                         }
                     }
                 },
                 yaxis: {
                     labels: {
                         style: {
-                            colors: '#64748b',
+                            colors: textColor,
                             fontSize: '12px',
-                            fontFamily: 'Tajawal, sans-serif'
+                            fontFamily: 'Tajawal, Manrope, sans-serif'
                         }
                     }
                 },
                 grid: {
-                    borderColor: '#f1f5f9',
+                    borderColor: gridColor,
                     strokeDashArray: 4
                 },
                 legend: {
                     position: 'top',
                     horizontalAlign: 'right',
-                    fontFamily: 'Tajawal, sans-serif',
-                    fontSize: '13px'
+                    fontFamily: 'Tajawal, Manrope, sans-serif',
+                    fontSize: '13px',
+                    labels: {
+                        colors: textColor
+                    }
                 },
                 tooltip: {
-                    x: { format: 'dd MMM' }
+                    theme: isDarkMode ? 'dark' : 'light'
                 }
             };
 
-            var chart = new ApexCharts(document.querySelector("#dashboard-trend-chart"), options);
-            chart.render();
+            var chartEl = document.querySelector("#dashboard-trend-chart");
+            if (chartEl) {
+                var chart = new ApexCharts(chartEl, options);
+                chart.render();
+            }
         });
     </script>
 @endpush

@@ -36,8 +36,8 @@ class SettingRequest extends FormRequest
             'twitter' => ['nullable', 'url', 'max:255'],
             'instegram' => ['nullable', 'url', 'max:255'],
             'youtube' => ['nullable', 'url', 'max:255'],
-            'logo' => ['nullable', 'image', 'mimes:png,jpg,jpeg,gif,pmp,svg,ico,tiff,webp'],
-            'favicon' => ['nullable', 'image', 'mimes:png,jpg,jpeg,gif,pmp,svg,ico,tiff,webp'],
+            'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,gif,bmp,svg,ico,tiff,webp,avif', 'max:5120'],
+            'favicon' => ['nullable', 'file', 'mimes:png,jpg,jpeg,gif,bmp,svg,ico,tiff,webp,avif', 'max:5120'],
 
             'auth_welcome_title.*' => ['nullable', 'string', 'max:255'],
             'auth_welcome_desc.*' => ['nullable', 'string'],

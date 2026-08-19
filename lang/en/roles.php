@@ -27,4 +27,6 @@ return [
     'global_role_note' => 'Leave blank if you want to make this role global and available to all stores.',
     'cannot_delete_role_linked_to_users' => 'Cannot delete this role because it is linked to active users.',
     'cannot_delete_system_role' => 'System protected roles cannot be deleted as they are core system templates.',
+    'no_roles_desc' => 'No roles have been recorded yet. You can add a new role using the button above.',
 ];
+

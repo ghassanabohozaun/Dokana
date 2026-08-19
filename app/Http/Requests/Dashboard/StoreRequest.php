@@ -22,7 +22,7 @@ class StoreRequest extends FormRequest
             'status' => 'required|in:active,inactive',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|digits:10',
-            'logo' => $this->isMethod('POST') ? 'nullable|image|mimes:jpeg,png,jpg|max:2048' : 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp,avif,ico|max:5120',
             'delete_logo' => 'nullable',
         ];
     }

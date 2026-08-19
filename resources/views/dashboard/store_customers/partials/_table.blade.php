@@ -1,331 +1,189 @@
 <input type="hidden" id="store_customers-total-count" value="{!! $store_customers->total() !!}">
-<div class="table-responsive">
-    <table class="table table-hover mb-0" id='myTable'>
-        <thead class="bg-white">
+
+@if (isset($metrics))
+    <div id="ajax-metrics-data" class="hidden"
+        data-total-customers="{!! number_format($metrics['total_customers_count'] ?? 0, 0) !!}"
+        data-total-creditor="{!! number_format($metrics['total_creditor_balances'] ?? 0, 2) !!}"
+        data-total-debts="{!! number_format($metrics['total_debts'] ?? 0, 2) !!}"
+        data-net-balance="{!! number_format($metrics['net_balance'] ?? 0, 2) !!}"
+        data-lifetime-debts="{!! number_format($metrics['total_lifetime_debts'] ?? 0, 2) !!}"
+        data-lifetime-payments="{!! number_format($metrics['total_lifetime_payments'] ?? 0, 2) !!}">
+    </div>
+@endif
+
+<div class="overflow-x-auto custom-scrollbar">
+    <table class="table-modern" id="myTable">
+        <thead>
             <tr>
-                <th class="text-center d-lg-none align-middle py-3 border-top-0">#</th>
-                <th class="text-center d-none d-lg-table-cell align-middle py-3 border-top-0">#</th>
+                <th class="w-12 text-center">#</th>
                 @if (isset($stores))
-                    <th class="text-center align-middle py-3 border-top-0">{!! __('stores.store') !!}</th>
+                    <th>{!! __('stores.store') !!}</th>
                 @endif
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.name') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.phone') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.total_debts') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.total_payments') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.current_balance') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.max_debt_limit') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('store_customers.bypass_debt_limit') !!}</th>
-                <th class="text-center align-middle py-3 border-top-0">{!! __('general.status') !!}</th>
-                @can('store_customers_update')
-                <th class="text-center align-middle py-3 border-top-0">{!! __('general.manage_status') !!}</th>
-                @endcan
-                <!-- Actions Column Removed for Bottom Action Bar -->
+                <th>{!! __('store_customers.name') !!}</th>
+                <th>{!! __('store_customers.phone') !!}</th>
+                <th class="text-center">{!! __('store_customers.total_debts') !!}</th>
+                <th class="text-center">{!! __('store_customers.total_payments') !!}</th>
+                <th class="text-center">{!! __('store_customers.current_balance') !!}</th>
+                <th class="text-center">{!! __('store_customers.max_debt_limit') !!}</th>
+                <th class="text-center">{!! __('general.status') !!}</th>
+                <th>{!! __('store_customers.created_at') !!}</th>
+                <th class="w-32 text-center">{!! __('general.actions') !!}</th>
             </tr>
         </thead>
-        <tbody>
-            @forelse ($store_customers as $key=>$store_customer)
-                <tr id="row{{ $store_customer->id }}" class="premium-table-row pointer" data-row-title="{!! $store_customer->name !!}">
-                    <!-- Mobile Details Control -->
-                    <td class="text-center align-middle d-lg-none">
-                        <span class="details-control pointer">
-                            <i class="fas fa-plus-circle text-primary" style="font-size: 22px;"></i>
-                        </span>
-
-                        <!-- Hidden Row Details for AJAX Modal -->
-                        <div class="row-details d-none">
-                            <div class="modal-details-card">
-                                <!-- Header Gradient -->
-                                <div class="premium-modal-header"></div>
-
-                                <div class="text-center">
-                                    <div class="modal-profile-wrapper">
-                                        <div
-                                            class="avatar-circle avatar-size-100 d-inline-flex align-items-center justify-content-center text-white text-uppercase shadow-sm bg-indigo-alt">
-                                            <i class="fas fa-briefcase font-40"></i>
-                                        </div>
-                                    </div>
-                                    <h4 class="modal-name-title font-weight-bold">{!! $store_customer->name !!}</h4>
-                                    <span class="modal-role-badge">{!! __('store_customers.store_customer') !!}</span>
-                                </div>
-
-                                <!-- Detail Items List -->
-                                <div class="modal-info-list mt-2">
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-fingerprint"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('general.system_id') !!}</span>
-                                            <span class="detail-info-value text-muted"># {!! $store_customer->id !!}</span>
-                                        </div>
-                                    </div>
-
-                                    @if (isset($stores))
-                                        <div class="detail-item-modern">
-                                            <div class="icon-circle"><i class="fas fa-briefcase"></i></div>
-                                            <div class="detail-info-box text-left">
-                                                <span class="detail-info-label">{!! __('stores.store') !!}</span>
-                                                <span class="detail-info-value text-muted small">
-                                                    @if ($store_customer->store_id)
-                                                        <span
-                                                            class="badge badge-light-primary border-0">{!! optional($store_customer->store)->name !!}</span>
-                                                    @else
-                                                        <span
-                                                            class="badge badge-light-warning border-0">{!! __('roles.global_role') !!}</span>
-                                                    @endif
-                                                </span>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-phone"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.phone') !!}</span>
-                                            <div class="detail-info-value mt-1">
-                                                {!! $store_customer->phone ?? '---' !!}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-hand-holding-usd text-danger"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.total_debts') !!}</span>
-                                            <span class="detail-info-value">
-                                                <span class="premium-store-badge store-badge-debt">
-                                                    <i class="fas fa-arrow-down"></i> {!! $store_customer->total_debts ?? 0 !!}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-money-check-alt text-success"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.total_payments') !!}</span>
-                                            <span class="detail-info-value">
-                                                <span class="premium-store-badge store-badge-payment">
-                                                    <i class="fas fa-arrow-up"></i> {!! $store_customer->total_payments ?? 0 !!}
-                                                </span>
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-wallet text-primary"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.current_balance') !!}</span>
-                                            <span class="detail-info-value">
-                                                @if($store_customer->calculated_balance > 0)
-                                                    <span class="premium-store-badge store-badge-balance-debt">
-                                                        <i class="fas fa-exclamation-circle"></i> {!! $store_customer->calculated_balance !!}
-                                                    </span>
-                                                @elseif($store_customer->calculated_balance < 0)
-                                                    <span class="premium-store-badge store-badge-balance-payment">
-                                                        <i class="fas fa-check-circle"></i> {!! abs($store_customer->calculated_balance) !!}
-                                                    </span>
-                                                @else
-                                                    <span class="premium-store-badge store-badge-balance-zero">
-                                                        <i class="fas fa-minus"></i> 0
-                                                    </span>
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-hand-holding-usd text-warning"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.max_debt_limit') !!}</span>
-                                            <span class="detail-info-value">
-                                                @if($store_customer->max_debt_limit !== null)
-                                                    <span class="badge badge-light-primary border-0 font-weight-bold">
-                                                        {!! $store_customer->max_debt_limit !!}
-                                                    </span>
-                                                @else
-                                                    <span class="badge badge-light-secondary border-0">
-                                                        {!! __('general.unlimited') !!}
-                                                    </span>
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div class="detail-item-modern">
-                                        <div class="icon-circle"><i class="fas fa-user-shield text-success"></i></div>
-                                        <div class="detail-info-box text-left">
-                                            <span class="detail-info-label">{!! __('store_customers.bypass_debt_limit') !!}</span>
-                                            <span class="detail-info-value mt-1">
-                                                @if ($store_customer->is_walk_in)
-                                                    <span class="text-muted">---</span>
-                                                @elseif ($store_customer->bypass_debt_limit)
-                                                    <span class="badge badge-light-success border-0 font-weight-bold">
-                                                        {!! __('general.enable') ?? 'مفعّل' !!}
-                                                    </span>
-                                                @else
-                                                    <span class="badge badge-light-secondary border-0 text-muted">
-                                                        {!! __('general.disabled') ?? 'معطل' !!}
-                                                    </span>
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- Desktop ID Badge -->
-                    <td class="text-center align-middle d-none d-lg-table-cell">
-                        <span class="badge badge-info badge-pill badge-glow premium-badge-circle">
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+            @forelse ($store_customers as $store_customer)
+                @php
+                    $balance = $store_customer->calculated_balance;
+                @endphp
+                <tr id="row{{ $store_customer->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors">
+                    
+                    <!-- Iteration # -->
+                    <td class="text-center">
+                        <span class="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {!! $loop->iteration + ($store_customers->currentPage() - 1) * $store_customers->perPage() !!}
                         </span>
                     </td>
 
-                    <!-- Store -->
+                    <!-- Store (if admin/multi-store) -->
                     @if (isset($stores))
-                        <td class="text-center align-middle">
-                            @if ($store_customer->store_id)
-                                <a href="javascript:void(0)" class="store-chip">
-                                    <i class="fas fa-briefcase mr-1"></i>
-                                    {!! optional($store_customer->store)->name !!}
-                                </a>
+                        <td>
+                            @if ($store_customer->store)
+                                <div class="flex items-center gap-1.5">
+                                    <i class="fas fa-store text-xs text-slate-400"></i>
+                                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        {{ $store_customer->store->name }}
+                                    </span>
+                                </div>
                             @else
-                                <span class="badge badge-light-warning border-0">
-                                    <i class="fas fa-globe mr-1"></i> {!! __('roles.global_role') !!}
+                                <span class="badge-pill badge-pill-warning text-[10px]">
+                                    {!! __('roles.global_role') !!}
                                 </span>
                             @endif
                         </td>
                     @endif
 
-                    <!-- Name -->
-                    <td class="text-center align-middle">
-                        <!-- Hidden Actions for Bottom Bar -->
-                        <div class="row-actions-html d-none">
-                            @include('dashboard.store_customers.parts.actions')
+                    <!-- Customer Name -->
+                    <td>
+                        <div class="flex items-center gap-2.5">
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <a href="{!! route('dashboard.store-customers.show', $store_customer->id) !!}" 
+                                       class="text-xs font-bold text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate">
+                                        {{ $store_customer->name }}
+                                    </a>
+                                    @if ($store_customer->is_walk_in)
+                                        <span class="badge-pill badge-pill-info text-[9px]">
+                                            زبون مباشر
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Hidden Subtitle for Bottom Bar -->
-                        <div class="row-subtitle-html d-none">
-                            <span class="badge badge-secondary"><i class="fas fa-phone mr-25"></i> {!! $store_customer->phone ?? '---' !!}</span>
-                            @if (isset($stores) && $store_customer->store_id)
-                                <span class="badge badge-light-primary"><i class="fas fa-briefcase mr-25"></i> {!! optional($store_customer->store)->name !!}</span>
-                            @endif
-                        </div>
-
-                        <span class="font-weight-bold text-primary">{!! $store_customer->name !!}</span>
                     </td>
 
                     <!-- Phone -->
-                    <td class="text-center align-middle">{!! $store_customer->phone ?? '---' !!}</td>
+                    <td>
+                        @if ($store_customer->phone)
+                            <a href="tel:{{ $store_customer->phone }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" dir="ltr">
+                                <i class="fas fa-phone-alt text-[10px] text-slate-400"></i>
+                                <span>{{ $store_customer->phone }}</span>
+                            </a>
+                        @else
+                            <span class="text-xs text-slate-400">—</span>
+                        @endif
+                    </td>
 
                     <!-- Total Debts -->
-                    <td class="text-center align-middle">
-                        <div class="font-weight-bold text-danger">
-                            <i class="fas fa-arrow-down mr-1"></i> {!! $store_customer->total_debts ?? 0 !!}
-                        </div>
+                    <td class="text-center font-mono font-bold text-xs text-rose-600 dark:text-rose-400" dir="ltr">
+                        {{ number_format($store_customer->total_debts ?? 0, 2) }}
                     </td>
 
                     <!-- Total Payments -->
-                    <td class="text-center align-middle">
-                        <div class="font-weight-bold text-success">
-                            <i class="fas fa-arrow-up mr-1"></i> {!! $store_customer->total_payments ?? 0 !!}
-                        </div>
+                    <td class="text-center font-mono font-bold text-xs text-emerald-600 dark:text-emerald-400" dir="ltr">
+                        {{ number_format($store_customer->total_payments ?? 0, 2) }}
                     </td>
 
                     <!-- Current Balance -->
-                    <td class="text-center align-middle">
-                        @if($store_customer->calculated_balance > 0)
-                            <div class="font-weight-bold text-danger">
-                                <i class="fas fa-exclamation-circle mr-1"></i> {!! $store_customer->calculated_balance !!}
-                            </div>
-                        @elseif($store_customer->calculated_balance < 0)
-                            <div class="font-weight-bold text-success">
-                                <i class="fas fa-check-circle mr-1"></i> {!! abs($store_customer->calculated_balance) !!}
-                            </div>
+                    <td class="text-center">
+                        @if ($balance > 0)
+                            <span class="badge-pill badge-pill-danger font-mono text-xs" title="مدين (عليه)">
+                                {{ number_format($balance, 2) }}
+                            </span>
+                        @elseif ($balance < 0)
+                            <span class="badge-pill badge-pill-success font-mono text-xs" title="دائن (له)">
+                                {{ number_format(abs($balance), 2) }} +
+                            </span>
                         @else
-                            <div class="font-weight-bold text-muted">
-                                <i class="fas fa-minus mr-1"></i> 0
-                            </div>
+                            <span class="badge-pill badge-pill-secondary text-xs font-bold">
+                                0.00
+                            </span>
                         @endif
                     </td>
 
                     <!-- Max Debt Limit -->
-                    <td class="text-center align-middle">
-                        @if($store_customer->max_debt_limit !== null)
-                            <span class="badge badge-light-primary border-0 font-weight-bold">
-                                {!! $store_customer->max_debt_limit !!}
+                    <td class="text-center">
+                        @if ($store_customer->bypass_debt_limit)
+                            <span class="badge-pill badge-pill-warning text-[10px]" title="{!! __('store_customers.bypass_debt_limit_desc') !!}">
+                                {!! __('store_customers.bypass_debt_limit') !!}
+                            </span>
+                        @elseif ($store_customer->max_debt_limit && $store_customer->max_debt_limit > 0)
+                            <span class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300" dir="ltr">
+                                {{ number_format($store_customer->max_debt_limit, 2) }}
                             </span>
                         @else
-                            <span class="badge badge-light-secondary border-0 text-muted">
-                                {!! __('general.unlimited') !!}
-                            </span>
-                        @endif
-                    </td>
-
-                    <!-- Bypass Debt Limit -->
-                    <td class="text-center align-middle">
-                        @if ($store_customer->is_walk_in)
-                            <span class="text-muted font-weight-bold">---</span>
-                        @else
-                            <div class="badge badge-pill badge-glow premium-status-badge {!! $store_customer->bypass_debt_limit == 1 ? 'badge-success' : 'badge-danger' !!}">
-                                {!! $store_customer->bypass_debt_limit == 1 ? __('general.enable') : __('general.disabled') !!}
-                            </div>
+                            <span class="text-xs text-slate-400">—</span>
                         @endif
                     </td>
 
                     <!-- Status -->
-                    <td class="text-center align-middle">
-                        @if ($store_customer->is_walk_in)
-                            <span class="badge badge-pill badge-light-info border-0 font-weight-bold">
-                                زبون افتراضي
-                            </span>
-                        @else
-                            @include('dashboard.store_customers.parts.status')
-                        @endif
+                    <td class="text-center">
+                        @include('dashboard.store_customers.parts.status', ['store_customer' => $store_customer])
                     </td>
 
-                    <!-- Manage Status -->
-                    @can('store_customers_update')
-                    <td class="text-center align-middle">
-                        @if ($store_customer->is_walk_in)
-                            <span class="text-muted font-weight-bold">---</span>
-                        @else
-                            @include('dashboard.store_customers.parts.manage_status')
-                        @endif
+                    <!-- Created At -->
+                    <td>
+                        <span class="text-xs text-slate-600 dark:text-slate-400 font-medium" dir="ltr">
+                            {{ $store_customer->created_at->format('Y-m-d') }}
+                        </span>
                     </td>
-                    @endcan
 
-                    <!-- Actions Column Removed -->
+                    <!-- Actions -->
+                    <td class="text-center">
+                        @include('dashboard.store_customers.parts.actions', ['store_customer' => $store_customer])
+                    </td>
                 </tr>
             @empty
+                <!-- Ultra-Premium Empty State -->
                 <tr>
-                    <td colspan="100%" class="text-center p-3 text-muted">
-                        <i class="ft-info mr-1"></i> {!! __('store_customers.no_store_customers_found') !!}
+                    <td colspan="{{ isset($stores) ? 11 : 10 }}" class="text-center py-16 px-6">
+                        <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
+                            <div class="absolute inset-0 rounded-3xl bg-indigo-500/10 dark:bg-indigo-500/20 blur-xl"></div>
+                            <i class="fas fa-users text-3xl text-indigo-500 dark:text-indigo-400"></i>
+                            <span class="absolute top-2.5 end-2.5 flex h-2.5 w-2.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            </span>
+                        </div>
+
+                        <h4 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5">
+                            {!! __('store_customers.no_store_customers_found') !!}
+                        </h4>
+                        <p class="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto leading-relaxed">
+                            {!! __('store_customers.no_customers_desc') !!}
+                        </p>
                     </td>
                 </tr>
             @endforelse
         </tbody>
-
     </table>
-    <div class="float-right mt-2 custom-pagination">
-        {!! $store_customers->links() !!}
-    </div>
 </div>
 
-@if(isset($metrics))
-<script>
-    // Update stats UI when the table reloads via AJAX
-    if (document.getElementById('ui_stats_total_customers_count')) {
-        document.getElementById('ui_stats_total_customers_count').innerText = '{!! number_format($metrics['total_customers_count'] ?? 0, 0) !!}';
-    }
-    if (document.getElementById('ui_stats_total_payments')) {
-        document.getElementById('ui_stats_total_payments').innerText = '{!! number_format($metrics['total_payments'] ?? 0, 2) !!}';
-    }
-    if (document.getElementById('ui_stats_total_debts')) {
-        document.getElementById('ui_stats_total_debts').innerText = '{!! number_format($metrics['total_debts'] ?? 0, 2) !!}';
-    }
-    if (document.getElementById('ui_stats_net_balance')) {
-        document.getElementById('ui_stats_net_balance').innerText = '{!! number_format($metrics['net_balance'] ?? 0, 2) !!}';
-    }
-</script>
+<!-- Pagination Footer -->
+@if ($store_customers->hasPages())
+    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
+        {!! $store_customers->links() !!}
+    </div>
 @endif
