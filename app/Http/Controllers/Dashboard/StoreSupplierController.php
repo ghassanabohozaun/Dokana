@@ -108,6 +108,53 @@ class StoreSupplierController extends Controller
         }
     }
 
+    public function show($id, Request $request)
+    {
+        \Illuminate\Support\Facades\Gate::authorize('store_suppliers_read');
+
+        $supplier = \App\Models\StoreSupplier::with(['store', 'createdBy'])
+            ->withSum('invoices', 'total_amount')
+            ->withSum('invoices', 'paid_amount')
+            ->withSum('invoices', 'remaining_amount')
+            ->findOrFail($id);
+
+        $tab = $request->input('tab', 'invoices');
+        $title = $supplier->name . ' - ' . __('store_suppliers.store_suppliers');
+
+        if ($tab === 'payments') {
+            $payments = \App\Models\StoreSupplierPayment::where('store_supplier_id', $id)
+                ->with(['bankAccount.paymentEntity', 'invoice', 'createdBy'])
+                ->orderByDesc('payment_date')
+                ->orderByDesc('id')
+                ->paginate(10)
+                ->appends($request->query());
+
+            if ($request->ajax()) {
+                return view('dashboard.store_suppliers.partials._show_payments_table', compact('payments', 'supplier'))->render();
+            }
+        } else {
+            $invoices = \App\Models\StoreSupplierInvoice::where('store_supplier_id', $id)
+                ->with(['createdBy'])
+                ->orderByDesc('invoice_date')
+                ->orderByDesc('id')
+                ->paginate(10)
+                ->appends($request->query());
+
+            if ($request->ajax()) {
+                return view('dashboard.store_suppliers.partials._show_invoices_table', compact('invoices', 'supplier'))->render();
+            }
+        }
+
+        $invoices = \App\Models\StoreSupplierInvoice::where('store_supplier_id', $id)
+            ->with(['createdBy'])
+            ->orderByDesc('invoice_date')
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('dashboard.store_suppliers.show', compact('supplier', 'invoices', 'title'));
+    }
+
     public function getByStore(Request $request)
     {
         if (user()->store_id == 1 || user()->role_id == 1 || user()->id == 1) {

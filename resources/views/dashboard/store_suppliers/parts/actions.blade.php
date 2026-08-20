@@ -1,4 +1,11 @@
 <div class="flex items-center justify-center gap-1.5">
+    <!-- View / Show Details -->
+    <a href="{!! route('dashboard.store-suppliers.show', $supplier->id) !!}" 
+       class="btn-icon-action text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/40"
+       title="عرض ملف وكشف حساب المورد">
+        <i class="fas fa-eye text-xs"></i>
+    </a>
+
     <!-- Edit -->
     @can('store_suppliers_update')
         <button type="button" class="btn-icon-action text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 editStoreSupplierBtn"

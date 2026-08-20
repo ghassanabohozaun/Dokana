@@ -40,5 +40,25 @@ return [
     'supplier_has_invoices' => 'لا يمكن حذف المورد لوجود فواتير مسجلة له.',
     'supplier_has_payments' => 'لا يمكن حذف المورد لوجود دفعات مالية مسجلة له.',
     'no_suppliers_desc' => 'لم يتم تسجيل أي موردين في النظام حتى الآن. يمكنك إضافة مورد جديد عبر الزر أعلاه.',
+    
+    // Profile / Show Page Translations
+    'supplier_details' => 'تفاصيل المورد',
+    'call' => 'اتصال هاتفي',
+    'whatsapp' => 'واتساب',
+    'remaining_due' => 'المتبقي المستحق للمورد',
+    'due_for_payment' => 'مستحق الدفع للمورد',
+    'fully_settled' => 'خالص الحساب بالكامل',
+    'total_purchases' => 'إجمالي المشتريات',
+    'total_payments_made' => 'إجمالي المدفوع',
+    'supplier_invoices_tab' => 'فواتير المشتريات',
+    'supplier_payments_tab' => 'سندات الصرف والمدفوعات',
+    'paid' => 'مدفوعة',
+    'partially_paid' => 'مدفوعة جزئياً',
+    'unpaid' => 'غير مدفوعة',
+    'general_payment' => 'دفعة عامة',
+    'no_invoices_found' => 'لا توجد فواتير مشتريات مسجلة لهذا المورد',
+    'no_payments_found' => 'لا توجد سندات صرف أو مدفوعات مسجلة لهذا المورد',
+    'vault_or_account' => 'الخزينة / الحساب',
+    'invoice' => 'الفاتورة',
+    'add_invoice' => 'إضافة فاتورة',
 ];
-

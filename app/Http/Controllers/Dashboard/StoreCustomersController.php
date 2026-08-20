@@ -92,7 +92,7 @@ class StoreCustomersController extends Controller
             ->with(['store'])
             ->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
-            ->paginate(20)
+            ->paginate(10)
             ->appends($request->query());
 
         if ($request->ajax()) {

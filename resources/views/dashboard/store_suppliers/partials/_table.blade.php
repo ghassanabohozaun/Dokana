@@ -62,9 +62,9 @@
                                 <i class="fas fa-user-tie"></i>
                             </div>
                             <div class="min-w-0">
-                                <span class="text-xs font-bold text-slate-800 dark:text-white block truncate">
+                                <a href="{!! route('dashboard.store-suppliers.show', $supplier->id) !!}" class="text-xs font-bold text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors block truncate">
                                     {{ $supplier->name }}
-                                </span>
+                                </a>
                                 @if ($supplier->email)
                                     <span class="text-[11px] text-slate-400 dark:text-slate-500 block truncate">
                                         {{ $supplier->email }}
@@ -180,9 +180,9 @@
                         {{ mb_substr($supplier->name, 0, 1) }}
                     </div>
                     <div class="min-w-0">
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                        <a href="{!! route('dashboard.store-suppliers.show', $supplier->id) !!}" class="text-sm font-bold text-slate-900 dark:text-white hover:text-indigo-600 truncate block">
                             {{ $supplier->name }}
-                        </h3>
+                        </a>
                         @if (isset($stores) && $supplier->store)
                             <div class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                                 <i class="fas fa-store text-[10px] text-indigo-500"></i>
