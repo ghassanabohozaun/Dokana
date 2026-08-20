@@ -71,13 +71,13 @@
         complete: function () {
             if (!this.$bar || !this.$bar.length) return;
             clearTimeout(this.timer);
-            this.$inner.css({ 'width': '100%', 'transition': 'width 0.15s ease-out' });
+            this.$inner.css({ 'width': '100%', 'transition': 'width 0.1s ease-out' });
             this.timer = setTimeout(() => {
                 this.$bar.removeClass('is-loading');
                 setTimeout(() => {
                     this.$inner.css({ 'width': '0%', 'transition': 'none' });
-                }, 150);
-            }, 180);
+                }, 100);
+            }, 120);
         },
 
         reset: function () {

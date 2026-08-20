@@ -1283,7 +1283,18 @@ span.flatpickr-weekday {
 }
 
 #main-page-content {
-    opacity: 1 !important;
+    animation: fastPageReveal 0.1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+
+@keyframes fastPageReveal {
+    from {
+        opacity: 0.6;
+        transform: translateY(2px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==========================================================================
