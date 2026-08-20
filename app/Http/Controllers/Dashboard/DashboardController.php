@@ -144,7 +144,7 @@ class DashboardController extends Controller
         // 2. Multi-Day Financial Trend (Last 7 Days)
         for ($i = 6; $i >= 0; $i--) {
             $date = Carbon::today()->subDays($i);
-            $chartDates[] = $date->translatedFormat('d M');
+            $chartDates[] = $date->format('d/m');
             
             $chartDebts[] = (float) StoreTransaction::where('type', 'debt')
                 ->whereDate('transaction_date', $date)

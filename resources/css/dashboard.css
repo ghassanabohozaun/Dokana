@@ -1278,11 +1278,18 @@ span.flatpickr-weekday {
     background: #020617;
 }
 
-.global-page-skeleton.hidden {
+.global-page-skeleton.hidden,
+html.no-skeleton .global-page-skeleton,
+.no-skeleton .global-page-skeleton {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
     display: none !important;
+}
+
+html.no-skeleton #main-page-content,
+.no-skeleton #main-page-content {
+    opacity: 1 !important;
 }
 
 #main-page-content {

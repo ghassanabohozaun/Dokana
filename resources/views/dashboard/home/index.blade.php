@@ -552,11 +552,14 @@
             const textColor = isDarkMode ? '#94a3b8' : '#64748b';
             const gridColor = isDarkMode ? '#1e293b' : '#f1f5f9';
 
+            const isRTL = document.documentElement.getAttribute('dir') === 'rtl';
+
             // 1. Cash Flow Multi-Series Trend Area Chart
             const trendChartOptions = {
                 chart: {
                     type: 'area',
                     height: 320,
+                    parentHeightOffset: 0,
                     toolbar: { show: false },
                     zoom: { enabled: false },
                     fontFamily: 'Tajawal, Manrope, sans-serif'
@@ -592,32 +595,80 @@
                     axisBorder: { show: false },
                     axisTicks: { show: false },
                     labels: {
+                        rotate: 0,
+                        hideOverlappingLabels: true,
+                        trim: true,
                         style: {
                             colors: textColor,
-                            fontSize: '12px',
+                            fontSize: '11px',
                             fontFamily: 'Tajawal, Manrope, sans-serif'
                         }
                     }
                 },
                 yaxis: {
+                    opposite: isRTL,
                     labels: {
+                        offsetX: isRTL ? -8 : 0,
+                        formatter: function(val) {
+                            return val >= 1000 ? (val / 1000).toFixed(1) + 'k' : val;
+                        },
                         style: {
                             colors: textColor,
-                            fontSize: '12px',
+                            fontSize: '11px',
                             fontFamily: 'Tajawal, Manrope, sans-serif'
                         }
                     }
                 },
                 grid: {
                     borderColor: gridColor,
-                    strokeDashArray: 4
+                    strokeDashArray: 4,
+                    padding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }
                 },
                 legend: {
                     show: false
                 },
                 tooltip: {
                     theme: isDarkMode ? 'dark' : 'light'
-                }
+                },
+                responsive: [
+                    {
+                        breakpoint: 640,
+                        options: {
+                            chart: {
+                                height: 260
+                            },
+                            xaxis: {
+                                labels: {
+                                    style: {
+                                        fontSize: '9px'
+                                    }
+                                }
+                            },
+                            yaxis: {
+                                opposite: isRTL,
+                                labels: {
+                                    offsetX: isRTL ? -4 : 0,
+                                    style: {
+                                        fontSize: '9px'
+                                    }
+                                }
+                            },
+                            grid: {
+                                padding: {
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    top: 0
+                                }
+                            }
+                        }
+                    }
+                ]
             };
 
             const trendEl = document.querySelector("#dashboard-trend-chart");

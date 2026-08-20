@@ -44,7 +44,7 @@
 <!-- TAILWIND CORE DASHBOARD VITE ASSETS -->
 @vite(['resources/css/dashboard.css', 'resources/js/dashboard.js'])
 
-<!-- Theme & Sidebar Init (Zero Flicker / Instant Pre-Render State) -->
+<!-- Theme, Sidebar & Zero-Flicker Navigation Init (Instant Pre-Render) -->
 <script>
     if (localStorage.getItem('dokana-theme') === 'dark' || (!('dokana-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
@@ -55,4 +55,11 @@
     if (localStorage.getItem('dokana-sidebar-collapsed') === 'true') {
         document.documentElement.classList.add('sidebar-collapsed');
     }
+
+    try {
+        const navEntries = performance.getEntriesByType('navigation');
+        if (navEntries.length > 0 && navEntries[0].type === 'back_forward') {
+            document.documentElement.classList.add('no-skeleton');
+        }
+    } catch (e) {}
 </script>

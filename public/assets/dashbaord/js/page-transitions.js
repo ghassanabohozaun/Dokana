@@ -1,9 +1,8 @@
 /**
  * Dokana Global Page Transition Engine
  * Features:
- * - Full-Page Shimmer Skeleton (Active on Refresh F5 and Between-Screen Navigation)
- * - Smooth Entry Micro-Fade Transition
- * - BFCache and Multi-Tab Navigation Safety
+ * - Ultra-Smooth Initial Page Shimmer Skeleton Animation
+ * - Zero-Double-Load on Browser Back/Forward (Hardware Navigation Protection)
  */
 
 (function (window, $) {
@@ -11,76 +10,75 @@
 
     const PageTransition = {
         skeletonOverlay: '#global-page-skeleton',
+        timer: null,
+        hasFinished: false,
 
-        start: function () {
+        finish: function (duration) {
+            if (this.hasFinished) return;
+            this.hasFinished = true;
+
+            const delay = typeof duration === 'number' ? duration : 200;
             const $skeleton = $(this.skeletonOverlay);
-            $skeleton.removeClass('hidden').css({ 'opacity': '1', 'visibility': 'visible' });
-            $('#main-page-content').css('opacity', '0.1');
+            if (!$skeleton.length) return;
+
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                $skeleton.css('opacity', '0');
+                setTimeout(() => {
+                    $skeleton.addClass('hidden').css('visibility', 'hidden');
+                    $('#main-page-content').css('opacity', '1');
+                }, 150);
+            }, delay);
         },
 
-        finish: function () {
+        hideImmediate: function () {
+            this.hasFinished = true;
+            clearTimeout(this.timer);
             const $skeleton = $(this.skeletonOverlay);
-            $skeleton.css('opacity', '0');
-            setTimeout(() => {
-                $skeleton.addClass('hidden');
-                $('#main-page-content').css('opacity', '1');
-            }, 300);
+            if ($skeleton.length) {
+                $skeleton.addClass('hidden').css({ 'opacity': '0', 'visibility': 'hidden' });
+            }
+            $('#main-page-content').css('opacity', '1');
         },
 
         init: function () {
             const self = this;
 
-            // 1. Reveal page smoothly on initial load / refresh (F5)
-            setTimeout(() => {
-                self.finish();
-            }, 350);
-
-            // 2. Intercept navigation links
-            $(document).on('click', 'a[href]', function (e) {
-                const href = $(this).attr('href');
-                const target = $(this).attr('target');
-
-                // Ignore anchors, javascript links, downloads, modals, tabs, pagination, modifier keys
-                if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:') ||
-                    href.startsWith('mailto:') || href.startsWith('tel:') || target === '_blank' ||
-                    e.ctrlKey || e.metaKey || e.shiftKey || e.which === 2 ||
-                    $(this).data('no-loader') !== undefined || $(this).data('toggle') || $(this).data('bs-toggle') ||
-                    $(this).hasClass('dropdown-toggle') || $(this).hasClass('nav-link') && $(this).attr('role') === 'tab' ||
-                    $(this).closest('.pagination').length > 0) {
+            // 1. If Browser Back/Forward Navigation, bypass immediately
+            try {
+                const navEntries = performance.getEntriesByType('navigation');
+                if (navEntries.length > 0 && navEntries[0].type === 'back_forward') {
+                    self.hideImmediate();
                     return;
                 }
+            } catch (e) {}
 
-                // Check if internal domain link
-                try {
-                    const url = new URL(this.href, window.location.origin);
-                    if (url.origin === window.location.origin && (url.pathname !== window.location.pathname || url.search !== window.location.search)) {
-                        self.start();
-                    }
-                } catch (err) {
-                    // Fallback
+            if (document.documentElement.classList.contains('no-skeleton')) {
+                self.hideImmediate();
+                return;
+            }
+
+            // 2. Normal initial page load: single clean reveal
+            self.finish(180);
+
+            // 3. BFCache Safety Events
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) {
+                    self.hideImmediate();
                 }
             });
 
-            // 3. Intercept ONLY regular full-page form submissions (Exclude AJAX, Modals, Filters)
-            $(document).on('submit', 'form:not(.ajax-form):not(.js-filter-form):not([data-ajax]):not([data-table-id]):not([data-no-loader]):not([target="_blank"])', function (e) {
-                if ($(this).closest('.modal').length > 0 || $(this).hasClass('ajax-form') || $(this).hasClass('js-filter-form') || e.isDefaultPrevented()) {
-                    return;
-                }
-                self.start();
-            });
-
-            // 4. BFCache (Browser Back/Forward navigation)
-            window.addEventListener('pageshow', function () {
-                self.finish();
+            window.addEventListener('pagehide', function () {
+                self.hideImmediate();
             });
         }
     };
 
     window.PageTransition = PageTransition;
 
+    // Single DOM ready execution
     $(document).ready(function () {
         PageTransition.init();
     });
 
 })(window, jQuery);
-
