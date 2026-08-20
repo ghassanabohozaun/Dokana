@@ -1,6 +1,6 @@
 /**
  * Dokana Global Top Progress Bar
- * 100% Non-Blocking, Ultra-Fast Native Performance
+ * 100% Non-Blocking, Ultra-Fast Native Performance & AJAX Lifecycle Integration
  */
 
 (function (window, $) {
@@ -10,6 +10,7 @@
         $bar: null,
         $inner: null,
         timer: null,
+        safetyTimer: null,
 
         init: function () {
             this.$bar = $('#top-progress-bar');
@@ -19,7 +20,7 @@
             // Flash complete on initial page ready
             self.complete();
 
-            // When user clicks a link, start bar without blocking native browser navigation
+            // 1. When user clicks a regular navigation link
             document.addEventListener('click', function (e) {
                 const target = e.target.closest('a[href]');
                 if (!target) return;
@@ -37,7 +38,7 @@
                 self.start();
             }, { passive: true });
 
-            // Form submissions
+            // 2. Standard Form submissions
             document.addEventListener('submit', function (e) {
                 const form = e.target;
                 if (form.classList.contains('ajax-form') || form.classList.contains('js-filter-form') ||
@@ -47,7 +48,20 @@
                 self.start();
             }, { passive: true });
 
-            // Clean reset on BFCache restore
+            // 3. Global AJAX Lifecycle Integration (Auto-start & Auto-complete on AJAX save/load)
+            $(document).ajaxStart(function () {
+                self.start();
+            });
+
+            $(document).ajaxStop(function () {
+                self.complete();
+            });
+
+            $(document).ajaxError(function () {
+                self.complete();
+            });
+
+            // 4. Clean reset on BFCache restore
             window.addEventListener('pageshow', function () {
                 self.reset();
             });
@@ -60,18 +74,25 @@
         start: function () {
             if (!this.$bar || !this.$bar.length) return;
             clearTimeout(this.timer);
+            clearTimeout(this.safetyTimer);
             this.$inner.css({ 'width': '0%', 'transition': 'none' });
             this.$bar.addClass('is-loading');
 
             requestAnimationFrame(() => {
-                this.$inner.css({ 'width': '75%', 'transition': 'width 0.3s ease' });
+                this.$inner.css({ 'width': '80%', 'transition': 'width 0.25s ease' });
             });
+
+            // Safety Watchdog: never remain stuck if navigation is cancelled or local
+            this.safetyTimer = setTimeout(() => {
+                this.complete();
+            }, 3000);
         },
 
         complete: function () {
             if (!this.$bar || !this.$bar.length) return;
             clearTimeout(this.timer);
-            this.$inner.css({ 'width': '100%', 'transition': 'width 0.1s ease-out' });
+            clearTimeout(this.safetyTimer);
+            this.$inner.css({ 'width': '100%', 'transition': 'width 0.15s ease-out' });
             this.timer = setTimeout(() => {
                 this.$bar.removeClass('is-loading');
                 setTimeout(() => {
@@ -83,6 +104,7 @@
         reset: function () {
             if (!this.$bar || !this.$bar.length) return;
             clearTimeout(this.timer);
+            clearTimeout(this.safetyTimer);
             this.$bar.removeClass('is-loading');
             this.$inner.css({ 'width': '0%', 'transition': 'none' });
         }

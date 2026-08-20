@@ -65,10 +65,10 @@
 
         <!-- Header: Logo & Title -->
         <div class="text-center mb-6">
-            <div class="w-20 h-20 mx-auto mb-3.5 p-2 rounded-2xl bg-white dark:bg-slate-800 shadow-md shadow-emerald-500/10 border border-gray-100 dark:border-slate-700/80 flex items-center justify-center relative group">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-3.5 p-2.5 rounded-3xl bg-white dark:bg-slate-800 shadow-lg shadow-emerald-500/10 border border-gray-100 dark:border-slate-700/80 flex items-center justify-center relative group">
                 <img src="{!! setting()->logo ? asset('uploads/settings/' . setting()->logo) : asset('logo/dokkana-logo.png') !!}" 
                      alt="Store Logo" 
-                     class="max-h-14 max-w-14 object-contain rounded-xl group-hover:scale-105 transition-transform duration-300">
+                     class="w-full h-full object-contain rounded-2xl group-hover:scale-105 transition-transform duration-300">
             </div>
 
             <h1 class="text-xl sm:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
