@@ -8,37 +8,50 @@
 <div class="space-y-6">
     
     <!-- ========================================== -->
-    <!-- 1. ENTERPRISE WELCOME HERO BANNER          -->
+    <!-- 1. ENTERPRISE WELCOME HEADER CARD          -->
     <!-- ========================================== -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 text-white shadow-xl border border-slate-800/80">
-        <!-- Ambient Radial Glows -->
-        <div class="absolute -top-24 -end-24 w-72 h-72 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -start-24 w-72 h-72 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
+    <div class="dash-card p-5 sm:p-6 relative overflow-hidden bg-gradient-to-br from-white via-slate-50/70 to-indigo-50/25 dark:from-slate-900 dark:via-slate-900/90 dark:to-indigo-950/20 border border-slate-200/80 dark:border-slate-800">
+        <!-- Subtle Decorative Background Glow -->
+        <div class="absolute -top-16 -end-16 w-56 h-56 rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -start-16 w-56 h-56 rounded-full bg-sky-500/5 dark:bg-sky-500/10 blur-2xl pointer-events-none"></div>
 
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-white font-extrabold text-xl shadow-inner">
+            <!-- User Identity & Welcome -->
+            <div class="flex items-center gap-3.5 sm:gap-4">
+                <div class="relative flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-500 text-white font-black text-xl shadow-md shadow-indigo-500/20">
                     {{ mb_substr(user()->name, 0, 1) }}
+                    <span class="absolute -bottom-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" title="{!! __('dashboard.active_session') !!}">
+                        <span class="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
+                    </span>
                 </div>
                 <div>
-                    <h2 class="text-xl md:text-2xl font-bold tracking-tight">
-                        {!! greeting() !!} <span class="text-amber-400 font-extrabold">{!! user()->name !!}</span>! 👋
+                    <h2 class="text-base sm:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                        <span>{!! greeting() !!}</span>
+                        <span class="text-indigo-600 dark:text-indigo-400 font-black">{!! user()->name !!}</span>
+                        <span class="inline-block hover:rotate-12 transition-transform cursor-default">👋</span>
                     </h2>
-                    <p class="text-xs md:text-sm text-slate-300 mt-0.5">
-                        {{ auth()->user()->store ? auth()->user()->store->name : (setting()->site_name ?? __('dashboard.dashboard')) }}
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                        <span class="font-bold text-slate-700 dark:text-slate-200">
+                            {{ auth()->user()->store ? auth()->user()->store->name : (setting()->site_name ?? __('dashboard.dashboard')) }}
+                        </span>
+                        <span class="text-slate-300 dark:text-slate-600">•</span>
+                        <span>{!! __('dashboard.overview_of_performance') !!}</span>
                     </p>
                 </div>
             </div>
 
-            <!-- Date & Status Indicator -->
-            <div class="flex items-center gap-2.5 self-start md:self-auto flex-wrap">
-                <div class="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 text-xs font-semibold text-slate-200">
-                    <i class="fas fa-calendar-alt text-indigo-400"></i>
+            <!-- Date & Badges -->
+            <div class="flex items-center gap-2.5 self-start md:self-auto flex-wrap text-xs">
+                <!-- Localized Date Pill -->
+                <div class="inline-flex items-center gap-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 px-3.5 py-2 font-semibold text-slate-700 dark:text-slate-200 shadow-2xs">
+                    <i class="fas fa-calendar-alt text-indigo-500 text-xs"></i>
                     <span>{{ date('l, d F Y') }}</span>
                 </div>
-                <div class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 px-3 py-2 text-xs font-bold text-emerald-300">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>{!! __('dashboard.active_session') !!}</span>
+
+                <!-- Store / Role Badge -->
+                <div class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900/60 px-3 py-2 font-bold text-indigo-700 dark:text-indigo-300">
+                    <i class="fas fa-shield-alt text-xs text-indigo-500"></i>
+                    <span>{{ user()->role ? user()->role->name : __('dashboard.admin') }}</span>
                 </div>
             </div>
         </div>
