@@ -16,7 +16,7 @@
                 <th>{{ __('store_withdrawals.reason') }}</th>
                 <th>{{ __('store_withdrawals.date') }}</th>
                 <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
-                <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
+                <th class="w-24 text-center sticky end-0 bg-slate-50 dark:bg-slate-800 z-10 border-s border-slate-200/80 dark:border-slate-700/80 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -99,7 +99,7 @@
                     </td>
 
                     <!-- Actions -->
-                    <td class="text-center">
+                    <td class="text-center sticky end-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs z-10 border-s border-slate-100 dark:border-slate-800 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">
                         @include('dashboard.store_withdrawals.parts.actions')
                     </td>
                 </tr>

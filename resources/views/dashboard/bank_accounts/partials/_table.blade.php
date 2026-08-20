@@ -3,7 +3,7 @@
 <!-- ========================================== -->
 <!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
 <!-- ========================================== -->
-<div class="hidden md:block overflow-x-auto custom-scrollbar">
+<div class="hidden md:block overflow-hidden">
     <table class="table-modern w-full" id="myTable">
         <thead>
             <tr>
@@ -18,7 +18,7 @@
                 <th class="text-center">{{ __('general.balance') }}</th>
                 <th class="text-center">{{ __('bank_accounts.is_default') }}</th>
                 <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
-                <th class="text-center w-28">{{ __('general.actions') ?? 'الإجراءات' }}</th>
+                <th class="w-28 text-center sticky end-0 bg-slate-50 dark:bg-slate-800 z-10 border-s border-slate-200/80 dark:border-slate-700/80 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">{{ __('general.actions') ?? 'الإجراءات' }}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -124,7 +124,7 @@
                     </td>
 
                     <!-- Actions -->
-                    <td class="text-center">
+                    <td class="text-center sticky end-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs z-10 border-s border-slate-100 dark:border-slate-800 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">
                         @include('dashboard.bank_accounts.parts.actions')
                     </td>
                 </tr>

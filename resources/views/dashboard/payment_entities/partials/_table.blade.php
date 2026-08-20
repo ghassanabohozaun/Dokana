@@ -3,7 +3,7 @@
 <!-- ========================================== -->
 <!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
 <!-- ========================================== -->
-<div class="hidden md:block overflow-x-auto custom-scrollbar">
+<div class="hidden md:block overflow-hidden">
     <table class="table-modern w-full" id="myTable">
         <thead>
             <tr>
@@ -16,7 +16,7 @@
                 <th class="text-center">{{ __('departments.manage_status') }}</th>
                 @endif
                 @if($isSuperAdmin ?? false)
-                <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
+                <th class="w-24 text-center sticky end-0 bg-slate-50 dark:bg-slate-800 z-10 border-s border-slate-200/80 dark:border-slate-700/80 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">{{ __('general.actions') ?? 'الإجراءات' }}</th>
                 @endif
             </tr>
         </thead>
@@ -80,7 +80,7 @@
 
                     <!-- Actions -->
                     @if($isSuperAdmin ?? false)
-                    <td class="text-center">
+                    <td class="text-center sticky end-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs z-10 border-s border-slate-100 dark:border-slate-800 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">
                         @include('dashboard.payment_entities.parts.actions')
                     </td>
                     @endif

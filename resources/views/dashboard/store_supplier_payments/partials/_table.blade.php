@@ -17,7 +17,7 @@
                 <th class="text-center">{!! __('store_supplier_payments.amount') !!}</th>
                 <th>{!! __('store_supplier_payments.date') !!}</th>
                 <th>{!! __('store_supplier_payments.notes') !!}</th>
-                <th class="w-24 text-center">{!! __('general.actions') !!}</th>
+                <th class="w-24 text-center sticky end-0 bg-slate-50 dark:bg-slate-800 z-10 border-s border-slate-200/80 dark:border-slate-700/80 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">{!! __('general.actions') !!}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -125,7 +125,7 @@
                     </td>
 
                     <!-- Actions -->
-                    <td class="text-center">
+                    <td class="text-center sticky end-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs z-10 border-s border-slate-100 dark:border-slate-800 shadow-[-3px_0_6px_-2px_rgba(0,0,0,0.06)]">
                         @include('dashboard.store_supplier_payments.parts.actions', ['payment' => $payment])
                     </td>
                 </tr>
