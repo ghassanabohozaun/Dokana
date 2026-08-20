@@ -6,9 +6,12 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- 1. Welcome Enterprise Banner -->
+    
+    <!-- ========================================== -->
+    <!-- 1. ENTERPRISE WELCOME HERO BANNER          -->
+    <!-- ========================================== -->
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 text-white shadow-xl border border-slate-800/80">
-        <!-- Background Ambient Glow -->
+        <!-- Ambient Radial Glows -->
         <div class="absolute -top-24 -end-24 w-72 h-72 rounded-full bg-indigo-500/15 blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-24 -start-24 w-72 h-72 rounded-full bg-blue-500/15 blur-3xl pointer-events-none"></div>
 
@@ -27,15 +30,69 @@
                 </div>
             </div>
 
-            <!-- Date Badge -->
-            <div class="inline-flex items-center gap-2 self-start md:self-auto rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 text-xs font-semibold text-slate-200">
-                <i class="fas fa-calendar-alt text-indigo-400"></i>
-                <span>{{ date('l, d F Y') }}</span>
+            <!-- Date & Status Indicator -->
+            <div class="flex items-center gap-2.5 self-start md:self-auto flex-wrap">
+                <div class="inline-flex items-center gap-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 text-xs font-semibold text-slate-200">
+                    <i class="fas fa-calendar-alt text-indigo-400"></i>
+                    <span>{{ date('l, d F Y') }}</span>
+                </div>
+                <div class="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 px-3 py-2 text-xs font-bold text-emerald-300">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>{!! __('dashboard.active_session') !!}</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 2. Clean Metric KPI Cards Grid -->
+    <!-- ========================================== -->
+    <!-- 2. SPEED-DIAL QUICK ACTION BAR             -->
+    <!-- ========================================== -->
+    <div class="flex items-center gap-2.5 overflow-x-auto custom-scrollbar pb-1">
+        <span class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider shrink-0 me-1">
+            <i class="fas fa-bolt text-amber-500 me-1"></i> {!! __('dashboard.quick_actions') !!}:
+        </span>
+
+        @can('store_transactions_create')
+            <a href="{!! route('dashboard.store-transactions.index') !!}" class="btn-secondary-modern text-xs shrink-0 py-2 px-3">
+                <i class="fas fa-exchange-alt text-indigo-500 text-[11px]"></i>
+                <span>{!! __('dashboard.new_transaction') !!}</span>
+            </a>
+        @endcan
+
+        @can('store_customers_create')
+            <a href="{!! route('dashboard.store-customers.index') !!}" class="btn-secondary-modern text-xs shrink-0 py-2 px-3">
+                <i class="fas fa-user-plus text-sky-500 text-[11px]"></i>
+                <span>{!! __('dashboard.add_customer') !!}</span>
+            </a>
+        @endcan
+
+        @can('store_supplier_payments_create')
+            <a href="{!! route('dashboard.store-supplier-payments.index') !!}" class="btn-secondary-modern text-xs shrink-0 py-2 px-3">
+                <i class="fas fa-receipt text-emerald-500 text-[11px]"></i>
+                <span>{!! __('dashboard.add_supplier_payment') !!}</span>
+            </a>
+        @endcan
+
+        @can('store_withdrawals_create')
+            <a href="{!! route('dashboard.store-withdrawals.index') !!}" class="btn-secondary-modern text-xs shrink-0 py-2 px-3">
+                <i class="fas fa-hand-holding-usd text-rose-500 text-[11px]"></i>
+                <span>{!! __('dashboard.add_withdrawal') !!}</span>
+            </a>
+        @endcan
+
+        @if($isSuperAdmin)
+            @can('stores_create')
+                <a href="{!! route('dashboard.stores.index') !!}" class="btn-primary-gradient text-xs shrink-0 py-2 px-3">
+                    <i class="fas fa-plus text-[10px]"></i>
+                    <span>{!! __('dashboard.add_new_store') !!}</span>
+                </a>
+            @endcan
+        @endif
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. DYNAMIC METRIC KPI CARDS GRID           -->
+    <!-- ========================================== -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
         @if ($isSuperAdmin)
             <!-- Super Admin Card 1: Stores Count -->
@@ -44,6 +101,11 @@
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.stores_count') }}</p>
                         <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['stores_count'] !!}</h3>
+                        <div class="flex items-center gap-1.5 mt-1.5">
+                            <span class="badge-pill badge-pill-success text-[10px]">
+                                {!! $stats['active_stores_count'] !!} {!! __('dashboard.active_stores') !!}
+                            </span>
+                        </div>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
                         <i class="fas fa-store"></i>
@@ -58,9 +120,12 @@
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.system_users') }}</p>
                         <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['users_count'] !!}</h3>
+                        <p class="text-[11px] font-semibold text-purple-600 dark:text-purple-400 mt-1.5">
+                            <i class="fas fa-shield-alt text-[10px] me-1"></i> {!! __('dashboard.secure_system') !!}
+                        </p>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users-cog"></i>
                     </div>
                 </div>
                 <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80"></div>
@@ -72,6 +137,9 @@
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.system_customers') }}</p>
                         <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['customers_count'] !!}</h3>
+                        <p class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5">
+                            <i class="fas fa-user-check text-[10px] me-1"></i> عبر جميع الفروع
+                        </p>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
                         <i class="fas fa-user-tag"></i>
@@ -85,7 +153,10 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.total_debts') }}</p>
-                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">{!! number_format($stats['total_debt']) !!}</h3>
+                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1" dir="ltr">{!! number_format($stats['total_debt'], 2) !!}</h3>
+                        <p class="text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1.5">
+                            <i class="fas fa-exclamation-triangle text-[10px] me-1"></i> إجمالي ديون المنصة
+                        </p>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -94,12 +165,32 @@
                 <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-amber-500 opacity-80"></div>
             </div>
         @else
-            <!-- Store Admin Card 1: Today Collections -->
+            <!-- Store Owner Card 1: Store Liquidity (Total Balances) -->
+            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.store_liquidity') }}</p>
+                        <h3 class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1" dir="ltr">{!! number_format($stats['store_total_balance'], 2) !!}</h3>
+                        <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1.5">
+                            <i class="fas fa-wallet text-[10px] text-indigo-500 me-1"></i> في كافة الصناديق والمحافظ
+                        </p>
+                    </div>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 to-blue-500 opacity-80"></div>
+            </div>
+
+            <!-- Store Owner Card 2: Today Collections -->
             <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.today_collections') }}</p>
-                        <h3 class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">{!! number_format($stats['today_collections']) !!}</h3>
+                        <h3 class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1" dir="ltr">{!! number_format($stats['today_collections'], 2) !!}</h3>
+                        <p class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1.5">
+                            <i class="fas fa-arrow-down text-[10px] me-1"></i> سداد ديون ومقبوضات اليوم
+                        </p>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
                         <i class="fas fa-hand-holding-usd"></i>
@@ -108,12 +199,15 @@
                 <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-80"></div>
             </div>
 
-            <!-- Store Admin Card 2: Total Debt -->
+            <!-- Store Owner Card 3: Today Debts (New Credit) -->
             <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.total_debts') }}</p>
-                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">{!! number_format($stats['total_debt']) !!}</h3>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.today_debts') }}</p>
+                        <h3 class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1" dir="ltr">{!! number_format($stats['today_debts'], 2) !!}</h3>
+                        <p class="text-[11px] font-semibold text-rose-600 dark:text-rose-400 mt-1.5">
+                            <i class="fas fa-arrow-up text-[10px] me-1"></i> مبيعات آجلة مسجلة اليوم
+                        </p>
                     </div>
                     <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
                         <i class="fas fa-file-invoice-dollar"></i>
@@ -122,301 +216,318 @@
                 <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-rose-500 to-amber-500 opacity-80"></div>
             </div>
 
-            <!-- Store Admin Card 3: Customers Count -->
+            <!-- Store Owner Card 4: Net Financial Position -->
             <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.customers') }}</p>
-                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['customers_count'] !!}</h3>
+                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.net_financial_position') }}</p>
+                        <h3 class="text-2xl font-extrabold {{ $stats['net_balance'] >= 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-amber-600 dark:text-amber-400' }} mt-1" dir="ltr">
+                            {!! number_format($stats['net_balance'], 2) !!}
+                        </h3>
+                        <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-1.5">
+                            (ديون الزبائن - مستحقات الموردين)
+                        </p>
                     </div>
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
-                        <i class="fas fa-users"></i>
-                    </div>
-                </div>
-                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-80"></div>
-            </div>
-
-            <!-- Store Admin Card 4: Employees Count -->
-            <div class="dash-card p-5 relative overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">{{ __('dashboard.employees') }}</p>
-                        <h3 class="text-2xl font-extrabold text-slate-800 dark:text-white mt-1">{!! $stats['users_count'] ?? 0 !!}</h3>
-                    </div>
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
-                        <i class="fas fa-user-tie"></i>
+                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 text-lg shadow-sm group-hover:scale-110 transition-transform">
+                        <i class="fas fa-balance-scale"></i>
                     </div>
                 </div>
-                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-80"></div>
+                <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500 opacity-80"></div>
             </div>
         @endif
     </div>
 
-    <!-- 3. Tables 3-Column Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        @if ($isSuperAdmin)
-            <!-- Table 1: Late Debts Customers -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-users-slash text-rose-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.late_debts_customers') }}</h4>
+    <!-- ========================================== -->
+    <!-- 4. ANALYTICAL CHARTS INTELLIGENCE GRID     -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Main Area Chart: Cashflow Analysis (8 cols) -->
+        <div class="lg:col-span-8 dash-card p-5 md:p-6 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    <span class="badge-pill badge-pill-danger">{{ $topDebtors->count() }}</span>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-white">
+                            {!! __('dashboard.financial_trend') !!}
+                        </h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">
+                            مقارنة حركة الديون والتحصيلات والمصروفات خلال آخر 7 أيام
+                        </p>
+                    </div>
                 </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('store_customers.name') }}</th>
-                                <th>{{ __('store_customers.balance') }}</th>
-                                <th>{{ __('store_customers.max_debt_limit') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($topDebtors as $customer)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
-                                        @if($customer->store)
-                                            <span class="text-[10px] text-indigo-500 block">
-                                                <i class="fas fa-store text-[9px] me-1"></i>{{ $customer->store->name }}
-                                            </span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <span class="font-bold text-xs text-rose-600 dark:text-rose-400">{{ number_format($customer->balance) }}</span>
-                                    </td>
-                                    <td>
-                                        @if($customer->max_debt_limit !== null)
-                                            <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ $customer->max_debt_limit }}</span>
-                                        @else
-                                            <span class="text-[11px] text-slate-400">{{ __('general.unlimited') }}</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_debts') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+
+                <div class="flex items-center gap-2 text-xs font-semibold">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+                        <span class="h-2 w-2 rounded-full bg-rose-500"></span> ديون
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span> تحصيلات
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                        <span class="h-2 w-2 rounded-full bg-amber-500"></span> مصروفات
+                    </span>
                 </div>
             </div>
 
-            <!-- Table 2: Recent Stores -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-store text-blue-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_stores') }}</h4>
+            <div id="dashboard-trend-chart" class="w-full" style="min-height: 320px;"></div>
+        </div>
+
+        <!-- Donut Chart: Liquidity Breakdown (4 cols) -->
+        <div class="lg:col-span-4 dash-card p-5 md:p-6 space-y-4 flex flex-col justify-between">
+            <div>
+                <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs">
+                        <i class="fas fa-chart-pie"></i>
                     </div>
-                    <span class="badge-pill badge-pill-info">{{ $recentStores->count() }}</span>
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-white">
+                            {!! __('dashboard.liquidity_breakdown') !!}
+                        </h3>
+                        <p class="text-xs text-slate-400 dark:text-slate-500">
+                            توزيع السيولة النقدية في الخزائن والمحافظ
+                        </p>
+                    </div>
                 </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('stores.store_name') }}</th>
-                                <th>{{ __('stores.subscription_plan') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentStores as $store)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $store->name }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="badge-pill {{ strtolower($store->subscription_plan) == 'premium' ? 'badge-pill-success' : 'badge-pill-info' }}">
-                                            {{ __('stores.plan_'.strtolower($store->subscription_plan)) }}
-                                        </span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('stores.no_stores_found') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+
+                <div id="dashboard-liquidity-donut" class="w-full flex items-center justify-center py-4" style="min-height: 220px;"></div>
             </div>
 
-            <!-- Table 3: Recent Users -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-users text-purple-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_users') }}</h4>
-                    </div>
-                    <span class="badge-pill badge-pill-neutral">{{ $recentUsers->count() }}</span>
+            <!-- Liquidity Legend Summary -->
+            <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-center text-xs">
+                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                    <span class="text-[10px] text-slate-400 block mb-0.5">{!! __('dashboard.cash_box') !!}</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-white text-[11px]" dir="ltr">{{ number_format($liquidityBreakdown['cash'], 0) }}</span>
                 </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('users.name') }}</th>
-                                <th>{{ __('users.email') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentUsers as $user)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $user->name }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="text-xs text-slate-400">{{ $user->email }}</span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('users.no_users_found') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                    <span class="text-[10px] text-slate-400 block mb-0.5">{!! __('dashboard.electronic_wallets') !!}</span>
+                    <span class="font-mono font-bold text-sky-600 dark:text-sky-400 text-[11px]" dir="ltr">{{ number_format($liquidityBreakdown['wallet'], 0) }}</span>
                 </div>
-            </div>
-        @else
-            <!-- Store Admin Table 1: Late Debts Customers -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-users-slash text-rose-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.late_debts_customers') }}</h4>
-                    </div>
-                    <span class="badge-pill badge-pill-danger">{{ $topDebtors->count() }}</span>
+                <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                    <span class="text-[10px] text-slate-400 block mb-0.5">{!! __('dashboard.bank_accounts') !!}</span>
+                    <span class="font-mono font-bold text-indigo-600 dark:text-indigo-400 text-[11px]" dir="ltr">{{ number_format($liquidityBreakdown['bank'], 0) }}</span>
                 </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('store_customers.name') }}</th>
-                                <th>{{ __('store_customers.balance') }}</th>
-                                <th>{{ __('store_customers.max_debt_limit') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($topDebtors as $customer)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="font-bold text-xs text-rose-600 dark:text-rose-400">{{ number_format($customer->balance) }}</span>
-                                    </td>
-                                    <td>
-                                        @if($customer->max_debt_limit !== null)
-                                            <span class="text-xs font-semibold text-indigo-600 dark:text-indigo-400">{{ $customer->max_debt_limit }}</span>
-                                        @else
-                                            <span class="text-[11px] text-slate-400">{{ __('general.unlimited') }}</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_debts') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Store Admin Table 2: Recent Transactions -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-exchange-alt text-blue-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_transactions') }}</h4>
-                    </div>
-                    <span class="badge-pill badge-pill-info">{{ $recentTransactions->count() }}</span>
-                </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('dashboard.tx_number') }}</th>
-                                <th>{{ __('store_customers.balance') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentTransactions as $tx)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $tx->customer->name ?? 'غير معروف' }}</p>
-                                        <span class="text-[10px] text-slate-400">#{{ $tx->id }}</span>
-                                    </td>
-                                    <td>
-                                        @if($tx->type == 'payment')
-                                            <span class="font-bold text-xs text-emerald-600 dark:text-emerald-400">+{{ number_format($tx->amount) }}</span>
-                                        @else
-                                            <span class="font-bold text-xs text-rose-600 dark:text-rose-400">-{{ number_format($tx->amount) }}</span>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('dashboard.no_recent_transactions') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Store Admin Table 3: Recent Customers -->
-            <div class="dash-card flex flex-col overflow-hidden">
-                <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-user-plus text-emerald-500"></i>
-                        <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.recent_customers') }}</h4>
-                    </div>
-                    <span class="badge-pill badge-pill-success">{{ $recentCustomers->count() }}</span>
-                </div>
-                <div class="flex-1 overflow-y-auto max-h-80 custom-scrollbar">
-                    <table class="table-modern">
-                        <thead>
-                            <tr>
-                                <th>{{ __('store_customers.name') }}</th>
-                                <th>{{ __('store_customers.phone') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($recentCustomers as $customer)
-                                <tr>
-                                    <td>
-                                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200">{{ $customer->name }}</p>
-                                    </td>
-                                    <td>
-                                        <span class="text-xs text-slate-400">{{ $customer->phone ?? '-' }}</span>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="2" class="text-center py-6 text-xs text-slate-400">{{ __('store_customers.no_store_customers_found') }}</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        @endif
-    </div>
-
-    <!-- 4. Financial Trend Chart Card -->
-    <div class="dash-card p-6">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                <i class="fas fa-chart-line text-indigo-500"></i>
-                <h4 class="text-sm font-bold text-slate-800 dark:text-white">{{ __('dashboard.financial_trend') }}</h4>
             </div>
         </div>
-        <div id="dashboard-trend-chart" class="w-full" style="min-height: 350px;"></div>
+
     </div>
+
+    <!-- ========================================== -->
+    <!-- 5. REAL-TIME FEEDS & SMART TABLES GRID     -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Debt Aging & Risk Radar (مراقبة أعمار الديون) -->
+        <div class="dash-card overflow-hidden">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                        {!! __('dashboard.debt_aging_monitor') !!}
+                    </h4>
+                </div>
+                <a href="{!! route('dashboard.store-customers.index') !!}" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    {!! __('dashboard.view_all') !!}
+                </a>
+            </div>
+
+            <div class="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-[360px] overflow-y-auto custom-scrollbar">
+                @forelse ($topDebtors as $debtor)
+                    @php
+                        $cleanPhone = preg_replace('/[^0-9]/', '', $debtor->phone ?? '');
+                        if (str_starts_with($cleanPhone, '05')) {
+                            $waPhone = '970' . substr($cleanPhone, 1);
+                        } elseif (str_starts_with($cleanPhone, '5')) {
+                            $waPhone = '970' . $cleanPhone;
+                        } else {
+                            $waPhone = $cleanPhone;
+                        }
+                    @endphp
+                    <div class="p-3.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 font-bold text-xs">
+                                {{ mb_substr($debtor->name, 0, 1) }}
+                            </div>
+                            <div class="min-w-0">
+                                <a href="{!! route('dashboard.store-customers.show', $debtor->id) !!}" class="text-xs font-bold text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 block truncate">
+                                    {{ $debtor->name }}
+                                </a>
+                                <span class="text-[11px] text-slate-400 font-mono block truncate" dir="ltr">
+                                    {{ $debtor->phone ?: '—' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="font-mono font-black text-xs text-rose-600 dark:text-rose-400" dir="ltr">
+                                {{ number_format($debtor->balance, 2) }}
+                            </span>
+                            @if($debtor->phone)
+                                <a href="https://wa.me/{{ $waPhone }}?text={{ urlencode('مرحباً أخي ' . $debtor->name . '، نود تذكيرك برصيدك المستحق: ' . number_format($debtor->balance, 2) . ' شيكل') }}" target="_blank" class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 hover:bg-emerald-100 transition-colors shadow-2xs" title="{!! __('dashboard.whatsapp_remind') !!}">
+                                    <i class="fab fa-whatsapp text-xs"></i>
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-slate-400 text-xs">
+                        <i class="fas fa-check-circle text-2xl mb-2 text-emerald-500 block"></i>
+                        لا توجد ديون مستحقة متأخرة
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Card 2: Live Activity Feed (أحدث الحركات الحية) -->
+        <div class="dash-card overflow-hidden">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                        {!! __('dashboard.recent_live_transactions') !!}
+                    </h4>
+                </div>
+                <a href="{!! route('dashboard.store-transactions.index') !!}" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    {!! __('dashboard.view_all') !!}
+                </a>
+            </div>
+
+            <div class="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-[360px] overflow-y-auto custom-scrollbar">
+                @forelse ($recentTransactions as $tx)
+                    <div class="p-3.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl {{ $tx->type === 'payment' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' }} text-xs">
+                                <i class="fas {{ $tx->type === 'payment' ? 'fa-arrow-down' : 'fa-arrow-up' }}"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-xs font-bold text-slate-800 dark:text-white block truncate">
+                                    {{ optional($tx->customer)->name ?: 'حركة عامة' }}
+                                </span>
+                                <span class="text-[10px] text-slate-400 font-mono" dir="ltr">
+                                    {{ $tx->transaction_date ? $tx->transaction_date->format('Y-m-d H:i') : $tx->created_at->format('Y-m-d H:i') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="text-end shrink-0">
+                            <span class="font-mono font-black text-xs {{ $tx->type === 'payment' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' }} block" dir="ltr">
+                                {{ $tx->type === 'payment' ? '+' : '-' }}{{ number_format($tx->amount, 2) }}
+                            </span>
+                            <span class="badge-pill {{ $tx->type === 'payment' ? 'badge-pill-success' : 'badge-pill-danger' }} text-[9px] py-0 px-1.5">
+                                {{ $tx->type === 'payment' ? 'تحصيل' : 'دين' }}
+                            </span>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-slate-400 text-xs">
+                        <i class="fas fa-exchange-alt text-2xl mb-2 opacity-40 block"></i>
+                        {!! __('dashboard.no_recent_transactions') !!}
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Card 3: Pending Supplier Invoices OR Super Admin Recent Stores -->
+        <div class="dash-card overflow-hidden">
+            @if ($isSuperAdmin)
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-xs">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                            {!! __('dashboard.recent_joined_stores') !!}
+                        </h4>
+                    </div>
+                    <a href="{!! route('dashboard.stores.index') !!}" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {!! __('dashboard.view_all') !!}
+                    </a>
+                </div>
+
+                <div class="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-[360px] overflow-y-auto custom-scrollbar">
+                    @forelse ($recentStores as $store)
+                        <div class="p-3.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 font-bold text-xs">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white block truncate">
+                                        {{ $store->name }}
+                                    </span>
+                                    <span class="text-[10px] text-slate-400">
+                                        {{ $store->customers_count }} زبون • {{ $store->users_count }} مستخدم
+                                    </span>
+                                </div>
+                            </div>
+
+                            <span class="badge-pill {{ $store->status ? 'badge-pill-success' : 'badge-pill-danger' }} text-[10px] shrink-0">
+                                {{ $store->status ? __('general.enable') : __('general.disabled') }}
+                            </span>
+                        </div>
+                    @empty
+                        <div class="p-8 text-center text-slate-400 text-xs">
+                            {!! __('dashboard.no_stores') !!}
+                        </div>
+                    @endforelse
+                </div>
+            @else
+                <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 text-xs">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <h4 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                            {!! __('dashboard.recent_supplier_invoices') !!}
+                        </h4>
+                    </div>
+                    <a href="{!! route('dashboard.store-supplier-invoices.index') !!}" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                        {!! __('dashboard.view_all') !!}
+                    </a>
+                </div>
+
+                <div class="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-[360px] overflow-y-auto custom-scrollbar">
+                    @forelse ($recentSupplierInvoices as $inv)
+                        <div class="p-3.5 hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 font-bold text-xs">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white block truncate">
+                                        {{ optional($inv->supplier)->name }}
+                                    </span>
+                                    <span class="font-mono text-[10px] text-indigo-600 dark:text-indigo-400" dir="ltr">
+                                        #{{ $inv->invoice_number }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="text-end shrink-0">
+                                <span class="font-mono font-black text-xs text-rose-600 dark:text-rose-400 block" dir="ltr">
+                                    {{ number_format($inv->remaining_amount, 2) }}
+                                </span>
+                                <span class="text-[10px] text-slate-400">مستحق للمورد</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-8 text-center text-slate-400 text-xs">
+                            <i class="fas fa-check-circle text-2xl mb-2 text-emerald-500 block"></i>
+                            {!! __('dashboard.no_pending_invoices') !!}
+                        </div>
+                    @endforelse
+                </div>
+            @endif
+        </div>
+
+    </div>
+
 </div>
 @endsection
 
@@ -424,36 +535,41 @@
     <script src="{{ asset('assets/dashbaord/vendors/js/charts/apexcharts.min.js') }}"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var isDarkMode = document.documentElement.classList.contains('dark');
-            var textColor = isDarkMode ? '#94a3b8' : '#64748b';
-            var gridColor = isDarkMode ? '#1e293b' : '#f1f5f9';
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            const textColor = isDarkMode ? '#94a3b8' : '#64748b';
+            const gridColor = isDarkMode ? '#1e293b' : '#f1f5f9';
 
-            var options = {
+            // 1. Cash Flow Multi-Series Trend Area Chart
+            const trendChartOptions = {
                 chart: {
                     type: 'area',
-                    height: 350,
+                    height: 320,
                     toolbar: { show: false },
                     zoom: { enabled: false },
                     fontFamily: 'Tajawal, Manrope, sans-serif'
                 },
                 series: [
                     {
-                        name: "{{ __('dashboard.total_debts') }}",
+                        name: "{!! __('dashboard.new_debts_label') !!}",
                         data: @json($chartDebts)
                     },
                     {
-                        name: "{{ __('dashboard.today_collections') }}",
+                        name: "{!! __('dashboard.collections_label') !!}",
                         data: @json($chartPayments)
+                    },
+                    {
+                        name: "{!! __('dashboard.expenses_label') !!}",
+                        data: @json($chartWithdrawals)
                     }
                 ],
-                colors: ['#f43f5e', '#10b981'],
+                colors: ['#f43f5e', '#10b981', '#f59e0b'],
                 dataLabels: { enabled: false },
                 stroke: { curve: 'smooth', width: 3 },
                 fill: {
                     type: 'gradient',
                     gradient: {
                         shadeIntensity: 1,
-                        opacityFrom: 0.3,
+                        opacityFrom: 0.35,
                         opacityTo: 0.05,
                         stops: [0, 90, 100]
                     }
@@ -484,23 +600,67 @@
                     strokeDashArray: 4
                 },
                 legend: {
-                    position: 'top',
-                    horizontalAlign: 'right',
-                    fontFamily: 'Tajawal, Manrope, sans-serif',
-                    fontSize: '13px',
-                    labels: {
-                        colors: textColor
-                    }
+                    show: false
                 },
                 tooltip: {
                     theme: isDarkMode ? 'dark' : 'light'
                 }
             };
 
-            var chartEl = document.querySelector("#dashboard-trend-chart");
-            if (chartEl) {
-                var chart = new ApexCharts(chartEl, options);
-                chart.render();
+            const trendEl = document.querySelector("#dashboard-trend-chart");
+            if (trendEl) {
+                const trendChart = new ApexCharts(trendEl, trendChartOptions);
+                trendChart.render();
+            }
+
+            // 2. Liquidity Distribution Donut Chart
+            const donutSeries = [
+                {{ (float) $liquidityBreakdown['cash'] }},
+                {{ (float) $liquidityBreakdown['wallet'] }},
+                {{ (float) $liquidityBreakdown['bank'] }}
+            ];
+
+            const donutChartOptions = {
+                chart: {
+                    type: 'donut',
+                    height: 220,
+                    fontFamily: 'Tajawal, Manrope, sans-serif'
+                },
+                series: donutSeries.every(v => v === 0) ? [1] : donutSeries,
+                labels: donutSeries.every(v => v === 0) ? ['لا توجد أرصدة'] : ["{!! __('dashboard.cash_box') !!}", "{!! __('dashboard.electronic_wallets') !!}", "{!! __('dashboard.bank_accounts') !!}"],
+                colors: donutSeries.every(v => v === 0) ? ['#cbd5e1'] : ['#10b981', '#0ea5e9', '#6366f1'],
+                dataLabels: { enabled: false },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '72%',
+                            labels: {
+                                show: true,
+                                total: {
+                                    show: true,
+                                    label: 'إجمالي السيولة',
+                                    fontSize: '11px',
+                                    color: textColor,
+                                    formatter: function () {
+                                        const sum = donutSeries.reduce((a, b) => a + b, 0);
+                                        return sum.toLocaleString() + ' ₪';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                legend: { show: false },
+                stroke: { show: false },
+                tooltip: {
+                    theme: isDarkMode ? 'dark' : 'light'
+                }
+            };
+
+            const donutEl = document.querySelector("#dashboard-liquidity-donut");
+            if (donutEl) {
+                const donutChart = new ApexCharts(donutEl, donutChartOptions);
+                donutChart.render();
             }
         });
     </script>
