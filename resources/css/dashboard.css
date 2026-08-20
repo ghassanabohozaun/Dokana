@@ -278,20 +278,20 @@
     bottom: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 1050 !important;
+    z-index: 99999 !important;
     display: none !important;
     overflow-x: hidden !important;
     overflow-y: auto !important;
     outline: 0 !important;
-    background-color: rgba(15, 23, 42, 0.75) !important;
-    backdrop-filter: blur(6px) !important;
-    -webkit-backdrop-filter: blur(6px) !important;
-    padding: 1.25rem !important;
+    background-color: rgba(15, 23, 42, 0.62) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    padding: 1rem !important;
 }
 
 .modal.fade {
     opacity: 0;
-    transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 0.06s ease-out !important;
 }
 
 .modal.fade.show,
@@ -316,8 +316,10 @@
     width: 100% !important;
     margin: auto !important;
     pointer-events: auto !important;
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease-out !important;
-    transform: scale(0.95) translateY(-10px);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    transition: transform 0.08s cubic-bezier(0, 0, 0.2, 1), opacity 0.06s ease-out !important;
+    transform: scale(0.985) translateY(-3px);
     opacity: 0;
 }
 
@@ -326,6 +328,14 @@
 .modal[style*="display: block"] .modal-dialog {
     transform: scale(1) translateY(0) !important;
     opacity: 1 !important;
+}
+
+.modal-content {
+    box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .modal-content {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
 }
 
 .modal-dialog.modal-lg {
@@ -1283,18 +1293,7 @@ span.flatpickr-weekday {
 }
 
 #main-page-content {
-    animation: fastPageReveal 0.1s cubic-bezier(0, 0, 0.2, 1) forwards;
-}
-
-@keyframes fastPageReveal {
-    from {
-        opacity: 0.6;
-        transform: translateY(2px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    opacity: 1 !important;
 }
 
 /* ==========================================================================

@@ -226,6 +226,13 @@
                 }
             });
         });
+
+        // Auto Move All Modals to Top-Level Body on Open (Guarantees Full Viewport & Sidebar Coverage)
+        $(document).on('show.bs.modal', '.modal', function () {
+            if (!$(this).parent().is('body')) {
+                $(this).appendTo('body');
+            }
+        });
     });
 
 })(window, jQuery);
