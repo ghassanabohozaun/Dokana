@@ -11,9 +11,21 @@
     <link rel="preload" href="{!! asset('assets/dashbaord/fonts/Tajawal-400.ttf') !!}" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="{!! asset('assets/dashbaord/fonts/Tajawal-700.ttf') !!}" as="font" type="font/ttf" crossorigin>
     <link rel="stylesheet" type="text/css" href="{!! asset('assets/dashbaord/vendors/fontawesome/css/all.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('assets/dashbaord/fonts/line-awesome/css/line-awesome.min.css') !!}">
+    <link rel="stylesheet" type="text/css" href="{!! asset('assets/dashbaord/fonts/feather/style.min.css') !!}">
     
     @vite(['resources/css/dashboard.css', 'resources/js/dashboard.js'])
 
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('dokana-theme') || localStorage.getItem('theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
     <style>
         @keyframes radarSweep {
             0% { transform: rotate(0deg); }
@@ -21,7 +33,7 @@
         }
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-10px) rotate(-1.5deg); }
         }
         @keyframes pulseHalo {
             0%, 100% { transform: scale(0.95); opacity: 0.8; }
@@ -32,7 +44,7 @@
         .anim-pulse { animation: pulseHalo 3.5s ease-in-out infinite; }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20 text-slate-800 dark:text-slate-100 flex flex-col justify-between relative overflow-x-hidden selection:bg-rose-500 selection:text-white font-sans antialiased">
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/20 text-slate-800 dark:text-slate-100 flex flex-col justify-between relative overflow-x-hidden selection:bg-rose-500 selection:text-white font-sans antialiased">
 
     <!-- 1. Interactive Canvas Particles -->
     <canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-50"></canvas>
@@ -61,13 +73,38 @@
             </div>
         </div>
 
-        <!-- Live Status Pill -->
-        <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xs backdrop-blur-md">
-            <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
-            </span>
-            <span class="text-xs font-bold text-rose-600 dark:text-rose-400">{{ __('errors.error_500_code') }}</span>
+        <!-- Controls: Language Switcher + Dark Mode + Live Status Pill -->
+        <div class="flex items-center gap-2">
+            @php
+                $currentLocale = Lang();
+                $targetLocale = $currentLocale == 'ar' ? 'en' : 'ar';
+                $targetNative = LaravelLocalization::getSupportedLocales()[$targetLocale]['native'];
+                $flagPath = $targetLocale == 'ar'
+                    ? asset('assets/dashbaord/media/svg/flags/العربية.svg')
+                    : asset('assets/dashbaord/media/svg/flags/English.svg');
+            @endphp
+            <a href="{{ LaravelLocalization::getLocalizedURL($targetLocale, null, [], true) }}"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-2xs backdrop-blur-md"
+                title="{{ $targetNative }}">
+                <img src="{!! $flagPath !!}" class="h-3.5 w-3.5 rounded-full object-cover" alt="{{ $targetNative }}">
+                <span class="font-bold text-xs">{{ $targetNative }}</span>
+            </a>
+
+            <button type="button" data-theme-toggle
+                class="flex h-8 w-8 items-center justify-center rounded-xl bg-white/90 dark:bg-slate-800/90 text-slate-600 dark:text-amber-400 border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shadow-2xs backdrop-blur-md"
+                title="Toggle Dark / Light Mode" aria-label="Toggle Dark Mode">
+                <i class="fas fa-moon dark:hidden text-xs"></i>
+                <i class="fas fa-sun hidden dark:block text-xs"></i>
+            </button>
+
+            <!-- Live Status Pill -->
+            <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-2xs backdrop-blur-md">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+                </span>
+                <span class="text-xs font-bold text-rose-600 dark:text-rose-400">{{ __('errors.error_500_code') }}</span>
+            </div>
         </div>
     </header>
 

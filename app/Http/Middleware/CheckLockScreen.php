@@ -17,10 +17,14 @@ class CheckLockScreen
     {
         if (auth()->guard('web')->check() && session('is_locked') == true) {
             if (!$request->is('*/lock-screen') && !$request->routeIs('dashboard.logout') && !$request->routeIs('dashboard.unlock.screen') && !$request->routeIs('dashboard.keep.alive')) {
-                return redirect()->guest(route('dashboard.lock.screen'));
+                if ($request->is('*/dashboard/*') && !$request->is('*/dashboard/login*')) {
+                    session()->put('url.intended', $request->fullUrl());
+                }
+                return redirect()->route('dashboard.lock.screen');
             }
         }
 
         return $next($request);
     }
 }
+

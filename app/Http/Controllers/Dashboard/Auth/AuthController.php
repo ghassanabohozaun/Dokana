@@ -56,21 +56,22 @@ class AuthController extends Controller implements HasMiddleware
             session(['is_locked' => false]); // Reset lock on login
             flash()->success(__('auth.login_success'));
 
-            // Retrieve intended URL
-            $intended = session()->get('url.intended');
+            // Retrieve intended URL safely for dashboard only
+            $intended = session()->pull('url.intended');
 
-            // If intended is the lock screen, fall back to dashboard home
-            if ($intended && str_contains($intended, 'lock-screen')) {
-                return redirect()->route('dashboard.index');
+            // If intended is valid and belongs strictly to dashboard internal routes
+            if ($intended && str_contains($intended, '/dashboard') && !str_contains($intended, 'lock-screen') && !str_contains($intended, 'login') && !str_contains($intended, 'casher')) {
+                return redirect()->to($intended);
             }
 
-            return redirect()->intended(route('dashboard.index'));
+            return redirect()->route('dashboard.index');
         }
     }
     public function logout()
     {
         $this->authService->logout('web');
         session(['is_locked' => false]);
+        session()->forget('url.intended');
         return redirect()->route('dashboard.get.login');
     }
 
@@ -78,9 +79,9 @@ class AuthController extends Controller implements HasMiddleware
     // lock screen function
     public function lockScreen()
     {
-        // Save where we came from if it's not the lock screen or login
+        // Save where we came from ONLY if it is a dashboard internal page
         $previous = url()->previous();
-        if (!session()->has('url.intended') && !str_contains($previous, 'lock-screen') && !str_contains($previous, 'login')) {
+        if (!session()->has('url.intended') && str_contains($previous, '/dashboard') && !str_contains($previous, 'lock-screen') && !str_contains($previous, 'login') && !str_contains($previous, 'casher')) {
             session()->put('url.intended', $previous);
         }
 
@@ -92,7 +93,6 @@ class AuthController extends Controller implements HasMiddleware
     // unlock screen function
     public function unlock(Request $request)
     {
-        // dd('reaches unlock');
         $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
             'password' => 'required'
         ]);
@@ -107,8 +107,8 @@ class AuthController extends Controller implements HasMiddleware
             // Retrieve intended URL and fallback to dashboard home
             $redirectUrl = session()->pull('url.intended', route('dashboard.index'));
 
-            // Safety check: if for some reason the intended URL is still the lock screen, go to home
-            if (str_contains($redirectUrl, 'lock-screen')) {
+            // Safety check: strictly ensure the destination is a dashboard route and not lock/login/casher
+            if (!str_contains($redirectUrl, '/dashboard') || str_contains($redirectUrl, 'lock-screen') || str_contains($redirectUrl, 'login') || str_contains($redirectUrl, 'casher')) {
                 $redirectUrl = route('dashboard.index');
             }
 
@@ -119,3 +119,4 @@ class AuthController extends Controller implements HasMiddleware
         return redirect()->route('dashboard.lock.screen')->withErrors(['password' => __('auth.failed')])->withInput();
     }
 }
+

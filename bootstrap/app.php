@@ -29,16 +29,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // redirect if not auth
         $middleware->redirectGuestsTo(function () {
-            $isCasher = request()->is('*/casher*') || str_contains(request()->header('referer', ''), '/casher');
-            
-            if ($isCasher) {
+            if (request()->is('*/casher*')) {
                 return route('website.casher.login');
             } elseif (request()->is('*/dashboard/*')) {
                 return route('dashboard.get.login');
             } elseif (request()->is('*/users/*')) {
                 return route('users.get.login');
             } else {
-                // Default fallback to login if hitting any other protected route
+                // Default fallback to dashboard login if hitting any other protected route
                 return route('dashboard.get.login');
             }
         });
