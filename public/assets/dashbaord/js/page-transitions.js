@@ -1,84 +1,99 @@
 /**
- * Dokana Global Page Transition Engine
- * Features:
- * - Ultra-Smooth Initial Page Shimmer Skeleton Animation
- * - Zero-Double-Load on Browser Back/Forward (Hardware Navigation Protection)
+ * Dokana Global Top Progress Bar
+ * 100% Non-Blocking, Ultra-Fast Native Performance
  */
 
 (function (window, $) {
     'use strict';
 
-    const PageTransition = {
-        skeletonOverlay: '#global-page-skeleton',
+    const ProgressBar = {
+        $bar: null,
+        $inner: null,
         timer: null,
-        hasFinished: false,
-
-        finish: function (duration) {
-            if (this.hasFinished) return;
-            this.hasFinished = true;
-
-            const delay = typeof duration === 'number' ? duration : 200;
-            const $skeleton = $(this.skeletonOverlay);
-            if (!$skeleton.length) return;
-
-            clearTimeout(this.timer);
-            this.timer = setTimeout(() => {
-                $skeleton.css('opacity', '0');
-                setTimeout(() => {
-                    $skeleton.addClass('hidden').css('visibility', 'hidden');
-                    $('#main-page-content').css('opacity', '1');
-                }, 150);
-            }, delay);
-        },
-
-        hideImmediate: function () {
-            this.hasFinished = true;
-            clearTimeout(this.timer);
-            const $skeleton = $(this.skeletonOverlay);
-            if ($skeleton.length) {
-                $skeleton.addClass('hidden').css({ 'opacity': '0', 'visibility': 'hidden' });
-            }
-            $('#main-page-content').css('opacity', '1');
-        },
 
         init: function () {
+            this.$bar = $('#top-progress-bar');
+            this.$inner = this.$bar.find('.top-progress-bar-inner');
             const self = this;
 
-            // 1. If Browser Back/Forward Navigation, bypass immediately
-            try {
-                const navEntries = performance.getEntriesByType('navigation');
-                if (navEntries.length > 0 && navEntries[0].type === 'back_forward') {
-                    self.hideImmediate();
+            // Flash complete on initial page ready
+            self.complete();
+
+            // When user clicks a link, start bar without blocking native browser navigation
+            document.addEventListener('click', function (e) {
+                const target = e.target.closest('a[href]');
+                if (!target) return;
+
+                const href = target.getAttribute('href');
+                if (!href || href === '#' || href.startsWith('#') || href.startsWith('javascript:') ||
+                    href.startsWith('mailto:') || href.startsWith('tel:') || target.target === '_blank' ||
+                    e.ctrlKey || e.metaKey || e.shiftKey || e.which === 2 ||
+                    target.hasAttribute('data-no-loader') || target.hasAttribute('data-toggle') ||
+                    target.hasAttribute('data-bs-toggle') || target.classList.contains('dropdown-toggle') ||
+                    target.closest('.pagination')) {
                     return;
                 }
-            } catch (e) {}
 
-            if (document.documentElement.classList.contains('no-skeleton')) {
-                self.hideImmediate();
-                return;
-            }
+                self.start();
+            }, { passive: true });
 
-            // 2. Normal initial page load: single clean reveal
-            self.finish(180);
-
-            // 3. BFCache Safety Events
-            window.addEventListener('pageshow', function (event) {
-                if (event.persisted) {
-                    self.hideImmediate();
+            // Form submissions
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
+                if (form.classList.contains('ajax-form') || form.classList.contains('js-filter-form') ||
+                    form.hasAttribute('data-no-loader') || form.target === '_blank') {
+                    return;
                 }
+                self.start();
+            }, { passive: true });
+
+            // Clean reset on BFCache restore
+            window.addEventListener('pageshow', function () {
+                self.reset();
             });
 
             window.addEventListener('pagehide', function () {
-                self.hideImmediate();
+                self.reset();
             });
+        },
+
+        start: function () {
+            if (!this.$bar || !this.$bar.length) return;
+            clearTimeout(this.timer);
+            this.$inner.css({ 'width': '0%', 'transition': 'none' });
+            this.$bar.addClass('is-loading');
+
+            requestAnimationFrame(() => {
+                this.$inner.css({ 'width': '75%', 'transition': 'width 0.3s ease' });
+            });
+        },
+
+        complete: function () {
+            if (!this.$bar || !this.$bar.length) return;
+            clearTimeout(this.timer);
+            this.$inner.css({ 'width': '100%', 'transition': 'width 0.15s ease-out' });
+            this.timer = setTimeout(() => {
+                this.$bar.removeClass('is-loading');
+                setTimeout(() => {
+                    this.$inner.css({ 'width': '0%', 'transition': 'none' });
+                }, 150);
+            }, 180);
+        },
+
+        reset: function () {
+            if (!this.$bar || !this.$bar.length) return;
+            clearTimeout(this.timer);
+            this.$bar.removeClass('is-loading');
+            this.$inner.css({ 'width': '0%', 'transition': 'none' });
         }
     };
 
-    window.PageTransition = PageTransition;
+    window.DokanaProgressBar = ProgressBar;
 
-    // Single DOM ready execution
-    $(document).ready(function () {
-        PageTransition.init();
-    });
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => ProgressBar.init());
+    } else {
+        ProgressBar.init();
+    }
 
 })(window, jQuery);
