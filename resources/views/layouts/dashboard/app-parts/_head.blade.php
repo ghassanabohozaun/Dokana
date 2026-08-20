@@ -44,11 +44,15 @@
 <!-- TAILWIND CORE DASHBOARD VITE ASSETS -->
 @vite(['resources/css/dashboard.css', 'resources/js/dashboard.js'])
 
-<!-- Theme Init (Prevent Dark Mode Flicker) -->
+<!-- Theme & Sidebar Init (Zero Flicker / Instant Pre-Render State) -->
 <script>
     if (localStorage.getItem('dokana-theme') === 'dark' || (!('dokana-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
     } else {
         document.documentElement.classList.remove('dark');
+    }
+
+    if (localStorage.getItem('dokana-sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
     }
 </script>

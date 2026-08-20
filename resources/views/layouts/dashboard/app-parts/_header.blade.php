@@ -12,7 +12,7 @@
         <button type="button" id="sidebar-collapse-btn"
             class="hidden md:flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/80 bg-white text-slate-600 shadow-xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-all focus:outline-none"
             title="Toggle Mini Sidebar">
-            <i class="fas fa-bars-staggered text-sm"></i>
+            <i class="fas fa-bars text-sm"></i>
         </button>
 
         <!-- Current Store / Tenant Badge Indicator -->

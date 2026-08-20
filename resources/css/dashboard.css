@@ -146,6 +146,45 @@
         @apply bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/70 dark:border-slate-800/70 shadow-sm transition-[border-color,background-color,box-shadow] duration-150;
     }
 
+    /* Desktop Sidebar Collapse & Smooth Transitions */
+    @media (min-width: 768px) {
+        #app-sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #main-content-layout {
+            transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.sidebar-collapsed #app-sidebar,
+        body.sidebar-collapsed #app-sidebar {
+            transform: translateX(-100%) !important;
+        }
+        
+        [dir="rtl"].sidebar-collapsed #app-sidebar,
+        [dir="rtl"] body.sidebar-collapsed #app-sidebar {
+            transform: translateX(100%) !important;
+        }
+
+        html.sidebar-collapsed #main-content-layout,
+        body.sidebar-collapsed #main-content-layout {
+            padding-inline-start: 0 !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        #app-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        [dir="rtl"] #app-sidebar {
+            transform: translateX(100%);
+        }
+        #app-sidebar.is-mobile-open {
+            transform: translateX(0) !important;
+        }
+    }
+
     .dash-card-hover {
         @apply hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 transition-[transform,box-shadow,border-color] duration-150;
     }

@@ -14,7 +14,7 @@
         @include('layouts.dashboard.app-parts._sidebar')
 
         <!-- Main Content Layout (Responsive start-padding for fixed desktop sidebar) -->
-        <div class="flex-1 flex flex-col md:ps-72 h-full overflow-hidden transition-all duration-300">
+        <div class="flex-1 flex flex-col md:ps-72 h-full overflow-hidden transition-all duration-300" id="main-content-layout">
             <!-- Top Navbar (Fixed at top) -->
             @include('layouts.dashboard.app-parts._header')
 

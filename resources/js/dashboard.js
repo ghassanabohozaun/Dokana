@@ -61,13 +61,15 @@
         // Desktop mini-sidebar toggle
         if (collapseButton) {
             collapseButton.addEventListener('click', () => {
+                document.documentElement.classList.toggle('sidebar-collapsed');
                 document.body.classList.toggle('sidebar-collapsed');
-                const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+                const isCollapsed = document.documentElement.classList.contains('sidebar-collapsed');
                 localStorage.setItem('dokana-sidebar-collapsed', isCollapsed ? 'true' : 'false');
             });
 
             // Restore state
             if (localStorage.getItem('dokana-sidebar-collapsed') === 'true') {
+                document.documentElement.classList.add('sidebar-collapsed');
                 document.body.classList.add('sidebar-collapsed');
             }
         }
