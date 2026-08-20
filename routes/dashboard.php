@@ -59,6 +59,9 @@ Route::group(
             Route::get('unlock-screen', function () {
                 return redirect()->route('dashboard.lock.screen');
             });
+            Route::get('keep-alive', function () {
+                return response()->json(['status' => 'alive', 'time' => now()]);
+            })->name('keep.alive');
             // ########################################## welcome  ##########################################################################
             Route::get('/welcome', [DashboardController::class, 'index'])->name('index');
             // ########################################## roles routes ######################################################################

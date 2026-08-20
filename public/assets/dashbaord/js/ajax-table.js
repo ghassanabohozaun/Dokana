@@ -45,55 +45,73 @@
         },
 
         renderSkeleton: function ($container) {
+            // 1. Lock exact container height to prevent ANY jumping/expansion
+            const currentHeight = $container.outerHeight();
+            if (currentHeight && currentHeight > 50) {
+                $container.css({
+                    'min-height': currentHeight + 'px',
+                    'max-height': currentHeight + 'px',
+                    'overflow': 'hidden'
+                });
+            }
+
+            const isDesktop = window.innerWidth >= 768;
             const $table = $container.find('table');
-            if (!$table.length) return;
 
-            // Lock header geometry so titles never move
-            this.lockTableGeometry($table);
+            // 2. Desktop Shimmer Table
+            if ($table.length && isDesktop) {
+                this.lockTableGeometry($table);
+                const $tbody = $table.find('tbody');
+                const colCount = $table.find('thead th').length || 6;
+                const visibleRows = $tbody.find('tr:not(.empty-state-row):not(.table-skeleton-row)').length;
+                const rowCount = visibleRows > 0 ? visibleRows : 4;
 
-            const $tbody = $table.find('tbody');
-            const colCount = $table.find('thead th').length || 6;
-            
-            // Count actual data rows currently visible (default to 10 if standard pagination)
-            const visibleRows = $tbody.find('tr:not(.empty-state-row)').length;
-            const rowCount = visibleRows > 0 ? visibleRows : 10;
-            
-            // Lock current tbody height to prevent ANY pagination jumping up/down
-            const currentTbodyHeight = $tbody.outerHeight();
-            if (currentTbodyHeight && currentTbodyHeight > 100) {
-                $tbody.css('min-height', currentTbodyHeight + 'px');
+                let skeletonHtml = '';
+                for (let r = 0; r < rowCount; r++) {
+                    skeletonHtml += '<tr class="table-skeleton-row border-b border-slate-100 dark:border-slate-800/80">';
+                    for (let c = 0; c < colCount; c++) {
+                        if (c === 0) {
+                            skeletonHtml += '<td class="text-center w-12"><div class="skeleton-shimmer h-3.5 w-4 rounded mx-auto"></div></td>';
+                        } else if (c === 1) {
+                            skeletonHtml += '<td><div class="flex items-center gap-2.5"><div class="skeleton-shimmer h-8 w-8 rounded-xl shrink-0"></div><div class="space-y-1.5 flex-1 max-w-[140px]"><div class="skeleton-shimmer h-3.5 w-full rounded"></div><div class="skeleton-shimmer h-2.5 w-2/3 rounded block"></div></div></div></td>';
+                        } else if (c === colCount - 1) {
+                            skeletonHtml += '<td class="text-center w-24"><div class="inline-flex items-center justify-center gap-2"><div class="skeleton-shimmer h-7 w-7 rounded-lg"></div><div class="skeleton-shimmer h-7 w-7 rounded-lg"></div></div></td>';
+                        } else if (c === colCount - 2) {
+                            skeletonHtml += '<td class="text-center"><div class="skeleton-shimmer h-5 w-14 rounded-full mx-auto"></div></td>';
+                        } else {
+                            const widthPcts = ['w-3/4 max-w-[100px]', 'w-1/2 max-w-[80px]', 'w-4/5 max-w-[120px]', 'w-2/3 max-w-[90px]'];
+                            const widthClass = widthPcts[(r + c) % widthPcts.length];
+                            skeletonHtml += '<td><div class="skeleton-shimmer h-3.5 ' + widthClass + ' rounded"></div></td>';
+                        }
+                    }
+                    skeletonHtml += '</tr>';
+                }
+                $tbody.html(skeletonHtml);
+            }
+
+            // 3. Mobile Shimmer Cards
+            const $mobileContainer = $container.find('.block.md\\:hidden');
+            if ($mobileContainer.length && !isDesktop) {
+                const currentCards = $mobileContainer.children('div:not(.text-center)').length;
+                const cardCount = currentCards > 0 ? currentCards : 3;
+                let cardsHtml = '';
+                for (let i = 0; i < cardCount; i++) {
+                    cardsHtml += '<div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 space-y-2.5">' +
+                        '<div class="flex items-center justify-between">' +
+                            '<div class="flex items-center gap-2.5">' +
+                                '<div class="skeleton-shimmer h-8 w-8 rounded-xl shrink-0"></div>' +
+                                '<div class="space-y-1"><div class="skeleton-shimmer h-3.5 w-24 rounded"></div><div class="skeleton-shimmer h-2.5 w-16 rounded"></div></div>' +
+                            '</div>' +
+                            '<div class="skeleton-shimmer h-5 w-16 rounded-lg"></div>' +
+                        '</div>' +
+                        '<div class="skeleton-shimmer h-8 w-full rounded-xl"></div>' +
+                    '</div>';
+                }
+                $mobileContainer.html(cardsHtml);
             }
 
             // Temporarily disable pagination pointer events during transition
             $container.find('.pagination').addClass('pointer-events-none opacity-40');
-
-            let skeletonHtml = '';
-            for (let r = 0; r < rowCount; r++) {
-                skeletonHtml += '<tr class="table-skeleton-row border-b border-slate-100 dark:border-slate-800/80">';
-                for (let c = 0; c < colCount; c++) {
-                    if (c === 0) {
-                        // Iteration #
-                        skeletonHtml += '<td class="text-center w-12"><div class="skeleton-shimmer h-3.5 w-4 rounded mx-auto"></div></td>';
-                    } else if (c === 1) {
-                        // Main name / Avatar column
-                        skeletonHtml += '<td><div class="flex items-center gap-2.5"><div class="skeleton-shimmer h-8 w-8 rounded-xl shrink-0"></div><div class="space-y-1.5 flex-1 max-w-[140px]"><div class="skeleton-shimmer h-3.5 w-full rounded"></div><div class="skeleton-shimmer h-2.5 w-2/3 rounded block"></div></div></div></td>';
-                    } else if (c === colCount - 1) {
-                        // Actions column
-                        skeletonHtml += '<td class="text-center w-24"><div class="inline-flex items-center justify-center gap-2"><div class="skeleton-shimmer h-7 w-7 rounded-lg"></div><div class="skeleton-shimmer h-7 w-7 rounded-lg"></div></div></td>';
-                    } else if (c === colCount - 2) {
-                        // Status or Switch column
-                        skeletonHtml += '<td class="text-center"><div class="skeleton-shimmer h-5 w-14 rounded-full mx-auto"></div></td>';
-                    } else {
-                        // Data column (responsive flexible width)
-                        const widthPcts = ['w-3/4 max-w-[100px]', 'w-1/2 max-w-[80px]', 'w-4/5 max-w-[120px]', 'w-2/3 max-w-[90px]'];
-                        const widthClass = widthPcts[(r + c) % widthPcts.length];
-                        skeletonHtml += '<td><div class="skeleton-shimmer h-3.5 ' + widthClass + ' rounded"></div></td>';
-                    }
-                }
-                skeletonHtml += '</tr>';
-            }
-
-            $tbody.html(skeletonHtml);
         },
 
         fetchData: function (params) {
@@ -101,11 +119,14 @@
             const page = params.page !== undefined ? parseInt(params.page, 10) : this.currentPage;
             this.currentPage = page > 0 ? page : 1;
 
-            const $container = $(this.container);
+            let $container = params.container ? $(params.container) : $(this.container);
+            if (!$container.length) {
+                $container = $('#table_data, #transactions_table_container, [data-ajax-container]').first();
+            }
             if (!$container.length) return;
 
             const $form = $(this.filterForm);
-            const actionUrl = $form.length && $form.attr('action') ? $form.attr('action') : window.location.pathname;
+            let actionUrl = params.url || ($form.length && $form.attr('action') ? $form.attr('action') : window.location.pathname);
 
             // Abort previous request if still in flight
             if (this.activeRequest && this.activeRequest.readyState !== 4) {
@@ -114,7 +135,7 @@
 
             // Gather form parameters
             let formDataArr = [];
-            if ($form.length) {
+            if ($form.length && $form.is(':visible')) {
                 formDataArr = $form.serializeArray().filter(item => item.value !== "" && item.name !== "page");
             }
             formDataArr.push({ name: 'page', value: this.currentPage });
@@ -133,16 +154,39 @@
                 type: 'GET',
                 dataType: 'html',
                 success: function (response) {
+                    // Unlock height and set new response
+                    $container.css({ 'min-height': '', 'max-height': '', 'overflow': '' });
                     $container.html(response);
                     $(self.loader).addClass('hidden').removeClass('active');
 
                     // Synchronize Badges and Counters
                     self.syncCounters($container);
 
+                    // Smooth Scroll to Top of Cards / Table on pagination change
+                    if (params.page !== undefined) {
+                        const $tableElem = $container.closest('.dash-card').length ? $container.closest('.dash-card') : $container;
+                        const $viewport = $('#main-viewport');
+                        if ($viewport.length && $tableElem.length) {
+                            const currentScroll = $viewport.scrollTop();
+                            const elemOffsetTop = $tableElem.offset().top;
+                            const viewportOffsetTop = $viewport.offset().top;
+                            const targetScroll = currentScroll + (elemOffsetTop - viewportOffsetTop) - 15;
+
+                            $viewport.stop().animate({
+                                scrollTop: Math.max(0, targetScroll)
+                            }, 300);
+                        } else if ($tableElem.length) {
+                            $('html, body').stop().animate({
+                                scrollTop: Math.max(0, $tableElem.offset().top - 80)
+                            }, 300);
+                        }
+                    }
+
                     // Re-trigger global re-hydration
                     $(document).trigger('table-hydrated', [$container]);
                 },
                 error: function (xhr, status) {
+                    $container.css({ 'min-height': '', 'max-height': '', 'overflow': '' });
                     if (status !== 'abort') {
                         $(self.loader).addClass('hidden').removeClass('active');
                         if (window.PremiumToast) {
@@ -203,19 +247,35 @@
             const self = this;
 
             // 1. Generic AJAX Pagination Click Handler (Without page numbers in URL)
-            $(document).off('click.dokanaPagination', '.pagination a, #table_data .pagination a')
-                       .on('click.dokanaPagination', '.pagination a, #table_data .pagination a', function (e) {
-                e.preventDefault();
+            $(document).off('click.dokanaPagination', '.pagination a, [role="navigation"] a')
+                       .on('click.dokanaPagination', '.pagination a, [role="navigation"] a', function (e) {
                 const href = $(this).attr('href');
                 if (!href || href === '#' || $(this).parent().hasClass('disabled') || $(this).parent().hasClass('active')) {
+                    e.preventDefault();
                     return;
                 }
+
+                // Check which table container this pagination belongs to:
+                let $targetContainer = $(this).closest('#table_data, #transactions_table_container, [data-ajax-container]');
+                if (!$targetContainer.length) {
+                    $targetContainer = $('#table_data').length ? $('#table_data') : ($('#transactions_table_container').length ? $('#transactions_table_container') : $(self.container));
+                }
+
+                if (!$targetContainer.length) {
+                    return; // Allow native navigation if no AJAX container exists
+                }
+
+                e.preventDefault();
 
                 // Extract page number from URL safely
                 const match = href.match(/[?&]page=([0-9]+)/);
                 const targetPage = match ? parseInt(match[1], 10) : 1;
 
-                self.fetchData({ page: targetPage });
+                self.fetchData({
+                    page: targetPage,
+                    container: $targetContainer,
+                    url: href.split('?')[0]
+                });
             });
 
             // 2. Smart Row Deletion & Fallback Handler

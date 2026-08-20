@@ -1,4 +1,7 @@
-<div class="overflow-x-auto">
+<!-- ========================================== -->
+<!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
+<!-- ========================================== -->
+<div class="hidden md:block overflow-x-auto custom-scrollbar">
     <table class="table-modern w-full">
         <thead>
             <tr>
@@ -14,14 +17,14 @@
                 <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                     <!-- Iteration # -->
                     <td class="text-center">
-                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                        <span class="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}
                         </span>
                     </td>
 
                     <!-- Date -->
                     <td>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300" dir="ltr">
+                        <span class="text-xs font-medium text-slate-700 dark:text-slate-300" dir="ltr">
                             {{ $transaction->withdrawal_date ? $transaction->withdrawal_date->format('Y-m-d h:i A') : '—' }}
                         </span>
                     </td>
@@ -48,7 +51,7 @@
 
                     <!-- Reason -->
                     <td>
-                        <span class="text-xs text-slate-600 dark:text-slate-400">
+                        <span class="text-xs text-slate-600 dark:text-slate-400 truncate max-w-[200px] block" title="{{ $transaction->reason }}">
                             {{ $transaction->reason ?: __('general.no_description') }}
                         </span>
                     </td>
@@ -67,8 +70,55 @@
     </table>
 </div>
 
+<!-- ========================================== -->
+<!-- 2. MOBILE RESPONSIVE CARDS (Below md:)     -->
+<!-- ========================================== -->
+<div class="block md:hidden p-3 space-y-2.5">
+    @forelse ($transactions as $transaction)
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2">
+            <!-- Header: Icon & Amount -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 text-xs">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-white">سحب / مصروف</span>
+                </div>
+
+                <span class="font-mono text-sm font-black text-rose-600 dark:text-rose-400 shrink-0" dir="ltr">
+                    -{{ number_format($transaction->amount, 2) }}
+                </span>
+            </div>
+
+            <!-- Reason -->
+            @if($transaction->reason)
+                <p class="text-xs text-slate-600 dark:text-slate-300 pt-1 border-t border-slate-100 dark:border-slate-800 font-medium">
+                    {{ $transaction->reason }}
+                </p>
+            @endif
+
+            <!-- Footer: Date -->
+            <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <span class="font-mono text-[10px]">#{{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}</span>
+                <span dir="ltr">
+                    <i class="far fa-calendar-alt text-[10px] me-0.5"></i>
+                    {{ $transaction->withdrawal_date ? $transaction->withdrawal_date->format('Y-m-d h:i A') : '—' }}
+                </span>
+            </div>
+        </div>
+    @empty
+        <div class="text-center py-8 text-slate-400 text-xs">
+            <i class="fas fa-inbox text-2xl mb-2 block opacity-40"></i>
+            {!! __('bank_accounts.no_withdrawals_yet') !!}
+        </div>
+    @endforelse
+</div>
+
+<!-- ========================================== -->
+<!-- 3. RESPONSIVE PAGINATION FOOTER            -->
+<!-- ========================================== -->
 @if ($transactions->hasPages())
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center custom-pagination">
-        {!! $transactions->links() !!}
+    <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
+        {!! $transactions->links('dashboard.includes.pagination') !!}
     </div>
 @endif

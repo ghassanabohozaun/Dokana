@@ -1,7 +1,10 @@
 <input type="hidden" id="roles-total-count" value="{!! $roles->total() !!}">
 
-<div class="overflow-x-auto custom-scrollbar">
-    <table class="table-modern" id="myTable">
+<!-- ========================================== -->
+<!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
+<!-- ========================================== -->
+<div class="hidden md:block overflow-x-auto custom-scrollbar">
+    <table class="table-modern w-full" id="myTable">
         <thead>
             <tr>
                 <th class="w-12 text-center">#</th>
@@ -97,7 +100,6 @@
                     </td>
                 </tr>
             @empty
-                <!-- Ultra-Premium Empty State -->
                 <tr>
                     <td colspan="{{ isset($stores) ? 7 : 6 }}" class="text-center py-16 px-6">
                         <div class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-b from-indigo-50/60 to-slate-100/80 dark:from-slate-800/80 dark:to-indigo-950/40 border border-slate-200/80 dark:border-slate-700/60 shadow-inner mb-4">
@@ -122,9 +124,105 @@
     </table>
 </div>
 
-<!-- Pagination Footer -->
+<!-- ========================================== -->
+<!-- 2. MOBILE RESPONSIVE CARDS (Below md:)     -->
+<!-- ========================================== -->
+<div class="block md:hidden p-3 space-y-3">
+    @forelse ($roles as $role)
+        <div id="mobile-row{{ $role->id }}" class="dash-card p-4 space-y-3 relative transition-all duration-200 hover:shadow-md border border-slate-200/90 dark:border-slate-800">
+            
+            <!-- Header: Role Shield, Name & Store / System Pill -->
+            <div class="flex items-start justify-between gap-2.5">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm font-bold shadow-xs">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                {{ $role->name }}
+                            </h3>
+                            @if($role->isSystemRole())
+                                <span class="badge-pill badge-pill-warning text-[9px] px-1.5 py-0.2">
+                                    نظام محمي
+                                </span>
+                            @endif
+                        </div>
+                        @if (isset($stores))
+                            <div class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                @if ($role->store)
+                                    <i class="fas fa-store text-[10px] text-indigo-500"></i>
+                                    <span class="truncate">{{ $role->store->name }}</span>
+                                @else
+                                    <span class="badge-pill badge-pill-warning text-[9px] px-1.5 py-0.2">
+                                        عام (كل الفروع)
+                                    </span>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            @if($role->description)
+                <p class="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-2 rounded-xl border border-slate-100 dark:border-slate-800">
+                    {{ $role->description }}
+                </p>
+            @endif
+
+            <!-- Mini Matrix: Permissions & Users Count -->
+            <div class="grid grid-cols-2 gap-2 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 text-center">
+                <!-- Permissions -->
+                <div class="space-y-0.5">
+                    <span class="block text-[10px] font-bold text-slate-500 dark:text-slate-400">الصلاحيات</span>
+                    <span class="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                        <i class="fas fa-key text-[10px]"></i>
+                        <span>{{ $role->permissions ? $role->permissions->count() : 0 }}</span>
+                    </span>
+                </div>
+
+                <!-- Users -->
+                <div class="space-y-0.5 border-s border-slate-200 dark:border-slate-700/60 ps-1">
+                    <span class="block text-[10px] font-bold text-slate-500 dark:text-slate-400">المستخدمين</span>
+                    <span class="inline-flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-slate-200">
+                        <i class="fas fa-users text-[10px] text-slate-400"></i>
+                        <span>{{ $role->users_count ?? $role->users()->count() }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Footer: Date & Actions -->
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium" dir="ltr">
+                    <i class="far fa-calendar-alt text-[10px] me-0.5"></i>
+                    {{ $role->created_at ? $role->created_at->format('Y-m-d') : '—' }}
+                </span>
+
+                <div class="flex items-center gap-1.5">
+                    @include('dashboard.roles.parts.actions', ['role' => $role])
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="text-center py-12 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xl mx-auto mb-3">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
+                {!! __('roles.no_roles_found') !!}
+            </h4>
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+                {!! __('roles.no_roles_desc') !!}
+            </p>
+        </div>
+    @endforelse
+</div>
+
+<!-- ========================================== -->
+<!-- 3. RESPONSIVE PAGINATION FOOTER            -->
+<!-- ========================================== -->
 @if ($roles->hasPages())
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
-        {!! $roles->links() !!}
+    <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
+        {!! $roles->links('dashboard.includes.pagination') !!}
     </div>
 @endif

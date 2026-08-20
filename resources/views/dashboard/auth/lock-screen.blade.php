@@ -235,7 +235,7 @@
         routes: {
             unlock: "{{ route('dashboard.unlock.screen') }}",
             dashboard: "{{ route('dashboard.index') }}",
-            keep_alive: "{{ route('dashboard.keep.alive') }}"
+            keep_alive: "{{ \Illuminate\Support\Facades\Route::has('dashboard.keep.alive') ? route('dashboard.keep.alive') : '' }}"
         },
         labels: {
             unlock: "{{ __('auth.unlock') }}",

@@ -1,6 +1,9 @@
 <input type="hidden" id="store_withdrawals-total-count" value="{{ $withdrawals->total() }}">
 
-<div class="overflow-x-auto">
+<!-- ========================================== -->
+<!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
+<!-- ========================================== -->
+<div class="hidden md:block overflow-x-auto custom-scrollbar">
     <table class="table-modern w-full" id="myTable">
         <thead>
             <tr>
@@ -21,7 +24,7 @@
                 <tr id="row{{ $withdrawal->id }}" class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                     <!-- Iteration # -->
                     <td class="text-center">
-                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                        <span class="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {{ $loop->iteration + ($withdrawals->currentPage() - 1) * $withdrawals->perPage() }}
                         </span>
                     </td>
@@ -121,14 +124,97 @@
                     </td>
                 </tr>
             @endforelse
-
         </tbody>
     </table>
 </div>
 
-<!-- Pagination Footer -->
+<!-- ========================================== -->
+<!-- 2. MOBILE RESPONSIVE CARDS (Below md:)     -->
+<!-- ========================================== -->
+<div class="block md:hidden p-3 space-y-3">
+    @forelse ($withdrawals as $withdrawal)
+        @php
+            $isWallet = optional($withdrawal->bankAccount)->account_type === 'wallet';
+            $entityName = optional(optional($withdrawal->bankAccount)->paymentEntity)->getTranslation('name', app()->getLocale()) ?: optional(optional($withdrawal->bankAccount)->paymentEntity)->getTranslation('name', 'ar');
+        @endphp
+        <div id="mobile-row{{ $withdrawal->id }}" class="dash-card p-4 space-y-3 relative transition-all duration-200 hover:shadow-md border border-slate-200/90 dark:border-slate-800">
+            
+            <!-- Header: Account & Amount -->
+            <div class="flex items-start justify-between gap-2.5">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-base font-bold shadow-xs">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                            {{ $entityName ?: 'حساب بنكي' }}
+                        </h3>
+                        @if($withdrawal->bankAccount && $withdrawal->bankAccount->account_type !== 'cash')
+                            <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500 block mt-0.5" dir="ltr">
+                                {{ $withdrawal->bankAccount->account_number }}
+                            </span>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Amount Badge -->
+                <div class="shrink-0 text-end">
+                    <span class="block font-mono text-sm font-black text-rose-600 dark:text-rose-400" dir="ltr">
+                        {{ number_format($withdrawal->amount, 2) }}
+                    </span>
+                    <span class="text-[10px] text-slate-400">مسحوبات</span>
+                </div>
+            </div>
+
+            <!-- Reason Description Box -->
+            @if($withdrawal->reason)
+                <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 text-xs">
+                    <span class="text-[11px] text-slate-400 font-medium block mb-0.5">سبب السحب / البيان:</span>
+                    <p class="text-slate-700 dark:text-slate-200 font-medium">{{ $withdrawal->reason }}</p>
+                </div>
+            @endif
+
+            <!-- Footer: Creator, Date & Actions -->
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800 text-xs">
+                <div class="flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                    @if (isset($stores) && $withdrawal->store)
+                        <span class="inline-flex items-center gap-1">
+                            <i class="fas fa-store text-[9px]"></i>
+                            <span>{{ $withdrawal->store->name }}</span>
+                        </span>
+                        <span>•</span>
+                    @endif
+                    <span dir="ltr">
+                        <i class="far fa-calendar-alt text-[10px] me-0.5"></i>
+                        {{ $withdrawal->withdrawal_date ? \Carbon\Carbon::parse($withdrawal->withdrawal_date)->format('Y-m-d') : $withdrawal->created_at->format('Y-m-d') }}
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                    @include('dashboard.store_withdrawals.parts.actions')
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="text-center py-12 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xl mx-auto mb-3">
+                <i class="fas fa-hand-holding-usd"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
+                {!! __('store_withdrawals.no_store_withdrawals_found') !!}
+            </h4>
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+                {!! __('store_withdrawals.no_withdrawals_desc') !!}
+            </p>
+        </div>
+    @endforelse
+</div>
+
+<!-- ========================================== -->
+<!-- 3. RESPONSIVE PAGINATION FOOTER            -->
+<!-- ========================================== -->
 @if ($withdrawals->hasPages())
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
-        {!! $withdrawals->links() !!}
+    <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
+        {!! $withdrawals->links('dashboard.includes.pagination') !!}
     </div>
 @endif

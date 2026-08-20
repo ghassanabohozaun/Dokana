@@ -37,11 +37,11 @@
         window.addEventListener('scroll', resetTimer);
     }
 
-    // 2. Unlock Handler (Lock Screen Only)
-    $(document).ready(function () {
-        const lockForm = $("#lock-form");
-        if (lockForm.length > 0) {
-            const submitBtn = $("#unlock-btn");
+    // 2. Unlock Handler (Lock Screen Only - Pure Vanilla JS)
+    document.addEventListener("DOMContentLoaded", function () {
+        const lockForm = document.getElementById("lock-form");
+        if (lockForm) {
+            const submitBtn = document.getElementById("unlock-btn");
             const data = window.LockScreenData || {};
 
             // Keep-Alive Ping every 15 minutes (900000 ms) to prevent session expiry
@@ -56,14 +56,13 @@
                 }, 900000);
             }
 
-            lockForm.on("submit", function () {
+            lockForm.addEventListener("submit", function () {
                 // Show loading state on standard submit
-                submitBtn
-                    .prop("disabled", true)
-                    .html(
-                        '<i class="la la-spinner la-spin"></i> ' +
-                            (data.labels.unlocking || "Unlocking..."),
-                    );
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    const unlockingText = (data.labels && data.labels.unlocking) ? data.labels.unlocking : "جاري الفتح...";
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1.5"></i> ' + unlockingText;
+                }
             });
         }
     });

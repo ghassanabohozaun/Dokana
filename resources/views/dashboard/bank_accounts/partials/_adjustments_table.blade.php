@@ -1,4 +1,7 @@
-<div class="overflow-x-auto">
+<!-- ========================================== -->
+<!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
+<!-- ========================================== -->
+<div class="hidden md:block overflow-x-auto custom-scrollbar">
     <table class="table-modern w-full">
         <thead>
             <tr>
@@ -16,14 +19,14 @@
                 <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                     <!-- Iteration # -->
                     <td class="text-center">
-                        <span class="text-xs font-bold text-slate-400 dark:text-slate-500">
+                        <span class="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                             {{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}
                         </span>
                     </td>
 
                     <!-- Date -->
                     <td>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-300" dir="ltr">
+                        <span class="text-xs font-medium text-slate-700 dark:text-slate-300" dir="ltr">
                             {{ $transaction->created_at ? $transaction->created_at->format('Y-m-d h:i A') : '—' }}
                         </span>
                     </td>
@@ -92,8 +95,75 @@
     </table>
 </div>
 
+<!-- ========================================== -->
+<!-- 2. MOBILE RESPONSIVE CARDS (Below md:)     -->
+<!-- ========================================== -->
+<div class="block md:hidden p-3 space-y-2.5">
+    @forelse ($transactions as $transaction)
+        <div class="p-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-2">
+            <!-- Header: Status & Difference -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400 text-xs">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-white">تسوية جردية</span>
+                </div>
+
+                @if($transaction->amount > 0)
+                    <span class="font-mono text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-lg" dir="ltr">
+                        +{{ number_format(abs($transaction->amount), 2) }} (فائض)
+                    </span>
+                @elseif($transaction->amount < 0)
+                    <span class="font-mono text-xs font-bold text-rose-600 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-lg" dir="ltr">
+                        -{{ number_format(abs($transaction->amount), 2) }} (عجز)
+                    </span>
+                @else
+                    <span class="text-xs text-slate-400 font-bold">0.00</span>
+                @endif
+            </div>
+
+            <!-- Balances Transition Matrix -->
+            <div class="grid grid-cols-2 gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-xs">
+                <div>
+                    <span class="text-[10px] text-slate-400 block">الرصيد الدفتري:</span>
+                    <span class="font-mono font-bold text-slate-600 dark:text-slate-300" dir="ltr">{{ number_format($transaction->old_balance, 2) }}</span>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block">الرصيد الفعلي:</span>
+                    <span class="font-mono font-bold text-slate-900 dark:text-white" dir="ltr">{{ number_format($transaction->new_balance, 2) }}</span>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            @if($transaction->notes)
+                <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                    {{ $transaction->notes }}
+                </p>
+            @endif
+
+            <!-- Footer: Date -->
+            <div class="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <span class="font-mono text-[10px]">#{{ $loop->iteration + ($transactions->currentPage() - 1) * $transactions->perPage() }}</span>
+                <span dir="ltr">
+                    <i class="far fa-calendar-alt text-[10px] me-0.5"></i>
+                    {{ $transaction->created_at ? $transaction->created_at->format('Y-m-d h:i A') : '—' }}
+                </span>
+            </div>
+        </div>
+    @empty
+        <div class="text-center py-8 text-slate-400 text-xs">
+            <i class="fas fa-inbox text-2xl mb-2 block opacity-40"></i>
+            {!! __('bank_accounts.no_adjustments_yet') !!}
+        </div>
+    @endforelse
+</div>
+
+<!-- ========================================== -->
+<!-- 3. RESPONSIVE PAGINATION FOOTER            -->
+<!-- ========================================== -->
 @if ($transactions->hasPages())
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center custom-pagination">
-        {!! $transactions->links() !!}
+    <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
+        {!! $transactions->links('dashboard.includes.pagination') !!}
     </div>
 @endif

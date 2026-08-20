@@ -1,11 +1,3 @@
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-if (!window.AlpineInitialized) {
-    window.AlpineInitialized = true;
-    Alpine.start();
-}
-
 /**
  * DOKANA ENTERPRISE DASHBOARD - TAILWIND JS CORE
  * 100% Standalone, High Performance, Zero External Dependencies

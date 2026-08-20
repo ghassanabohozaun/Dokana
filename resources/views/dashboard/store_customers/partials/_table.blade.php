@@ -11,7 +11,10 @@
     </div>
 @endif
 
-<div class="overflow-x-auto custom-scrollbar">
+<!-- ========================================== -->
+<!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
+<!-- ========================================== -->
+<div class="hidden md:block overflow-x-auto custom-scrollbar">
     <table class="table-modern" id="myTable">
         <thead>
             <tr>
@@ -181,9 +184,168 @@
     </table>
 </div>
 
-<!-- Pagination Footer -->
+<!-- ========================================== -->
+<!-- 2. MOBILE RESPONSIVE CARDS (Below md:)     -->
+<!-- ========================================== -->
+<div class="block md:hidden p-3 space-y-3">
+    @forelse ($store_customers as $store_customer)
+        @php
+            $balance = $store_customer->calculated_balance;
+            $cleanPhone = preg_replace('/[^0-9]/', '', (string)$store_customer->phone);
+        @endphp
+        <div id="mobile-row{{ $store_customer->id }}" class="dash-card p-4 space-y-3 relative transition-all duration-200 hover:shadow-md border border-slate-200/90 dark:border-slate-800">
+            
+            <!-- Card Header: Identity & Status -->
+            <div class="flex items-start justify-between gap-2.5">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-black text-sm shadow-sm shadow-indigo-500/20">
+                        {{ mb_substr($store_customer->name, 0, 1) }}
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <a href="{!! route('dashboard.store-customers.show', $store_customer->id) !!}" 
+                               class="text-sm font-bold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate">
+                                {{ $store_customer->name }}
+                            </a>
+                            @if ($store_customer->is_walk_in)
+                                <span class="badge-pill badge-pill-info text-[9px] px-1.5 py-0.5">
+                                    مباشر
+                                </span>
+                            @endif
+                        </div>
+
+                        <!-- Store Name (if multi-store) -->
+                        @if (isset($stores) && $store_customer->store)
+                            <div class="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                <i class="fas fa-store text-[10px]"></i>
+                                <span class="truncate">{{ $store_customer->store->name }}</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Status Toggle -->
+                <div class="shrink-0">
+                    @include('dashboard.store_customers.parts.status', ['store_customer' => $store_customer])
+                </div>
+            </div>
+
+            <!-- Quick Contact & Date Bar -->
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800/80 text-xs">
+                @if ($store_customer->phone)
+                    <div class="flex items-center gap-1.5">
+                        <!-- Direct Call -->
+                        <a href="tel:{{ $store_customer->phone }}" 
+                           class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-bold text-xs hover:bg-indigo-100 transition-colors" dir="ltr">
+                            <i class="fas fa-phone-alt text-[10px]"></i>
+                            <span>{{ $store_customer->phone }}</span>
+                        </a>
+
+                        <!-- WhatsApp Action -->
+                        @if ($cleanPhone)
+                            <a href="https://wa.me/{{ $cleanPhone }}" target="_blank" 
+                               class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-100 transition-colors shadow-2xs" 
+                               title="مراسلة عبر واتساب">
+                                <i class="fab fa-whatsapp text-sm"></i>
+                            </a>
+                        @endif
+                    </div>
+                @else
+                    <span class="text-xs text-slate-400 italic">بدون رقم هاتف</span>
+                @endif
+
+                <span class="text-[11px] text-slate-400 dark:text-slate-500 font-medium" dir="ltr">
+                    <i class="far fa-calendar-alt text-[10px] me-0.5"></i>
+                    {{ $store_customer->created_at->format('Y-m-d') }}
+                </span>
+            </div>
+
+            <!-- Mini Financial Summary Matrix (3 Columns) -->
+            <div class="grid grid-cols-3 gap-2 p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 text-center">
+                <!-- Current Balance -->
+                <div class="space-y-0.5">
+                    <span class="block text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                        {!! __('store_customers.current_balance') !!}
+                    </span>
+                    @if ($balance > 0)
+                        <span class="block font-mono text-xs font-black text-rose-600 dark:text-rose-400">
+                            {{ number_format($balance, 2) }}
+                        </span>
+                        <span class="inline-block text-[9px] font-bold text-rose-700 dark:text-rose-400 bg-rose-100 dark:bg-rose-950/80 px-1.5 rounded-full">عليه</span>
+                    @elseif ($balance < 0)
+                        <span class="block font-mono text-xs font-black text-emerald-600 dark:text-emerald-400">
+                            {{ number_format(abs($balance), 2) }} +
+                        </span>
+                        <span class="inline-block text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/80 px-1.5 rounded-full">له</span>
+                    @else
+                        <span class="block font-mono text-xs font-bold text-slate-600 dark:text-slate-300">0.00</span>
+                        <span class="inline-block text-[9px] font-bold text-slate-500 bg-slate-200 dark:bg-slate-700 px-1.5 rounded-full">خالص</span>
+                    @endif
+                </div>
+
+                <!-- Total Debts -->
+                <div class="space-y-0.5 border-s border-slate-200 dark:border-slate-700/60 ps-1">
+                    <span class="block text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                        {!! __('store_customers.total_debts') !!}
+                    </span>
+                    <span class="block font-mono text-xs font-bold text-slate-700 dark:text-slate-200" dir="ltr">
+                        {{ number_format($store_customer->total_debts ?? 0, 2) }}
+                    </span>
+                </div>
+
+                <!-- Total Payments -->
+                <div class="space-y-0.5 border-s border-slate-200 dark:border-slate-700/60 ps-1">
+                    <span class="block text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                        {!! __('store_customers.total_payments') !!}
+                    </span>
+                    <span class="block font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400" dir="ltr">
+                        {{ number_format($store_customer->total_payments ?? 0, 2) }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Debt Limit & Actions Row -->
+            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <!-- Limit indicator -->
+                <div class="text-[11px]">
+                    @if ($store_customer->bypass_debt_limit)
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+                            <i class="fas fa-infinity text-[9px]"></i>
+                            <span>تخطي السقف</span>
+                        </span>
+                    @elseif ($store_customer->max_debt_limit && $store_customer->max_debt_limit > 0)
+                        <span class="text-slate-500 dark:text-slate-400 text-[10px]">
+                            السقف: <strong class="font-mono text-slate-700 dark:text-slate-200">{{ number_format($store_customer->max_debt_limit, 0) }}</strong>
+                        </span>
+                    @endif
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-1.5">
+                    @include('dashboard.store_customers.parts.actions', ['store_customer' => $store_customer])
+                </div>
+            </div>
+        </div>
+    @empty
+        <div class="text-center py-12 px-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xl mx-auto mb-3">
+                <i class="fas fa-users"></i>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
+                {!! __('store_customers.no_store_customers_found') !!}
+            </h4>
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+                {!! __('store_customers.no_customers_desc') !!}
+            </p>
+        </div>
+    @endforelse
+</div>
+
+<!-- ========================================== -->
+<!-- 3. RESPONSIVE PAGINATION FOOTER            -->
+<!-- ========================================== -->
 @if ($store_customers->hasPages())
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 flex justify-center">
-        {!! $store_customers->links() !!}
+    <div class="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60">
+        {!! $store_customers->links('dashboard.includes.pagination') !!}
     </div>
 @endif

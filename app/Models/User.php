@@ -79,13 +79,9 @@ class User extends Authenticatable implements MustBelongToStore
         return in_array($permissions, $rolePermissions);
     }
 
-    // Formatting
-    public function getCreatedAtAttribute($value)
+    public function getFormattedCreatedAtAttribute()
     {
-        if (request()->wantsJson()) {
-            return $value;
-        }
-        return Carbon::parse($value)->format('d/m/Y h:i A');
+        return $this->created_at ? $this->created_at->format('d/m/Y h:i A') : '—';
     }
 
     public function getInitialsAttribute()
