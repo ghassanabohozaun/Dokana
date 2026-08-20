@@ -1,17 +1,17 @@
 <!-- ========================================== -->
 <!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
 <!-- ========================================== -->
-<div class="hidden md:block overflow-x-auto custom-scrollbar">
+<div class="hidden md:block overflow-hidden">
     <table class="table-modern w-full">
         <thead>
             <tr>
-                <th class="w-12 text-center">#</th>
-                <th>{!! __('store_supplier_payments.payment_date') !!}</th>
-                <th class="text-center">{!! __('store_supplier_payments.amount') !!}</th>
-                <th>{!! __('bank_accounts.bank_account') !!}</th>
-                <th>{!! __('store_supplier_invoices.invoice_number') !!}</th>
-                <th class="hidden sm:table-cell">{!! __('departments.created_by') !!}</th>
-                <th>{!! __('store_supplier_payments.notes') !!}</th>
+                <th class="w-10 text-center px-2.5 py-3 text-xs">#</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('store_supplier_payments.payment_date') !!}</th>
+                <th class="text-center px-2.5 py-3 text-xs">{!! __('store_supplier_payments.amount') !!}</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('bank_accounts.bank_account') !!}</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.invoice_number') !!}</th>
+                <th class="hidden sm:table-cell px-2.5 py-3 text-xs">{!! __('departments.created_by') !!}</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('store_supplier_payments.notes') !!}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">

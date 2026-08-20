@@ -1,17 +1,17 @@
 <!-- ========================================== -->
 <!-- 1. DESKTOP / TABLET DATA TABLE (md: & up)  -->
 <!-- ========================================== -->
-<div class="hidden md:block overflow-x-auto custom-scrollbar">
+<div class="hidden md:block overflow-hidden">
     <table class="table-modern w-full">
         <thead>
             <tr>
-                <th class="w-12 text-center">#</th>
-                <th>{!! __('store_supplier_invoices.invoice_number') !!}</th>
-                <th>{!! __('store_supplier_invoices.invoice_date') !!}</th>
-                <th class="text-center">{!! __('store_supplier_invoices.total_amount') !!}</th>
-                <th class="text-center">{!! __('store_supplier_invoices.paid_amount') !!}</th>
-                <th class="text-center">{!! __('store_supplier_invoices.remaining_amount') !!}</th>
-                <th class="text-center">{!! __('store_supplier_invoices.status') !!}</th>
+                <th class="w-10 text-center px-2.5 py-3 text-xs">#</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.invoice_number') !!}</th>
+                <th class="px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.invoice_date') !!}</th>
+                <th class="text-center px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.total_amount') !!}</th>
+                <th class="text-center px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.paid_amount') !!}</th>
+                <th class="text-center px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.remaining_amount') !!}</th>
+                <th class="text-center px-2.5 py-3 text-xs">{!! __('store_supplier_invoices.status') !!}</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
