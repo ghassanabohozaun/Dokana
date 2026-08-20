@@ -27,14 +27,14 @@ class StoreCustomersController extends Controller
         Gate::authorize('store_customers_read');
 
         $title = __('store_customers.store_customers');
-        $store_customers = $this->storeCustomerService->getAll($request->keyword, $request->store_id, $request->status, $request->sort_by);
+        $store_customers = $this->storeCustomerService->getAll($request->keyword, $request->store_id, $request->status, $request->sort_by, $request->balance_status);
 
         $stores = null;
         if (user()->role_id == 1 || user()->id == 1) {
             $stores = $this->storeService->getActiveStoresForDropdown();
         }
 
-        $metrics = $this->storeCustomerService->getMetrics($request->keyword, $request->store_id, $request->status);
+        $metrics = $this->storeCustomerService->getMetrics($request->keyword, $request->store_id, $request->status, $request->balance_status);
 
         if ($request->ajax()) {
             return view('dashboard.store_customers.partials._table', compact('store_customers', 'stores', 'metrics'))->render();

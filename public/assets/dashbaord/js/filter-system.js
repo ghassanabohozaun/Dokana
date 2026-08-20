@@ -291,10 +291,15 @@ $(document).ready(function() {
         $('.js-reset-btn').off('click').on('click', function(e) {
             e.preventDefault();
             const $form = $(this).closest('form');
-            $form[0].reset();
-            $form.find('.js-select2').val(null).trigger('change');
+            if ($form.length && $form[0]) {
+                $form[0].reset();
+            }
+            $form.find('input[type="text"], input[type="search"], input[type="number"]').val('');
+            $form.find('select').val('').trigger('change.select2');
             $form.find('.js-filter-chip').removeClass('active');
-            closeAll();
+            if (typeof closeAll === 'function') {
+                closeAll();
+            }
             $form.trigger('submit');
         });
 
@@ -320,9 +325,37 @@ $(document).ready(function() {
             }
         });
 
+        // Initialize any uninitialized select2 inside the filter bar
+        $('.js-filter-form select.select2, .js-filter-form select.form-input-modern').each(function() {
+            const $this = $(this);
+            if (!$this.hasClass('select2-hidden-accessible')) {
+                const dir = $('html').attr('data-textdirection') || $('html').attr('dir') || 'rtl';
+                $this.select2({
+                    width: '100%',
+                    dir: dir,
+                    dropdownAutoWidth: true
+                });
+            }
+        });
+
     }
 
     initFilterSystem();
+
+    // Auto live filtering on select change
+    $(document).off('change.filterAutoSubmit', '.js-filter-form select').on('change.filterAutoSubmit', '.js-filter-form select', function(e) {
+        // Only trigger if user-initiated or explicit
+        $(this).closest('.js-filter-form').trigger('submit');
+    });
+
+    // Debounced keyword typing search (400ms)
+    const debouncedFilterSubmit = debounce(function($form) {
+        $form.trigger('submit');
+    }, 400);
+
+    $(document).off('input.filterAutoSearch', '.js-filter-form input[name="keyword"]').on('input.filterAutoSearch', '.js-filter-form input[name="keyword"]', function() {
+        debouncedFilterSubmit($(this).closest('.js-filter-form'));
+    });
 
     $(document).on('submit', '.js-filter-form', function(e, extraData) {
         e.preventDefault();
@@ -361,7 +394,7 @@ $(document).ready(function() {
                 $(targetLoader).removeClass('active');
 
                 // Update total count badges if they exist
-                ['contracts', 'properties', 'customers', 'maintenances', 'guarantors', 'users', 'roles', 'departments', 'property_types', 'property_statuses', 'bank_accounts', 'companies'].forEach(module => {
+                ['contracts', 'properties', 'customers', 'store_customers', 'store_transactions', 'maintenances', 'guarantors', 'users', 'roles', 'departments', 'property_types', 'property_statuses', 'bank_accounts', 'companies'].forEach(module => {
                     const total = $(`#${module}-total-count`).val();
                     if (total !== undefined) {
                         $(`#${module}CountBadge`).text(total);

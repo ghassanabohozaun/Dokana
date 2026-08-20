@@ -18,7 +18,12 @@ return [
     'net_balance' => 'Net Balance',
     'total_transactions_count' => 'Total Transactions',
     'transaction' => 'Transaction',
-    'no_transactions_desc' => 'No customer transactions have been recorded yet. You can add a new transaction using the button above.',
+    'no_transactions_desc' => 'No customer transactions recorded yet. You can add a new transaction using the button above.',
+    'all_types' => 'All Transaction Types',
+    'all_customers' => 'All Customers',
+    'all_bank_accounts' => 'All Accounts & Safes',
+    'date_range' => 'Date / Date Range',
+    'filter_by_date' => 'Filter by date or range...',
     
     // Validation
     'store_required' => 'The store field is required.',

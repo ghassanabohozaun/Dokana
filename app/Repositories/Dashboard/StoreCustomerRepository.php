@@ -30,7 +30,7 @@ class StoreCustomerRepository
     }
 
     // get all
-    public function getAll($keyword = null, $store_id = null, $status = null, $sort_by = null)
+    public function getAll($keyword = null, $store_id = null, $status = null, $sort_by = null, $balance_status = null)
     {
         $query = $this->model->with(['store'])
             ->withSum(['transactions as total_debts' => function($q) {
@@ -41,12 +41,26 @@ class StoreCustomerRepository
             }], 'amount')
             ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'status' => $status], ['name', 'phone'], ['store_id', 'status']);
             
+        if ($balance_status === 'has_debt') {
+            $query->where('balance', '>', 0);
+        } elseif ($balance_status === 'has_credit') {
+            $query->where('balance', '<', 0);
+        } elseif ($balance_status === 'cleared') {
+            $query->where('balance', '=', 0);
+        }
+
         if ($sort_by === 'highest_debts') {
-            $query->orderByRaw('(COALESCE(total_debts, 0) - COALESCE(total_payments, 0)) DESC')->orderBy('id', 'desc');
+            $query->orderBy('balance', 'desc')->orderBy('id', 'desc');
+        } elseif ($sort_by === 'lowest_debts') {
+            $query->orderBy('balance', 'asc')->orderBy('id', 'desc');
         } elseif ($sort_by === 'highest_payments') {
             $query->orderBy('total_payments', 'desc')->orderBy('id', 'desc');
         } elseif ($sort_by === 'oldest_debts') {
             $query->orderByDesc('debt_age')->orderBy('id', 'desc');
+        } elseif ($sort_by === 'name_asc') {
+            $query->orderBy('name', 'asc');
+        } elseif ($sort_by === 'name_desc') {
+            $query->orderBy('name', 'desc');
         } else {
             $query->orderBy('id', 'desc');
         }
@@ -54,9 +68,17 @@ class StoreCustomerRepository
         return $this->applyAjaxPagination(request(), $query);
     }
 
-    public function getMetrics($keyword = null, $store_id = null, $status = null)
+    public function getMetrics($keyword = null, $store_id = null, $status = null, $balance_status = null)
     {
         $query = $this->model->filter(['keyword' => $keyword, 'store_id' => $store_id, 'status' => $status], ['name', 'phone'], ['store_id', 'status']);
+
+        if ($balance_status === 'has_debt') {
+            $query->where('balance', '>', 0);
+        } elseif ($balance_status === 'has_credit') {
+            $query->where('balance', '<', 0);
+        } elseif ($balance_status === 'cleared') {
+            $query->where('balance', '=', 0);
+        }
 
         $total_customers_count = (clone $query)->count();
 

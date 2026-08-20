@@ -14,16 +14,36 @@ class StoreTransactionService
         $this->storeTransactionRepository = $storeTransactionRepository;
     }
 
+    protected function extractDateFilters($request)
+    {
+        $specific_date = $request->specific_date ?? $request->date;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+
+        if ($specific_date && (str_contains($specific_date, ' to ') || str_contains($specific_date, ' إلى ') || str_contains($specific_date, ' - '))) {
+            $parts = preg_split('/\s+(to|إلى|-)\s+/', $specific_date);
+            if (count($parts) >= 2) {
+                $start_date = trim($parts[0]);
+                $end_date = trim($parts[1]);
+                $specific_date = null;
+            }
+        }
+
+        return [$specific_date, $start_date, $end_date];
+    }
+
     // get all
     public function getAll($request)
     {
+        [$specific_date, $start_date, $end_date] = $this->extractDateFilters($request);
+
         return $this->storeTransactionRepository->getAll(
             $request->keyword,
             $request->store_id,
             $request->type,
-            $request->specific_date,
-            $request->start_date,
-            $request->end_date,
+            $specific_date,
+            $start_date,
+            $end_date,
             $request->store_customer_id,
             $request->store_bank_account_id
         );
@@ -31,13 +51,15 @@ class StoreTransactionService
 
     public function getMetrics($request)
     {
+        [$specific_date, $start_date, $end_date] = $this->extractDateFilters($request);
+
         return $this->storeTransactionRepository->getMetrics(
             $request->keyword,
             $request->store_id,
             $request->type,
-            $request->specific_date,
-            $request->start_date,
-            $request->end_date,
+            $specific_date,
+            $start_date,
+            $end_date,
             $request->store_customer_id,
             $request->store_bank_account_id
         );

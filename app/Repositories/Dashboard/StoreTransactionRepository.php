@@ -29,11 +29,15 @@ class StoreTransactionRepository
             ->filter(['keyword' => $keyword, 'store_id' => $store_id, 'type' => $type, 'store_customer_id' => $store_customer_id, 'store_bank_account_id' => $store_bank_account_id], [], ['store_id', 'type', 'store_customer_id', 'store_bank_account_id'])
             ->orderByDesc('id');
 
-        // Apply general text search across customer name if needed
+        // Apply general text search across customer name, phone, or transaction description
         if ($keyword) {
-            $query->whereHas('customer', function($q) use ($keyword) {
-                $q->where('name', 'like', '%' . $keyword . '%')
-                  ->orWhere('phone', 'like', '%' . $keyword . '%');
+            $query->where(function($subQ) use ($keyword) {
+                $subQ->where('description', 'like', '%' . $keyword . '%')
+                     ->orWhere('amount', 'like', '%' . $keyword . '%')
+                     ->orWhereHas('customer', function($q) use ($keyword) {
+                         $q->where('name', 'like', '%' . $keyword . '%')
+                           ->orWhere('phone', 'like', '%' . $keyword . '%');
+                     });
             });
         }
 
@@ -57,9 +61,13 @@ class StoreTransactionRepository
         $query = $this->model->filter(['keyword' => $keyword, 'store_id' => $store_id, 'type' => $type, 'store_customer_id' => $store_customer_id, 'store_bank_account_id' => $store_bank_account_id], [], ['store_id', 'type', 'store_customer_id', 'store_bank_account_id']);
 
         if ($keyword) {
-            $query->whereHas('customer', function($q) use ($keyword) {
-                $q->where('name', 'like', '%' . $keyword . '%')
-                  ->orWhere('phone', 'like', '%' . $keyword . '%');
+            $query->where(function($subQ) use ($keyword) {
+                $subQ->where('description', 'like', '%' . $keyword . '%')
+                     ->orWhere('amount', 'like', '%' . $keyword . '%')
+                     ->orWhereHas('customer', function($q) use ($keyword) {
+                         $q->where('name', 'like', '%' . $keyword . '%')
+                           ->orWhere('phone', 'like', '%' . $keyword . '%');
+                     });
             });
         }
 

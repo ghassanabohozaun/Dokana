@@ -40,5 +40,14 @@ return [
     'opening_balance' => 'Opening Balance',
     'cannot_delete_walk_in' => 'Direct cash customer (Walk-in) cannot be deleted.',
     'no_customers_desc' => 'No customers have been registered yet. You can add a new customer using the button above.',
+    'balance_status' => 'Balance Status',
+    'all_balances' => 'All Balances',
+    'has_debts' => 'Has Debts (Debtor)',
+    'has_credit' => 'Has Credit (Creditor)',
+    'cleared_balance' => 'Zero Balance (0)',
+    'sort_by_default' => 'Sort: Default (Latest)',
+    'lowest_debts' => 'Lowest Debts',
+    'sort_name_asc' => 'Name: A - Z',
+    'sort_name_desc' => 'Name: Z - A',
 ];
 
