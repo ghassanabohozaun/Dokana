@@ -16,6 +16,8 @@ return [
     'balance_exceeded_warning' => 'Sorry, the requested amount exceeds the available balance!',
     'enter_withdrawal_reason' => 'Enter withdrawal reason...',
     'no_withdrawals_desc' => 'No withdrawal transactions have been recorded yet. You can add a new withdrawal using the button above.',
+    'cannot_delete_supplier_linked_withdrawal' => 'Cannot delete this withdrawal because it is linked to a registered supplier payment.',
+    'select_store_first' => 'Please select store first...',
 ];
 
 

@@ -47,6 +47,11 @@ class StoreWithdrawalService
 
     public function delete($id)
     {
+        $withdrawal = $this->repository->find($id);
+        if ($withdrawal && !empty($withdrawal->store_supplier_payment_id)) {
+            throw new \App\Exceptions\DeleteRestrictionException(__('store_withdrawals.cannot_delete_supplier_linked_withdrawal'));
+        }
+
         return $this->repository->delete($id);
     }
 }

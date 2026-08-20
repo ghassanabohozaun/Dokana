@@ -47,6 +47,7 @@ class StoreSupplierPaymentRepository
     public function update($id, array $data)
     {
         $payment = $this->find($id);
+        unset($data['store_id']);
         $payment->update($data);
         return $payment;
     }

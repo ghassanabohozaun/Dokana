@@ -42,7 +42,8 @@ return [
     'admin_name' => 'Name',
     'admin_email' => 'Email',
     'enter_admin_name' => 'Enter Admin Name',
-    'enter_admin_email' => 'Enter Admin Email',
     'no_users_desc' => 'No users have been registered yet. You can add a new user using the button above.',
+    'cannot_delete_own_account' => 'You cannot delete your own currently logged-in account.',
+    'cannot_delete_super_admin' => 'The Super Admin account cannot be deleted.',
 ];
 

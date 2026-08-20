@@ -34,7 +34,7 @@
                             <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-0.5">
                                 {!! __('bank_accounts.system_balance') !!}
                             </span>
-                            <span class="text-[11px] text-slate-400">الرصيد الدفتري المسجل</span>
+                            <span class="text-[11px] text-slate-400">{!! __('bank_accounts.system_balance_subtitle') !!}</span>
                         </div>
                         <div class="text-lg font-black text-indigo-600 dark:text-indigo-400" dir="ltr" id="current_system_balance">
                             0.00
@@ -53,7 +53,7 @@
 
                     <!-- Live Difference Indicator Badge (Appears when typed) -->
                     <div id="diff_indicator_container" class="hidden p-3 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all">
-                        <span id="diff_label">الفارق المتوقع:</span>
+                        <span id="diff_label">{!! __('bank_accounts.expected_diff') !!}</span>
                         <span id="diff_value" class="font-black" dir="ltr">0.00</span>
                     </div>
 

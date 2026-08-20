@@ -46,6 +46,11 @@ class StoreBankAccountService
 
     public function delete($id)
     {
+        $account = $this->repository->find($id);
+        if ($account && $account->is_default) {
+            throw new \App\Exceptions\DeleteRestrictionException(__('bank_accounts.cannot_delete_default_account'));
+        }
+
         return $this->repository->delete($id);
     }
 }

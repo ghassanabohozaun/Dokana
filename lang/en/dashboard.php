@@ -19,6 +19,7 @@ return [
     'salaries_count' => 'Salaries Count',
 
     //admin  menu
+    'admin' => 'System Administrator',
     'roles' => 'Roles',
     'admins' => 'Admins',
     'users' => 'Users',

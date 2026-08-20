@@ -3,7 +3,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
 <meta name="description" content="Dokana Enterprise Management Platform">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<title>{!! __('dashboard.dashboard') !!} | @yield('title')</title>
+@php
+    $pageTitle = trim($__env->yieldContent('title'));
+    $appBrand = setting()->site_name ?? 'Dokana';
+    if (empty($pageTitle) || $pageTitle === __('dashboard.dashboard')) {
+        $finalTitle = $appBrand . ' | ' . __('dashboard.dashboard');
+    } else {
+        $finalTitle = $appBrand . ' | ' . $pageTitle;
+    }
+@endphp
+<title>{!! $finalTitle !!}</title>
 
 <link rel="apple-touch-icon" href="{!! !empty(setting()->favicon) ? asset('uploads/settings/' . setting()->favicon) : asset('logo/dokkana-logo.png') !!}">
 <link rel="shortcut icon" type="image/x-icon" href="{!! !empty(setting()->favicon) ? asset('uploads/settings/' . setting()->favicon) : asset('logo/dokkana-logo.png') !!}">

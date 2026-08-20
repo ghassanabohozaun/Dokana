@@ -60,6 +60,7 @@ class StoreSupplierRepository
             ->when($storeId, function ($q) use ($storeId) {
                 return $q->where('store_id', $storeId);
             })
+            ->latest()
             ->get();
     }
 }

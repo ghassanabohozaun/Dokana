@@ -16,6 +16,8 @@ return [
     'balance_exceeded_warning' => 'عذراً، المبلغ المطلوب يتجاوز الرصيد المتاح!',
     'enter_withdrawal_reason' => 'أدخل سبب السحب...',
     'no_withdrawals_desc' => 'لم يتم تسجيل أي عمليات سحب مالي في النظام حتى الآن. يمكنك إضافة سحب جديد عبر الزر أعلاه.',
+    'cannot_delete_supplier_linked_withdrawal' => 'لا يمكن حذف هذا السحب المالي لارتباطه بدفعة مورد مسجلة في النظام.',
+    'select_store_first' => 'يرجى اختيار الدكانة أولاً...',
 ];
 
 

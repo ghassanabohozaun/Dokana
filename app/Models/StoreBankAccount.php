@@ -23,6 +23,7 @@ class StoreBankAccount extends Model implements MustBelongToStore
         'transactions' => 'bank_accounts.bank_account_has_transactions',
         'withdrawals' => 'bank_accounts.bank_account_has_withdrawals',
         'supplierPayments' => 'bank_accounts.bank_account_has_supplier_payments',
+        'adjustments' => 'bank_accounts.bank_account_has_adjustments',
     ];
 
     protected $fillable = [

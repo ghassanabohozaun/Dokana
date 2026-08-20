@@ -31,11 +31,17 @@
                     <input type="hidden" name="store_customer_id" id="hidden_store_customer_id_edit">
 
                     @if(isset($stores))
-                    <!-- Store Select (for admin - disabled visual) -->
+                    <!-- Store Select (Disabled / Fixed in Edit) -->
                     <div>
-                        <label class="form-label-modern" for="store_id_dept_edit">
-                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
-                        </label>
+                        <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <label class="form-label-modern mb-0" for="store_id_dept_edit">
+                                {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fas fa-lock text-[9px]"></i>
+                                <span>{{ __("general.immutable_field_store_transaction") }}</span>
+                            </span>
+                        </div>
                         <select id="store_id_dept_edit" class="form-input-modern select2" disabled>
                             <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                             @foreach ($stores as $store)
@@ -49,14 +55,20 @@
                     <!-- Customer & Type Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="form-label-modern" for="store_customer_id_edit">
-                                {!! __('store_customers.store_customer') !!} <span class="text-rose-500">*</span>
-                            </label>
+                            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                <label class="form-label-modern mb-0" for="store_customer_id_edit">
+                                    {!! __('store_customers.store_customer') !!} <span class="text-rose-500">*</span>
+                                </label>
+                                <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                    <i class="fas fa-lock text-[9px]"></i>
+                                    <span>{{ __("general.immutable_field_customer") }}</span>
+                                </span>
+                            </div>
                             <select id="store_customer_id_edit" class="form-input-modern select2" disabled>
                                 <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                                 @if(isset($customers))
                                     @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
+                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -67,7 +79,7 @@
                             <label class="form-label-modern" for="type_edit">
                                 {!! __('store_transactions.type') !!} <span class="text-rose-500">*</span>
                             </label>
-                            <select name="type" id="type_edit" class="form-input-modern">
+                            <select name="type" id="type_edit" class="form-input-modern select2">
                                 <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
                                 <option value="debt">{!! __('store_transactions.debt') !!} (دين عليه)</option>
                                 <option value="payment">{!! __('store_transactions.payment') !!} (سداد منه)</option>

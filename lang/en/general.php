@@ -265,10 +265,24 @@ return [
     'decrease_font' => 'Decrease Font',
     'balance' => 'Current Balance',
     'remaining_balance' => 'Remaining Balance',
-    'no_description' => 'No Description',
-    'default' => 'Default',
     'records' => 'Records',
     'general_payment' => 'General Payment (No Specific Invoice)',
+    'click_to_preview_image' => 'Click to preview & zoom image',
+    'image_preview' => 'Image / Logo Preview',
+    'high_res_viewer' => 'High Resolution Image Viewer',
+    'zoom_in' => 'Zoom In (+)',
+    'zoom_out' => 'Zoom Out (-)',
+    'rotate' => 'Rotate',
+    'reset_zoom' => 'Reset Zoom',
+    'open_in_new_tab' => 'Open in New Tab',
+    'use_keys_to_zoom' => 'Use + to zoom in and - to zoom out',
+
+    'immutable_field_store' => 'Fixed for this transaction',
+    'immutable_field_store_invoice' => 'Fixed for this invoice',
+    'immutable_field_store_transaction' => 'Fixed for this transaction',
+    'immutable_field_customer' => 'Fixed for this transaction',
+    'click_to_fill_remaining' => 'Click to pay the full remaining invoice balance',
+    'invoice_remaining' => 'Invoice Remaining',
 ];
 
 

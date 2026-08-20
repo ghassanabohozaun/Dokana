@@ -3,8 +3,41 @@
     <script src="{!! asset('assets/dashbaord') !!}/js/core/app-menu.js" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord') !!}/js/core/app.js" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord') !!}/js/app-dialog.js" type="text/javascript"></script>
-    <script src="{!! asset('assets/dashbaord') !!}/js/scripts/my-scripts.js" type="text/javascript"></script>
+    <script src="{{ asset('assets/dashbaord/vendors/js/forms/select/select2.full.min.js') }}"></script>
 
+    <!-- Global I18N Bridge -->
+    <script type="text/javascript">
+        window.DOKANA_I18N = {
+            select2: {
+                searching: function() {
+                    return "{{ __('general.searching') }}";
+                },
+                noResults: function() {
+                    return "{{ __('general.noResults2') }}";
+                },
+                errorLoading: function() {
+                    return "{{ __('general.errorLoading') }}";
+                },
+                inputTooShort: function(args) {
+                    return "{{ __('general.inputTooShort') }}";
+                },
+                inputTooLong: function(args) {
+                    return "{{ __('general.inputTooLong') }}";
+                }
+            },
+            common: {
+                access_denied: "{{ __('dashboard.access_denied') }}",
+                error: "{{ __('general.error') }}",
+                ok: "{{ __('general.ok') }}",
+                something_went_wrong: "{{ __('general.try_catch_error_message') }}"
+            },
+            fileinput: {
+                browseLabel: "{!! __('general.choose_file') !!}",
+                removeLabel: "{!! __('general.delete') !!}"
+            }
+        };
+    </script>
+    <script src="{!! asset('assets/dashbaord') !!}/js/scripts/my-scripts.js?v={{ time() }}" type="text/javascript"></script>
 
     <!-- Flatpickr (Modern Luxury Datepicker) -->
     <script src="{{ asset('assets/dashbaord/vendors/flatpickr/flatpickr.min.js') }}"></script>
@@ -33,8 +66,8 @@
         });
     </script>
 
-    <script src="{{ asset('assets/dashbaord/vendors/js/forms/select/select2.full.min.js') }}"></script>
     <script src="{!! asset('assets/dashbaord/js/ajax-table.js') !!}?v={{ time() }}" type="text/javascript"></script>
+    <script src="{!! asset('assets/dashbaord/js/page-transitions.js') !!}?v={{ time() }}" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord/js/premium-ajax-form.js') !!}?v={{ time() }}" type="text/javascript"></script>
     <script src="{!! asset('assets/dashbaord/js/generic-select2.js') !!}?v={{ time() }}" type="text/javascript"></script>
 
@@ -54,37 +87,6 @@
                 update_success: "{{ __('general.update_success_message') }}",
                 validation_error: "{{ __('general.validation_error_message') }}",
                 access_denied: "{{ __('general.access_denied_msg') }}"
-            }
-        };
-
-        // Global I18N Bridge
-        window.DOKANA_I18N = {
-            select2: {
-                searching: function() {
-                    return "{{ __('general.searching') }}";
-                },
-                noResults: function() {
-                    return "{{ __('general.noResults2') }}";
-                },
-                errorLoading: function() {
-                    return "{{ __('general.errorLoading') }}";
-                },
-                inputTooShort: function(args) {
-                    return "{{ __('general.inputTooShort') }}";
-                },
-                inputTooLong: function(args) {
-                    return "{{ __('general.inputTooLong') }}";
-                }
-            },
-            common: {
-                access_denied: "{{ __('dashboard.access_denied') }}",
-                error: "{{ __('general.error') }}",
-                ok: "{{ __('general.ok') }}",
-                something_went_wrong: "{{ __('general.try_catch_error_message') }}"
-            },
-            fileinput: {
-                browseLabel: "{!! __('general.choose_file') !!}",
-                removeLabel: "{!! __('general.delete') !!}"
             }
         };
 

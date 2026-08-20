@@ -35,7 +35,7 @@
                             {!! __('stores.store') !!} <span class="text-rose-500">*</span>
                         </label>
                         <select name="store_id" id="store_id_dept_create" class="form-input-modern select2">
-                            <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
+                            <option value="" selected>{!! __('general.select_from_list') !!}</option>
                             @foreach ($stores as $store)
                                 <option value="{{ $store->id }}">{{ $store->name }}</option>
                             @endforeach
@@ -54,7 +54,7 @@
                                 <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                                 @if(isset($suppliers) && !isset($stores))
                                     @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
+                                        <option value="{{ $supplier->id }}">{{ $supplier->name }}{{ $supplier->mobile ? ' - ' . $supplier->mobile : '' }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -62,11 +62,24 @@
                         </div>
 
                         <div>
-                            <label class="form-label-modern" for="invoice_number_create">
-                                {!! __('store_supplier_invoices.invoice_number') !!} <span class="text-rose-500">*</span>
-                            </label>
-                            <input type="text" id="invoice_number_create" name="invoice_number"
-                                class="form-input-modern" placeholder="{!! __('store_supplier_invoices.invoice_number') !!}" autocomplete="off" dir="ltr">
+                            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                <label class="form-label-modern mb-0" for="invoice_number_create">
+                                    {!! __('store_supplier_invoices.invoice_number') !!} <span class="text-rose-500">*</span>
+                                </label>
+                                <button type="button" id="btn_generate_invoice_number"
+                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200/60 dark:border-indigo-800/40 transition-colors"
+                                    title="توليد رقم فاتورة عشوائي جديد">
+                                    <i class="fas fa-magic text-[9px]"></i>
+                                    <span>رقم عشوائي</span>
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <input type="text" id="invoice_number_create" name="invoice_number"
+                                    class="form-input-modern pe-9 font-mono" placeholder="{!! __('store_supplier_invoices.invoice_number') !!}" autocomplete="off">
+                                <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none text-slate-400 text-xs font-mono">
+                                    #
+                                </div>
+                            </div>
                             <span class="text-xs text-rose-500 error-text invoice_number_error block mt-1"></span>
                         </div>
                     </div>
@@ -124,6 +137,29 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
+            // Helper to generate a random ERP invoice number (INV-YYMMDD-XXXX)
+            function generateSupplierInvoiceNumber() {
+                let now = new Date();
+                let year = now.getFullYear().toString().slice(-2);
+                let month = ('0' + (now.getMonth() + 1)).slice(-2);
+                let day = ('0' + now.getDate()).slice(-2);
+                let randomDigits = Math.floor(1000 + Math.random() * 9000);
+                return `INV-${year}${month}${day}-${randomDigits}`;
+            }
+
+            // Click button to generate/refresh random invoice number
+            $(document).on('click', '#btn_generate_invoice_number', function(e) {
+                e.preventDefault();
+                $('#invoice_number_create').val(generateSupplierInvoiceNumber()).trigger('input');
+            });
+
+            // Automatically pre-fill random invoice number when opening modal
+            $('#createStoreSupplierInvoiceModal').on('show.bs.modal', function () {
+                if (!$('#invoice_number_create').val()) {
+                    $('#invoice_number_create').val(generateSupplierInvoiceNumber());
+                }
+            });
+
             // Fetch suppliers by store on change
             $('#store_id_dept_create').on('change', function() {
                 let store_id = $(this).val();
@@ -138,7 +174,8 @@
                         data: { store_id: store_id },
                         success: function(data) {
                             $.each(data, function(key, supplier) {
-                                let newOption = new Option(supplier.name + ' - ' + (supplier.mobile || ''), supplier.id, false, false);
+                                let mobileText = supplier.mobile ? ' - ' + supplier.mobile : '';
+                                let newOption = new Option(supplier.name + mobileText, supplier.id, false, false);
                                 supplierSelect.append(newOption);
                             });
                             supplierSelect.prop('disabled', false).trigger('change.select2');

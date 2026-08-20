@@ -60,7 +60,7 @@ class DepartmentRepository
     // destroy
     public function destroy($department)
     {
-        return $department->forceDelete();
+        return $department->delete();
     }
 
     // change status

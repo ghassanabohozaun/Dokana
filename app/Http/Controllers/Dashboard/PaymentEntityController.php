@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Services\Dashboard\PaymentEntityService;
 use App\Http\Requests\Dashboard\PaymentEntityRequest;
+use App\Services\TenantService;
+use App\Exceptions\DeleteRestrictionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use App\Models\PaymentEntity;
@@ -18,23 +20,40 @@ class PaymentEntityController extends Controller
         $this->service = $service;
     }
 
+    protected function checkSuperAdminAccess(Request $request = null)
+    {
+        if (!app(TenantService::class)->isSuperAdmin()) {
+            if ($request && ($request->ajax() || $request->wantsJson())) {
+                response()->json([
+                    'status' => false,
+                    'message' => __('general.access_denied_msg')
+                ], 403)->send();
+                exit;
+            }
+            abort(403, __('general.access_denied_msg'));
+        }
+    }
+
     public function index(Request $request)
     {
-        Gate::authorize('payment_entities_read'); // or whatever permission you decide
+        Gate::authorize('payment_entities_read');
+        $this->checkSuperAdminAccess($request);
 
+        $isSuperAdmin = true;
         $entities = $this->service->getAll($request);
         $title = __('payment_entities.payment_entities');
 
         if ($request->ajax() || $request->has('_ajax')) {
-            return view('dashboard.payment_entities.partials._table', compact('entities'))->render();
+            return view('dashboard.payment_entities.partials._table', compact('entities', 'isSuperAdmin'))->render();
         }
 
-        return view('dashboard.payment_entities.index', compact('entities', 'title'));
+        return view('dashboard.payment_entities.index', compact('entities', 'title', 'isSuperAdmin'));
     }
 
     public function store(PaymentEntityRequest $request)
     {
         Gate::authorize('payment_entities_create');
+        $this->checkSuperAdminAccess($request);
         
         try {
             $this->service->store($request->validated());
@@ -54,6 +73,7 @@ class PaymentEntityController extends Controller
     public function update(PaymentEntityRequest $request, $id)
     {
         Gate::authorize('payment_entities_update');
+        $this->checkSuperAdminAccess($request);
         
         try {
             $this->service->update($id, $request->validated());
@@ -73,6 +93,7 @@ class PaymentEntityController extends Controller
     public function destroy(Request $request)
     {
         Gate::authorize('payment_entities_delete');
+        $this->checkSuperAdminAccess($request);
         
         try {
             $this->service->delete($request->id);
@@ -80,17 +101,23 @@ class PaymentEntityController extends Controller
                 'status' => true,
                 'message' => __('general.delete_success_message')
             ]);
+        } catch (DeleteRestrictionException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ], 400);
+            ], 500);
         }
     }
 
     public function changeStatus(Request $request)
     {
         Gate::authorize('payment_entities_update');
+        $this->checkSuperAdminAccess($request);
 
         if ($request->ajax()) {
             try {

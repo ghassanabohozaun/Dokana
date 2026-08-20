@@ -46,9 +46,19 @@
 
                     <!-- Bank Account / Wallet Select -->
                     <div>
-                        <label class="form-label-modern" for="store_bank_account_id_edit">
-                            {!! __('bank_accounts.bank_account') !!} <span class="text-rose-500">*</span>
-                        </label>
+                        <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <label class="form-label-modern mb-0" for="store_bank_account_id_edit">
+                                {!! __('bank_accounts.bank_account') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            
+                            <!-- Inline Balance Header Pill -->
+                            <div id="bank_account_balance_info_edit" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs transition-all">
+                                <i class="fas fa-wallet text-[10px]"></i>
+                                <span>{!! __('general.balance') !!}:</span>
+                                <span class="balance-amount font-black font-mono" dir="ltr">0.00</span>
+                            </div>
+                        </div>
+
                         <select name="store_bank_account_id" id="store_bank_account_id_edit" class="form-input-modern select2">
                             <option value="" data-balance="0" disabled>{!! __('general.select_from_list') !!}</option>
                             @if(isset($bankAccounts))
@@ -62,34 +72,24 @@
                             @endif
                         </select>
                         <span class="text-xs text-rose-500 error-text store_bank_account_id_error block mt-1"></span>
-
-                        <!-- Balance & Remaining Balance Card -->
-                        <div id="bank_account_balance_info_edit" class="hidden mt-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                            <div class="flex items-center justify-between text-xs font-bold">
-                                <div class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                                    <i class="fas fa-wallet text-xs"></i>
-                                    <span>{!! __('general.balance') !!}:</span>
-                                    <span class="balance-amount font-black" dir="ltr">0.00</span>
-                                </div>
-                                <div class="remaining-balance-container text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                                    <i class="fas fa-money-check-alt text-xs"></i>
-                                    <span>{!! __('general.remaining_balance') !!}:</span>
-                                    <span class="remaining-balance-amount font-black" dir="ltr">0.00</span>
-                                </div>
-                            </div>
-                            <div class="exceeded-balance-warning hidden text-xs font-bold text-rose-600 dark:text-rose-400 mt-2 flex items-center gap-1.5">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span>{!! __('store_withdrawals.balance_exceeded_warning') !!}</span>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Amount & Withdrawal Date Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="form-label-modern" for="amount_edit">
-                                {!! __('store_withdrawals.amount') !!} <span class="text-rose-500">*</span>
-                            </label>
+                            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                <label class="form-label-modern mb-0" for="amount_edit">
+                                    {!! __('store_withdrawals.amount') !!} <span class="text-rose-500">*</span>
+                                </label>
+
+                                <!-- Inline Remaining Balance Pill -->
+                                <div id="remaining_balance_info_edit" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs transition-all">
+                                    <i class="fas fa-calculator text-[10px]"></i>
+                                    <span>{!! __('general.remaining_balance') !!}:</span>
+                                    <span class="remaining-balance-amount font-black font-mono" dir="ltr">0.00</span>
+                                </div>
+                            </div>
+
                             <input type="number" id="amount_edit" name="amount" step="0.01" min="0"
                                 class="form-input-modern" placeholder="0.00" autocomplete="off">
                             <span class="text-xs text-rose-500 error-text amount_error block mt-1"></span>
@@ -263,7 +263,7 @@
                             let balance = parseFloat(response.balance);
                             $('#store_bank_account_id_edit').find('option:selected').attr('data-balance', balance);
                             infoDiv.find('.balance-amount').text(balance.toFixed(2));
-                            infoDiv.removeClass('hidden');
+                            infoDiv.removeClass('hidden d-none');
                             updateEditRemainingBalance();
                         }
                     });
@@ -273,9 +273,18 @@
             }
 
             function updateEditRemainingBalance() {
+                let bank_account_id = $('#store_bank_account_id_edit').val();
+                let remainingPill = $('#remaining_balance_info_edit');
+                let amountInput = $('#amount_edit');
+                let withdrawalAmount = parseFloat(amountInput.val()) || 0;
+
+                if (!bank_account_id || amountInput.val() === '') {
+                    remainingPill.addClass('hidden');
+                    return;
+                }
+
                 let selectedOption = $('#store_bank_account_id_edit').find('option:selected');
                 let currentBalance = parseFloat(selectedOption.attr('data-balance')) || 0;
-                let withdrawalAmount = parseFloat($('#amount_edit').val()) || 0;
                 
                 let originalAmount = parseFloat($('#amount_edit').attr('data-original-amount')) || 0;
                 let originalBankAccountId = $('#amount_edit').attr('data-original-bank-account-id');
@@ -286,19 +295,21 @@
                 }
                 
                 let remaining = trueAvailableBalance - withdrawalAmount;
-                let infoDiv = $('#bank_account_balance_info_edit');
-                let remainingContainer = infoDiv.find('.remaining-balance-container');
-                let remainingSpan = infoDiv.find('.remaining-balance-amount');
-                let warningMsg = infoDiv.find('.exceeded-balance-warning');
+                let remainingSpan = remainingPill.find('.remaining-balance-amount');
 
                 remainingSpan.text(remaining.toFixed(2));
+                remainingPill.removeClass('hidden d-none');
                 
                 if (remaining < 0) {
-                    remainingContainer.removeClass('text-indigo-600 dark:text-indigo-400').addClass('text-rose-600 dark:text-rose-400');
-                    warningMsg.removeClass('hidden');
+                    remainingPill
+                        .removeClass('bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800/60')
+                        .addClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800/60 animate-pulse');
+                    remainingPill.find('i').attr('class', 'fas fa-triangle-exclamation text-[10px]');
                 } else {
-                    remainingContainer.removeClass('text-rose-600 dark:text-rose-400').addClass('text-indigo-600 dark:text-indigo-400');
-                    warningMsg.addClass('hidden');
+                    remainingPill
+                        .removeClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-300 dark:border-rose-800/60 animate-pulse')
+                        .addClass('bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800/60');
+                    remainingPill.find('i').attr('class', 'fas fa-calculator text-[10px]');
                 }
             }
 

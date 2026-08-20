@@ -76,6 +76,18 @@ class UserService
             return false;
         }
 
+        // 1. Prevent user from deleting themselves
+        if (auth()->id() == $id) {
+            throw new \App\Exceptions\DeleteRestrictionException(__('users.cannot_delete_own_account'));
+        }
+
+        // 2. Prevent deleting Super Admin
+        if ($id == 1) {
+            throw new \App\Exceptions\DeleteRestrictionException(__('users.cannot_delete_super_admin'));
+        }
+
+        $user->checkRestrictiveRelations();
+
         if ($user->photo) {
             $this->imageManagerUtils->removeImageFromLocal($user->photo, 'users');
         }

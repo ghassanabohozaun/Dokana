@@ -6,74 +6,107 @@
 <div class="space-y-6">
     
     <!-- 1. Header & Breadcrumbs Toolbar -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <!-- Breadcrumb Navigation -->
-            <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1">
-                <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                    <i class="fas fa-home text-xs"></i>
-                    <span>{!! __('dashboard.home') !!}</span>
-                </a>
-                <span>/</span>
-                <a href="{!! route('dashboard.store-customers.index') !!}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                    {!! __('store_customers.store_customers') !!}
-                </a>
-                <span>/</span>
-                <span class="text-slate-700 dark:text-slate-200 font-bold">{!! $store_customer->name !!}</span>
-            </nav>
-
-            <!-- Title & Status -->
-            <div class="flex items-center gap-3">
-                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xl shadow-sm">
-                    <i class="fas fa-user-circle"></i>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2.5">
-                        <h1 class="text-lg font-bold text-slate-800 dark:text-white">
-                            {!! $store_customer->name !!}
-                        </h1>
-                        @if($store_customer->is_walk_in)
-                            <span class="badge-pill badge-pill-info text-[10px]">زبون مباشر</span>
-                        @endif
-                        <span class="badge-pill {{ $store_customer->status ? 'badge-pill-success' : 'badge-pill-danger' }} text-[10px]">
-                            {{ $store_customer->status ? __('general.enable') : __('general.disabled') }}
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-4 text-xs text-slate-400 mt-0.5">
-                        @if($store_customer->phone)
-                            <span class="inline-flex items-center gap-1">
-                                <i class="fas fa-phone-alt text-[10px] text-emerald-500"></i>
-                                <span dir="ltr">{{ $store_customer->phone }}</span>
-                            </span>
-                        @endif
-                        @if($store_customer->store)
-                            <span class="inline-flex items-center gap-1">
-                                <i class="fas fa-store text-[10px] text-indigo-500"></i>
-                                <span>{{ $store_customer->store->name }}</span>
-                            </span>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="flex items-center justify-between gap-4">
+        <!-- Breadcrumb Navigation -->
+        <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
+            <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                <i class="fas fa-home text-xs"></i>
+                <span>{!! __('dashboard.home') !!}</span>
+            </a>
+            <span>/</span>
+            <a href="{!! route('dashboard.store-customers.index') !!}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                {!! __('store_customers.store_customers') !!}
+            </a>
+            <span>/</span>
+            <span class="text-slate-700 dark:text-slate-200 font-bold">{!! $store_customer->name !!}</span>
+        </nav>
 
         <!-- Back Button -->
-        <div class="flex items-center gap-2.5 self-start sm:self-center">
-            <a href="{!! route('dashboard.store-customers.index') !!}" class="btn-secondary-modern text-xs">
-                <i class="fas fa-arrow-right text-xs"></i>
-                <span>{!! __('general.back') !!}</span>
-            </a>
-        </div>
+        <a href="{!! route('dashboard.store-customers.index') !!}" class="btn-secondary-modern text-xs">
+            <i class="fas fa-arrow-right text-xs"></i>
+            <span>{!! __('general.back') !!}</span>
+        </a>
     </div>
 
-    <!-- 2. Profile Grid: Financial Sidebar & Transactions Table -->
+    <!-- 2. Profile Grid: Info & Financial Sidebars & Transactions Table -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Financial Summary Card (4 cols) -->
-        <div class="lg:col-span-4 space-y-4">
+        <!-- Left Sidebar: Basic Info Card & Financial Summary Card (4 cols) -->
+        <div class="lg:col-span-4 space-y-5">
+            
+            <!-- 1. Customer Basic Info Card -->
             <div class="dash-card p-5 space-y-4">
                 <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800">
                     <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-xs">
+                        <i class="fas fa-user-tag"></i>
+                    </div>
+                    <h3 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
+                        {!! __('store_customers.customer_details') !!}
+                    </h3>
+                </div>
+
+                <!-- Avatar & Identity -->
+                <div class="flex items-center gap-3.5">
+                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-500 text-white font-black text-lg shadow-sm">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-bold text-slate-800 dark:text-white truncate">
+                            {!! $store_customer->name !!}
+                        </h4>
+                        <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                            @if($store_customer->is_walk_in)
+                                <span class="badge-pill badge-pill-info text-[10px]">زبون مباشر</span>
+                            @endif
+                            <span class="badge-pill {{ $store_customer->status ? 'badge-pill-success' : 'badge-pill-danger' }} text-[10px]">
+                                {{ $store_customer->status ? __('general.enable') : __('general.disabled') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info List (Phone, Store, Date) -->
+                <div class="space-y-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+                    @if($store_customer->phone)
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400 font-medium flex items-center gap-1.5">
+                            <i class="fas fa-phone-alt text-[11px] text-emerald-500"></i>
+                            {!! __('store_customers.phone') !!}:
+                        </span>
+                        <a href="tel:{{ $store_customer->phone }}" class="font-bold text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" dir="ltr">
+                            {{ $store_customer->phone }}
+                        </a>
+                    </div>
+                    @endif
+
+                    @if($store_customer->store)
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400 font-medium flex items-center gap-1.5">
+                            <i class="fas fa-store text-[11px] text-indigo-500"></i>
+                            {!! __('stores.store') !!}:
+                        </span>
+                        <span class="font-bold text-slate-700 dark:text-slate-200">
+                            {{ $store_customer->store->name }}
+                        </span>
+                    </div>
+                    @endif
+
+                    <div class="flex items-center justify-between">
+                        <span class="text-slate-400 font-medium flex items-center gap-1.5">
+                            <i class="fas fa-calendar-alt text-[11px] text-slate-400"></i>
+                            {!! __('store_customers.created_at') !!}:
+                        </span>
+                        <span class="font-medium text-slate-600 dark:text-slate-400" dir="ltr">
+                            {{ $store_customer->created_at->format('Y-m-d') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Financial Summary Card -->
+            <div class="dash-card p-5 space-y-4">
+                <div class="flex items-center gap-2.5 pb-3 border-b border-slate-100 dark:border-slate-800">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 text-xs">
                         <i class="fas fa-wallet"></i>
                     </div>
                     <h3 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
@@ -132,12 +165,6 @@
                         <span class="text-slate-400 font-medium">{!! __('store_customers.bypass_debt_limit') !!}:</span>
                         <span class="font-bold {{ $store_customer->bypass_debt_limit ? 'text-emerald-600' : 'text-slate-400' }}">
                             {{ $store_customer->bypass_debt_limit ? __('general.yes') : __('general.no') }}
-                        </span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-slate-400 font-medium">{!! __('store_customers.created_at') !!}:</span>
-                        <span class="font-medium text-slate-600 dark:text-slate-400" dir="ltr">
-                            {{ $store_customer->created_at->format('Y-m-d') }}
                         </span>
                     </div>
                 </div>

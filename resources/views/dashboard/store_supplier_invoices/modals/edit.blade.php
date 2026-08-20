@@ -29,17 +29,24 @@
                     <input type="hidden" id="id_edit" name="id">
                     
                     @if(isset($stores))
-                    <!-- Store Select (for admin) -->
+                    <!-- Store Select (Disabled / Fixed in Edit) -->
                     <div>
-                        <label class="form-label-modern" for="store_id_dept_edit">
-                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
-                        </label>
-                        <select name="store_id" id="store_id_dept_edit" class="form-input-modern select2">
+                        <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <label class="form-label-modern mb-0" for="store_id_dept_edit">
+                                {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fas fa-lock text-[9px]"></i>
+                                <span>{{ __("general.immutable_field_store_invoice") }}</span>
+                            </span>
+                        </div>
+                        <select id="store_id_dept_edit" class="form-input-modern select2" disabled>
                             <option value="" disabled>{!! __('general.select_from_list') !!}</option>
                             @foreach ($stores as $store)
                                 <option value="{{ $store->id }}">{{ $store->name }}</option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="store_id" id="hidden_store_id_invoice_edit">
                         <span class="text-xs text-rose-500 error-text store_id_error block mt-1"></span>
                     </div>
                     @endif
@@ -66,7 +73,7 @@
                                 {!! __('store_supplier_invoices.invoice_number') !!} <span class="text-rose-500">*</span>
                             </label>
                             <input type="text" id="invoice_number_edit" name="invoice_number"
-                                class="form-input-modern" placeholder="{!! __('store_supplier_invoices.invoice_number') !!}" autocomplete="off" dir="ltr">
+                                class="form-input-modern" placeholder="{!! __('store_supplier_invoices.invoice_number') !!}" autocomplete="off">
                             <span class="text-xs text-rose-500 error-text invoice_number_error block mt-1"></span>
                         </div>
                     </div>
@@ -169,8 +176,10 @@
                 if ($('#store_id_dept_edit').length) {
                     if (store_id) {
                         $('#store_id_dept_edit').val(store_id).trigger('change.select2');
+                        $('#hidden_store_id_invoice_edit').val(store_id);
                     } else {
                         $('#store_id_dept_edit').val(null).trigger('change.select2');
+                        $('#hidden_store_id_invoice_edit').val('');
                     }
                 }
 

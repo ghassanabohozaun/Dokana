@@ -325,33 +325,27 @@ $(document).ready(function() {
             }
         });
 
-        // Initialize any uninitialized select2 inside the filter bar
-        $('.js-filter-form select.select2, .js-filter-form select.form-input-modern').each(function() {
-            const $this = $(this);
-            if (!$this.hasClass('select2-hidden-accessible')) {
-                const dir = $('html').attr('data-textdirection') || $('html').attr('dir') || 'rtl';
-                $this.select2({
-                    width: '100%',
-                    dir: dir,
-                    dropdownAutoWidth: true
-                });
-            }
-        });
-
     }
 
     initFilterSystem();
 
     // Auto live filtering on select change
     $(document).off('change.filterAutoSubmit', '.js-filter-form select').on('change.filterAutoSubmit', '.js-filter-form select', function(e) {
-        // Only trigger if user-initiated or explicit
-        $(this).closest('.js-filter-form').trigger('submit');
+        if (window.DokanaTable) {
+            window.DokanaTable.fetchData({ page: 1 });
+        } else {
+            $(this).closest('.js-filter-form').trigger('submit');
+        }
     });
 
-    // Debounced keyword typing search (400ms)
+    // Debounced keyword typing search (350ms)
     const debouncedFilterSubmit = debounce(function($form) {
-        $form.trigger('submit');
-    }, 400);
+        if (window.DokanaTable) {
+            window.DokanaTable.fetchData({ page: 1 });
+        } else {
+            $form.trigger('submit');
+        }
+    }, 350);
 
     $(document).off('input.filterAutoSearch', '.js-filter-form input[name="keyword"]').on('input.filterAutoSearch', '.js-filter-form input[name="keyword"]', function() {
         debouncedFilterSubmit($(this).closest('.js-filter-form'));
@@ -359,61 +353,13 @@ $(document).ready(function() {
 
     $(document).on('submit', '.js-filter-form', function(e, extraData) {
         e.preventDefault();
-        const $form = $(this);
-        const actionUrl = $form.attr('action') || window.location.pathname;
-        const targetContainer = $form.data('container') || '#table_data';
-        const targetLoader = $form.data('loader') || '.table-loader-overlay';
-        
-        // Serialize form and filter empty values
-        let formDataArr = $form.serializeArray().filter(item => item.value !== "");
-        
-        // If extraData contains a page (from a refresh/fetch_data call), add it
-        if (extraData && extraData.page) {
-            formDataArr.push({ name: 'page', value: extraData.page });
+        const page = (extraData && extraData.page) ? extraData.page : 1;
+        if (window.DokanaTable) {
+            window.DokanaTable.fetchData({ page: page });
         }
+    });
 
-        const formData = formDataArr.map(item => encodeURIComponent(item.name) + '=' + encodeURIComponent(item.value)).join('&');
-        
-        // Construct visual URL for pushState
-        const fullUrl = formData ? (actionUrl + (actionUrl.includes('?') ? '&' : '?') + formData) : actionUrl;
-
-        // Construct AJAX URL to avoid BFCache caching the AJAX response as the full page
-        const ajaxUrl = actionUrl + (actionUrl.includes('?') ? '&' : '?') + '_ajax=1';
-
-        $.ajax({
-            url: ajaxUrl,
-            data: formData,
-            type: 'GET',
-            beforeSend: function() {
-                $(targetLoader).addClass('active');
-                $(targetContainer).css('opacity', '0.6');
-            },
-            success: function(response) {
-                $(targetContainer).html(response);
-                $(targetContainer).css('opacity', '1');
-                $(targetLoader).removeClass('active');
-
-                // Update total count badges if they exist
-                ['contracts', 'properties', 'customers', 'store_customers', 'store_transactions', 'maintenances', 'guarantors', 'users', 'roles', 'departments', 'property_types', 'property_statuses', 'bank_accounts', 'companies'].forEach(module => {
-                    const total = $(`#${module}-total-count`).val();
-                    if (total !== undefined) {
-                        $(`#${module}CountBadge`).text(total);
-                        $(`#${module}ChipCount`).text(total);
-                    }
-                });
-                
-                // Update URL without refresh
-                window.history.pushState(null, "", fullUrl);
-
-                if (typeof window.initTablePlugins === 'function') {
-                    window.initTablePlugins(targetContainer);
-                }
-                initFilterSystem();
-            },
-            error: function() {
-                $(targetLoader).removeClass('active');
-                $(targetContainer).css('opacity', '1');
-            }
-        });
+    $(document).on('table-hydrated', function() {
+        initFilterSystem();
     });
 });

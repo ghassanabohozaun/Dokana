@@ -69,4 +69,12 @@ return [
     'login_success' => 'Login Successfully',
     'login_failed' => 'Login failed, please check your credentials.',
     'account_disabled_contact_admin' => 'Your account is currently disabled, please contact administration.',
+    'saas_badge' => 'Dokana SaaS Cloud',
+    'saas_title' => 'Smart & Professional Store Management',
+    'saas_desc' => 'An integrated cloud platform for sales, finances, suppliers, and inventory with top performance and security.',
+    'saas_feature_1_title' => 'Multi-Branch & Multi-User Architecture',
+    'saas_feature_1_desc' => 'Secure isolation and dedicated environment for each store with central management',
+    'saas_feature_2_title' => 'Advanced Enterprise Security',
+    'saas_feature_2_desc' => 'Continuous session protection and fine-grained permissions per user',
+    'saas_portal_title' => 'Unified Login Portal',
 ];

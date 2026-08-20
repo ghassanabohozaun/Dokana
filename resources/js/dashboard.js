@@ -1,3 +1,11 @@
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+if (!window.AlpineInitialized) {
+    window.AlpineInitialized = true;
+    Alpine.start();
+}
+
 /**
  * DOKANA ENTERPRISE DASHBOARD - TAILWIND JS CORE
  * 100% Standalone, High Performance, Zero External Dependencies
@@ -24,8 +32,10 @@
 
         // Mobile drawer toggle
         toggleButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const isOpen = sidebar.classList.contains('translate-x-0');
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const isOpen = sidebar.classList.contains('is-mobile-open');
                 if (isOpen) {
                     closeSidebar();
                 } else {
@@ -39,8 +49,7 @@
         }
 
         function openSidebar() {
-            sidebar.classList.remove('-translate-x-full', 'translate-x-full');
-            sidebar.classList.add('translate-x-0');
+            sidebar.classList.add('is-mobile-open');
             if (sidebarBackdrop) {
                 sidebarBackdrop.classList.remove('hidden');
                 setTimeout(() => sidebarBackdrop.classList.add('opacity-100'), 10);
@@ -49,12 +58,7 @@
         }
 
         function closeSidebar() {
-            const isRtl = document.documentElement.getAttribute('dir') === 'rtl' ||
-                          document.documentElement.getAttribute('data-textdirection') === 'rtl';
-            
-            sidebar.classList.remove('translate-x-0');
-            sidebar.classList.add(isRtl ? 'translate-x-full' : '-translate-x-full');
-            
+            sidebar.classList.remove('is-mobile-open');
             if (sidebarBackdrop) {
                 sidebarBackdrop.classList.remove('opacity-100');
                 setTimeout(() => sidebarBackdrop.classList.add('hidden'), 200);

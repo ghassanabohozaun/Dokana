@@ -118,11 +118,16 @@ class StoreSupplierPaymentController extends Controller
                 'status' => true,
                 'message' => __('general.delete_success_message')
             ]);
+        } catch (\App\Exceptions\DeleteRestrictionException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
                 'message' => $e->getMessage()
-            ], 400);
+            ], 500);
         }
     }
 }

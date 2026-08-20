@@ -9,10 +9,12 @@
                 <th class="text-center">{{ __('payment_entities.type') }}</th>
                 <th class="hidden sm:table-cell">{{ __('departments.created_by') }}</th>
                 <th class="text-center">{{ __('payment_entities.status') }}</th>
-                @can('payment_entities_update')
+                @if(($isSuperAdmin ?? false) && auth()->user()->can('payment_entities_update'))
                 <th class="text-center">{{ __('departments.manage_status') }}</th>
-                @endcan
+                @endif
+                @if($isSuperAdmin ?? false)
                 <th class="text-center w-24">{{ __('general.actions') ?? 'الإجراءات' }}</th>
+                @endif
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -67,16 +69,18 @@
                     </td>
 
                     <!-- Manage Status Toggle Switch -->
-                    @can('payment_entities_update')
+                    @if(($isSuperAdmin ?? false) && auth()->user()->can('payment_entities_update'))
                     <td class="text-center">
                         @include('dashboard.payment_entities.parts.manage_status')
                     </td>
-                    @endcan
+                    @endif
 
                     <!-- Actions -->
+                    @if($isSuperAdmin ?? false)
                     <td class="text-center">
                         @include('dashboard.payment_entities.parts.actions')
                     </td>
+                    @endif
                 </tr>
             @empty
                 <tr>

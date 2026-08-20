@@ -1331,9 +1331,18 @@ function casherNotebook(passedConfig = {}) {
             this.isSupplierLedgerLoading = false;
         },
 
+        generateRandomInvoiceNumber() {
+            let now = new Date();
+            let year = now.getFullYear().toString().slice(-2);
+            let month = ('0' + (now.getMonth() + 1)).slice(-2);
+            let day = ('0' + now.getDate()).slice(-2);
+            let randomDigits = Math.floor(1000 + Math.random() * 9000);
+            return `INV-${year}${month}${day}-${randomDigits}`;
+        },
+
         openAddSupplierInvoiceModal() {
             if (!this.activeSupplier) return;
-            this.newSupplierInvoiceNumber = '';
+            this.newSupplierInvoiceNumber = this.generateRandomInvoiceNumber();
             this.newSupplierInvoiceAmount = '';
             this.newSupplierInvoiceDate = config.todayDate || new Date().toISOString().substring(0, 10);
             this.newSupplierInvoiceNotes = '';

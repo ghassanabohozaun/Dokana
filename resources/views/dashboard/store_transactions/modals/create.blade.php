@@ -54,7 +54,7 @@
                                 <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                                 @if(isset($customers) && !isset($stores))
                                     @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">{{ $customer->name }} - {{ $customer->phone }}</option>
+                                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -65,7 +65,7 @@
                             <label class="form-label-modern" for="type_create">
                                 {!! __('store_transactions.type') !!} <span class="text-rose-500">*</span>
                             </label>
-                            <select name="type" id="type_create" class="form-input-modern">
+                            <select name="type" id="type_create" class="form-input-modern select2">
                                 <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
                                 <option value="debt">{!! __('store_transactions.debt') !!} (دين عليه)</option>
                                 <option value="payment">{!! __('store_transactions.payment') !!} (سداد منه)</option>
@@ -164,7 +164,7 @@
                         data: { store_id: store_id },
                         success: function(data) {
                             $.each(data, function(key, customer) {
-                                let newOption = new Option(customer.name + ' - ' + (customer.phone || ''), customer.id, false, false);
+                                let newOption = new Option(customer.name, customer.id, false, false);
                                 customerSelect.append(newOption);
                             });
                             customerSelect.prop('disabled', false).trigger('change.select2');

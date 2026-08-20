@@ -26,8 +26,12 @@ class UserRepository
     public function getUsers($request)
     {
         $query = $this->model
-            ->with(['creator', 'role'])
-            ->filter($request->only(['keyword', 'store_id']), ['name', 'email'], ['store_id'])
+            ->with(['creator', 'role', 'store'])
+            ->filter(
+                $request->only(['keyword', 'store_id', 'role_id', 'status']),
+                ['name', 'email', 'mobile'],
+                ['store_id', 'role_id', 'status']
+            )
             ->orderByDesc('id');
 
         return $this->applyAjaxPagination($request, $query);

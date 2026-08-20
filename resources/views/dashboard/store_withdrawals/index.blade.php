@@ -4,56 +4,58 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Top Navigation & Action Header -->
+    <!-- 1. Header & Actions Toolbar -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
-            <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                <i class="fas fa-home text-xs"></i>
-                <span>{!! __('dashboard.home') !!}</span>
-            </a>
-            <span>/</span>
-            <span class="text-slate-700 dark:text-slate-200 font-bold">{!! $title !!}</span>
-        </nav>
+        <div>
+            <!-- Breadcrumb Navigation -->
+            <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1">
+                <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    <i class="fas fa-home text-xs"></i>
+                    <span>{!! __('dashboard.home') !!}</span>
+                </a>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-200 font-bold">{!! $title !!}</span>
+            </nav>
 
-        <!-- Action Button -->
-        @can('store_withdrawals_create')
-            <button type="button" class="btn-primary-gradient text-xs" data-toggle="modal" data-target="#createStoreWithdrawalModal">
-                <i class="fas fa-plus-circle text-xs"></i>
-                <span>{!! __('store_withdrawals.create_new_store_withdrawal') !!}</span>
-            </button>
-        @endcan
-    </div>
-
-    <!-- Search & Filters Toolbar -->
-    @include('dashboard.store_withdrawals.partials._search')
-
-    <!-- Main Table Card -->
-    <div class="dash-card overflow-hidden">
-        <!-- Card Header -->
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80">
+            <!-- Page Title & Counter Badge -->
             <div class="flex items-center gap-3">
-                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-lg shadow-sm">
                     <i class="fas fa-hand-holding-usd"></i>
                 </div>
-                <h3 class="text-sm font-bold text-slate-800 dark:text-white">
-                    {!! __('store_withdrawals.store_withdrawals_list') !!}
-                </h3>
-                <span id="total-count-badge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/60">
-                    {!! $withdrawals->total() !!} {!! __('general.records') ?? 'سجل' !!}
-                </span>
+                <div>
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white">
+                            {!! __('store_withdrawals.store_withdrawals_list') !!}
+                        </h1>
+                        <span id="total-count-badge" class="badge-pill badge-pill-info text-[11px]">
+                            {!! $withdrawals->total() !!} {!! __('general.records') ?? 'سجل' !!}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Table Container with Smooth AJAX Loader -->
-        <div class="relative min-h-[300px]">
-            <div class="table-loader-overlay absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xs flex items-center justify-center z-10 hidden" id="tableLoader">
-                <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent"></div>
-            </div>
+        <!-- Action Button -->
+        <div class="flex items-center gap-2.5 self-start sm:self-center">
+            @can('store_withdrawals_create')
+                <button type="button" class="btn-primary-gradient" data-toggle="modal" data-target="#createStoreWithdrawalModal">
+                    <i class="fas fa-plus text-xs"></i>
+                    <span>{!! __('store_withdrawals.create_new_store_withdrawal') !!}</span>
+                </button>
+            @endcan
+        </div>
+    </div>
 
-            <div id="table_data">
-                @include('dashboard.store_withdrawals.partials._table')
-            </div>
+    <!-- 2. Search & Filters Toolbar -->
+    @include('dashboard.store_withdrawals.partials._search')
+
+    <!-- 3. Main Table Card -->
+    <div class="dash-card overflow-hidden relative">
+        <div class="table-loader-overlay hidden">
+            <span class="premium-loader"></span>
+        </div>
+        <div id="table_data">
+            @include('dashboard.store_withdrawals.partials._table')
         </div>
     </div>
 </div>

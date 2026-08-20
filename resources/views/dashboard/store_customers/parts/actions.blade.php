@@ -20,7 +20,7 @@
                 <i class="fas fa-hand-holding-usd text-xs"></i>
             </button>
         @else
-            <button type="button" class="btn-icon-action text-slate-300 dark:text-slate-600 cursor-not-allowed opacity-60"
+            <button type="button" class="btn-icon-action text-slate-300 dark:text-slate-600 opacity-40 cursor-not-allowed"
                 disabled
                 title="{!! __('store_transactions.customer_is_disabled') ?? 'العميل معطل' !!}">
                 <i class="fas fa-hand-holding-usd text-xs"></i>
@@ -43,6 +43,12 @@
                 title="{!! __('general.edit') !!}">
                 <i class="fas fa-edit text-xs"></i>
             </button>
+        @else
+            <button type="button" class="btn-icon-action text-slate-300 dark:text-slate-600 opacity-40 cursor-not-allowed"
+                disabled
+                title="{!! __('store_customers.cannot_edit_walk_in') !!}">
+                <i class="fas fa-edit text-xs"></i>
+            </button>
         @endif
     @endcan
 
@@ -56,6 +62,12 @@
                 data-text="{!! __('general.delete_warning_text') !!}" data-confirm-btn="{!! __('general.yes') !!}"
                 data-cancel-btn="{!! __('general.no') !!}" data-success-title="{!! __('general.deleted') !!}"
                 data-success-text="{!! __('general.delete_success_message') !!}" title="{!! __('general.delete') !!}">
+                <i class="fas fa-trash-alt text-xs"></i>
+            </button>
+        @else
+            <button type="button" class="btn-icon-action text-slate-300 dark:text-slate-600 opacity-40 cursor-not-allowed"
+                disabled
+                title="{!! __('store_customers.cannot_delete_walk_in') !!}">
                 <i class="fas fa-trash-alt text-xs"></i>
             </button>
         @endif

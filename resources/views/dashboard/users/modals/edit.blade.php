@@ -141,6 +141,7 @@
                                 {!! __('users.status') !!} <span class="text-rose-500">*</span>
                             </label>
                             <select name="status" id="status_edit" class="form-input-modern select2">
+                                <option value="" disabled>{!! __('general.select_from_list') !!}</option>
                                 <option value="1">{!! __('general.enable') !!}</option>
                                 <option value="0">{!! __('general.disabled') !!}</option>
                             </select>

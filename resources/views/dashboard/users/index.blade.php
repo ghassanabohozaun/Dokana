@@ -126,6 +126,48 @@
                 dir: $('html').attr('data-textdirection') || 'rtl'
             });
         }
+
+        // Toggle Status via AJAX
+        $(document).on('change', '.change_status', function(e) {
+            var id = $(this).data('id');
+            var statusSwitch = $(this).is(':checked') ? 1 : 0;
+            var checkbox = $(this);
+
+            $.ajax({
+                url: "{{ route('dashboard.users.change.status') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    statusSwitch: statusSwitch,
+                    id: id
+                },
+                type: 'POST',
+                dataType: 'JSON',
+                success: function(data) {
+                    if (window.PremiumToast) {
+                        if (data.status === true) {
+                            window.PremiumToast.success("{!! __('general.change_status_success_message') !!}");
+                        } else {
+                            window.PremiumToast.error("{!! __('general.change_status_error_message') !!}");
+                        }
+                    }
+
+                    // Trigger smooth table animation & re-fetch
+                    if (window.DokanaTable && typeof window.DokanaTable.fetchData === 'function') {
+                        window.DokanaTable.fetchData();
+                    }
+                },
+                error: function(xhr) {
+                    checkbox.prop('checked', !checkbox.prop('checked'));
+                    if (window.PremiumToast) {
+                        if (xhr.status === 403) {
+                            window.PremiumToast.error("{!! __('dashboard.access_denied') !!}");
+                        } else {
+                            window.PremiumToast.error("{!! __('general.try_catch_error_message') !!}");
+                        }
+                    }
+                }
+            });
+        });
     });
 </script>
 @endpush

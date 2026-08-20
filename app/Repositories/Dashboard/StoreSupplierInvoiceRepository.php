@@ -42,6 +42,7 @@ class StoreSupplierInvoiceRepository
     public function update($id, array $data)
     {
         $invoice = $this->find($id);
+        unset($data['store_id']);
         $invoice->update($data);
         return $invoice;
     }

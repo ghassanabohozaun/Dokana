@@ -108,15 +108,13 @@ class StoreTransactionRepository
     // update
     public function update($storeTransaction, $data)
     {
-        if (isset($data['store_id']) && $data['store_id'] === '') {
-            $data['store_id'] = null;
-        }
+        unset($data['store_id']);
         return $storeTransaction->update($data);
     }
 
     // destroy
     public function destroy($storeTransaction)
     {
-        return $storeTransaction->forceDelete();
+        return $storeTransaction->delete();
     }
 }

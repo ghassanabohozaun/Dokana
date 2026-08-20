@@ -24,6 +24,9 @@ class Store extends Model
         'customers'         => 'stores.cannot_delete_has_customers',
         'transactions'      => 'stores.cannot_delete_has_transactions',
         'withdrawals'       => 'stores.cannot_delete_has_withdrawals',
+        'suppliers'         => 'stores.cannot_delete_has_suppliers',
+        'supplierInvoices'  => 'stores.cannot_delete_has_supplier_invoices',
+        'supplierPayments'  => 'stores.cannot_delete_has_supplier_payments',
     ];
 
     protected $fillable = [
@@ -77,6 +80,21 @@ class Store extends Model
     public function withdrawals()
     {
         return $this->hasMany(StoreWithdrawal::class);
+    }
+
+    public function suppliers()
+    {
+        return $this->hasMany(StoreSupplier::class);
+    }
+
+    public function supplierInvoices()
+    {
+        return $this->hasMany(StoreSupplierInvoice::class);
+    }
+
+    public function supplierPayments()
+    {
+        return $this->hasMany(StoreSupplierPayment::class);
     }
 
     // Improve the screen show

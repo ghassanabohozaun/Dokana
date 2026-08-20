@@ -39,6 +39,7 @@ return [
     'max_debt_limit' => 'Max Debt Limit',
     'opening_balance' => 'Opening Balance',
     'cannot_delete_walk_in' => 'Direct cash customer (Walk-in) cannot be deleted.',
+    'cannot_edit_walk_in' => 'Direct cash customer (Walk-in) cannot be edited.',
     'no_customers_desc' => 'No customers have been registered yet. You can add a new customer using the button above.',
     'balance_status' => 'Balance Status',
     'all_balances' => 'All Balances',

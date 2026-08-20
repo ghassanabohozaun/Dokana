@@ -140,7 +140,8 @@
                                 {!! __('users.status') !!} <span class="text-rose-500">*</span>
                             </label>
                             <select name="status" id="status_create" class="form-input-modern select2">
-                                <option value="1" selected>{!! __('general.enable') !!}</option>
+                                <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
+                                <option value="1">{!! __('general.enable') !!}</option>
                                 <option value="0">{!! __('general.disabled') !!}</option>
                             </select>
                             <span class="text-xs text-rose-500 error-text status_error block mt-1"></span>

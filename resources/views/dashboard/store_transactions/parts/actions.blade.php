@@ -11,7 +11,7 @@
         <button type="button" class="btn-icon-action text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 editStoreTransactionBtn"
             data-id="{!! $store_transaction->id !!}" 
             data-store_customer_id="{!! $store_transaction->store_customer_id !!}"
-            data-customer_name="{!! optional($store_transaction->customer)->name !!} - {!! optional($store_transaction->customer)->phone !!}"
+            data-customer_name="{!! optional($store_transaction->customer)->name !!}{{ optional($store_transaction->customer)->phone ? ' - ' . optional($store_transaction->customer)->phone : '' }}"
             data-type="{!! $store_transaction->type !!}" 
             data-amount="{!! $store_transaction->amount !!}"
             data-description="{!! $store_transaction->description !!}" 

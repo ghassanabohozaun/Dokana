@@ -4,6 +4,8 @@ namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\StoreCustomer;
+use App\Models\StoreBankAccount;
+use App\Models\StoreTransaction;
 
 class StoreTransactionRequest extends FormRequest
 {
@@ -45,6 +47,35 @@ class StoreTransactionRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $transactionId = $this->route('store_transaction') ?? $this->route('id') ?? $this->id;
+            $transaction = $transactionId ? StoreTransaction::find($transactionId) : null;
+
+            $effectiveStoreId = $transaction ? $transaction->store_id : ($this->store_id ?? user()->store_id);
+
+            if ($transaction && $this->filled('store_id') && $this->store_id != $transaction->store_id) {
+                $validator->errors()->add('store_id', 'لا يمكن تغيير الدكانة بعد إنشاء الحركة المالية.');
+                return;
+            }
+
+            if ($this->store_customer_id && $effectiveStoreId) {
+                $customer = StoreCustomer::where('id', $this->store_customer_id)->where('store_id', $effectiveStoreId)->first();
+                if (!$customer) {
+                    $validator->errors()->add('store_customer_id', 'العميل المحدد لا ينتمي إلى الدكانة المختارة.');
+                }
+            }
+
+            if ($this->type === 'payment' && $this->store_bank_account_id && $effectiveStoreId) {
+                $bankAccount = StoreBankAccount::where('id', $this->store_bank_account_id)->where('store_id', $effectiveStoreId)->first();
+                if (!$bankAccount) {
+                    $validator->errors()->add('store_bank_account_id', 'الحساب البنكي المحدد لا ينتمي إلى الدكانة المختارة.');
+                }
+            }
+        });
     }
 
     public function messages(): array

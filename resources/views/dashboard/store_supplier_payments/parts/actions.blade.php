@@ -16,9 +16,12 @@
             data-amount="{!! $payment->amount !!}" 
             data-notes="{!! $payment->notes !!}"
             data-store_id="{!! $payment->store_id !!}"
+            data-store_supplier_id="{!! $payment->store_supplier_id !!}"
             data-supplier_id="{!! $payment->store_supplier_id !!}"
             data-supplier_name="{!! optional($payment->supplier)->name !!}"
+            data-store_supplier_invoice_id="{!! $payment->store_supplier_invoice_id !!}"
             data-invoice_id="{!! $payment->store_supplier_invoice_id !!}"
+            data-payment_date="{!! $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('Y-m-d') : $payment->created_at->format('Y-m-d') !!}"
             data-date="{!! $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('Y-m-d') : $payment->created_at->format('Y-m-d') !!}"
             title="{!! __('general.edit') !!}">
             <i class="fas fa-edit text-xs"></i>

@@ -3,10 +3,15 @@
 
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <form class="ajax-form w-full" action="" method="POST" enctype="multipart/form-data"
-            id="update_store_supplier_payment_form" data-success-msg="{!! __('general.update_success_message') !!}" data-success-action="reload-table"
-            data-table-id="#table_data" novalidate>
+            id="update_store_supplier_payment_form" novalidate
+            data-success-msg="{!! __('general.update_success_message') !!}"
+            data-success-action="reload-table"
+            data-table-id="#table_data">
             @csrf
             @method('PUT')
+            
+            <input type="hidden" name="id" id="store_supplier_payment_id_edit">
+
             <div class="modal-content rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
 
                 <!-- Modal Header -->
@@ -26,20 +31,26 @@
 
                 <!-- Modal Body -->
                 <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto custom-scrollbar">
-                    <input type="hidden" id="id_edit" name="id">
                     
                     @if(isset($stores))
-                    <!-- Store Select (for admin) -->
+                    <!-- Store Select (Disabled / Fixed in Edit) -->
                     <div>
-                        <label class="form-label-modern" for="store_id_dept_edit">
-                            {!! __('stores.store') !!} <span class="text-rose-500">*</span>
-                        </label>
-                        <select name="store_id" id="store_id_dept_edit" class="form-input-modern select2">
-                            <option value="" disabled>{!! __('general.select_from_list') !!}</option>
+                        <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <label class="form-label-modern mb-0" for="store_id_dept_edit">
+                                {!! __('stores.store') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                <i class="fas fa-lock text-[9px]"></i>
+                                <span>{{ __("general.immutable_field_store") }}</span>
+                            </span>
+                        </div>
+                        <select id="store_id_dept_edit" class="form-input-modern select2" disabled>
+                            <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                             @foreach ($stores as $store)
                                 <option value="{{ $store->id }}">{{ $store->name }}</option>
                             @endforeach
                         </select>
+                        <input type="hidden" name="store_id" id="hidden_store_id_edit">
                         <span class="text-xs text-rose-500 error-text store_id_error block mt-1"></span>
                     </div>
                     @endif
@@ -51,7 +62,7 @@
                                 {!! __('store_supplier_payments.supplier') !!} <span class="text-rose-500">*</span>
                             </label>
                             <select name="store_supplier_id" id="store_supplier_id_edit" class="form-input-modern select2">
-                                <option value="" disabled>{!! __('general.select_from_list') !!}</option>
+                                <option value="" disabled selected>{!! __('general.select_from_list') !!}</option>
                                 @if(isset($suppliers))
                                     @foreach($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
@@ -62,11 +73,22 @@
                         </div>
 
                         <div>
-                            <label class="form-label-modern" for="store_supplier_invoice_id_edit">
-                                {!! __('store_supplier_payments.invoice') !!}
-                            </label>
+                            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                <label class="form-label-modern mb-0" for="store_supplier_invoice_id_edit">
+                                    {!! __('store_supplier_payments.invoice') !!}
+                                </label>
+
+                                <!-- Inline Invoice Remaining Balance Pill -->
+                                <div id="invoice_remaining_info_edit" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-800/60 shadow-2xs transition-all cursor-pointer hover:bg-amber-100 dark:hover:bg-amber-900/60"
+                                     title="{{ __("general.click_to_fill_remaining") }}">
+                                    <i class="fas fa-file-invoice-dollar text-[10px]"></i>
+                                    <span>{{ __("general.invoice_remaining") }}:</span>
+                                    <span class="invoice-remaining-amount font-black font-mono" dir="ltr">0.00</span>
+                                </div>
+                            </div>
+
                             <select name="store_supplier_invoice_id" id="store_supplier_invoice_id_edit" class="form-input-modern select2">
-                                <option value="" selected>{!! __('general.general_payment') ?? 'دفعة عامة (بدون فاتورة محددة)' !!}</option>
+                                <option value="" data-remaining="0" selected>{!! __('general.general_payment') ?? 'دفعة عامة (بدون فاتورة محددة)' !!}</option>
                             </select>
                             <span class="text-xs text-rose-500 error-text store_supplier_invoice_id_error block mt-1"></span>
                         </div>
@@ -74,9 +96,19 @@
 
                     <!-- Payment Bank Account / Wallet -->
                     <div>
-                        <label class="form-label-modern" for="store_bank_account_id_edit">
-                            {!! __('store_supplier_payments.bank_account') !!} <span class="text-rose-500">*</span>
-                        </label>
+                        <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                            <label class="form-label-modern mb-0" for="store_bank_account_id_edit">
+                                {!! __('store_supplier_payments.bank_account') !!} <span class="text-rose-500">*</span>
+                            </label>
+                            
+                            <!-- Inline Balance Header Pill -->
+                            <div id="bank_account_balance_info_edit" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs transition-all">
+                                <i class="fas fa-wallet text-[10px]"></i>
+                                <span>{!! __('general.balance') !!}:</span>
+                                <span class="balance-amount font-black font-mono" dir="ltr">0.00</span>
+                            </div>
+                        </div>
+
                         <select name="store_bank_account_id" id="store_bank_account_id_edit" class="form-input-modern select2">
                             <option value="" data-balance="0" disabled>{!! __('general.select_from_list') !!}</option>
                             @if(isset($bankAccounts))
@@ -90,34 +122,24 @@
                             @endif
                         </select>
                         <span class="text-xs text-rose-500 error-text store_bank_account_id_error block mt-1"></span>
-
-                        <!-- Balance & Remaining Balance Card -->
-                        <div id="bank_account_balance_info_edit" class="hidden mt-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80">
-                            <div class="flex items-center justify-between text-xs font-bold">
-                                <div class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                                    <i class="fas fa-wallet text-xs"></i>
-                                    <span>{!! __('general.balance') !!}:</span>
-                                    <span class="balance-amount font-black" dir="ltr">0.00</span>
-                                </div>
-                                <div class="remaining-balance-container text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                                    <i class="fas fa-money-check-alt text-xs"></i>
-                                    <span>{!! __('general.remaining_balance') !!}:</span>
-                                    <span class="remaining-balance-amount font-black" dir="ltr">0.00</span>
-                                </div>
-                            </div>
-                            <div class="exceeded-balance-warning hidden text-xs font-bold text-rose-600 dark:text-rose-400 mt-2 flex items-center gap-1.5">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span>{!! __('store_supplier_payments.balance_exceeded_warning') !!}</span>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Amount & Payment Date Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="form-label-modern" for="amount_edit">
-                                {!! __('store_supplier_payments.amount') !!} <span class="text-rose-500">*</span>
-                            </label>
+                            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                <label class="form-label-modern mb-0" for="amount_edit">
+                                    {!! __('store_supplier_payments.amount') !!} <span class="text-rose-500">*</span>
+                                </label>
+
+                                <!-- Inline Remaining Balance Pill -->
+                                <div id="remaining_balance_info_edit" class="hidden inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200/80 dark:border-indigo-800/60 shadow-2xs transition-all">
+                                    <i class="fas fa-calculator text-[10px]"></i>
+                                    <span>{!! __('general.remaining_balance') !!}:</span>
+                                    <span class="remaining-balance-amount font-black font-mono" dir="ltr">0.00</span>
+                                </div>
+                            </div>
+
                             <input type="number" id="amount_edit" name="amount" step="0.01" min="0"
                                 class="form-input-modern" placeholder="0.00" autocomplete="off">
                             <span class="text-xs text-rose-500 error-text amount_error block mt-1"></span>
@@ -163,39 +185,33 @@
 </div>
 
 @push('scripts')
-    <script type="text/javascript">
+    <script>
         $(document).ready(function() {
-            // Show edit modal and populate data dynamically via event delegation (0ms lag)
-            $(document).on('click', '.editStoreSupplierPaymentBtn', function(e) {
-                e.preventDefault();
-                
+            // Edit Button Click Handler
+            $(document).on('click', '.editStoreSupplierPaymentBtn', function() {
                 let $btn = $(this);
                 let payment_id = $btn.data('id');
-                let store_id = $btn.data('store_id');
-                let supplier_id = $btn.data('supplier_id');
+                let supplier_id = $btn.data('store_supplier_id') || $btn.data('supplier_id');
                 let supplier_name = $btn.data('supplier_name');
-                let invoice_id = $btn.data('invoice_id');
+                let invoice_id = $btn.data('store_supplier_invoice_id') || $btn.data('invoice_id');
                 let bank_account_id = $btn.data('store_bank_account_id');
                 let bank_account_name = $btn.data('bank_account_name');
                 let bank_account_balance = $btn.data('bank_account_balance');
+                let store_id = $btn.data('store_id');
                 let amount = $btn.data('amount');
+                let payment_date = $btn.data('payment_date') || $btn.data('date');
                 let notes = $btn.data('notes');
-                let payment_date = $btn.data('date');
 
-                // Populate form fields
-                $('#id_edit').val(payment_id);
-                $('#amount_edit').val(amount);
-                $('#amount_edit').attr('data-original-amount', amount);
-                $('#amount_edit').attr('data-original-bank-account-id', bank_account_id);
-                $('#notes_edit').val(notes);
+                $('#store_supplier_payment_id_edit').val(payment_id);
+                $('#amount_edit').val(amount).attr('data-original-amount', amount).attr('data-original-bank-account-id', bank_account_id).attr('data-original-invoice-id', invoice_id);
                 
-                // Set Flatpickr date or input value
                 let dateInput = document.querySelector('#payment_date_edit');
                 if (dateInput && dateInput._flatpickr) {
                     dateInput._flatpickr.setDate(payment_date, true);
                 } else {
                     $('#payment_date_edit').val(payment_date);
                 }
+                $('#notes_edit').val(notes);
 
                 // Populate Select2 for Bank Account
                 if ($('#store_bank_account_id_edit').length) {
@@ -230,15 +246,17 @@
                 if ($('#store_id_dept_edit').length) {
                     if (store_id) {
                         $('#store_id_dept_edit').val(store_id).trigger('change.select2');
+                        $('#hidden_store_id_edit').val(store_id);
                     } else {
                         $('#store_id_dept_edit').val(null).trigger('change.select2');
+                        $('#hidden_store_id_edit').val('');
                     }
                 }
 
                 // Load invoices for supplier and select current invoice
                 loadInvoicesForSupplierEdit(supplier_id, invoice_id);
 
-                // Immediately calculate and render balance and remaining balance (0ms lag)
+                // Immediately calculate and render balance
                 let initialBalance = parseFloat(bank_account_balance) || 0;
                 let infoDiv = $('#bank_account_balance_info_edit');
                 infoDiv.find('.balance-amount').text(initialBalance.toFixed(2));
@@ -254,51 +272,6 @@
                 $('#updateStoreSupplierPaymentModal').modal('show');
             });
 
-            // Fetch suppliers and bank accounts by store on change in edit modal
-            $('#store_id_dept_edit').on('change', function(e) {
-                if (!e.isTrigger || e.type !== 'change') {
-                    let store_id = $(this).val();
-                    let supplierSelect = $('#store_supplier_id_edit');
-                    let bankAccountSelect = $('#store_bank_account_id_edit');
-                    let invoiceSelect = $('#store_supplier_invoice_id_edit');
-                    
-                    supplierSelect.empty().append('<option value="" disabled selected>{!! __('general.select_from_list') !!}</option>');
-                    bankAccountSelect.empty().append('<option value="" data-balance="0" disabled selected>{!! __('general.select_from_list') !!}</option>');
-                    invoiceSelect.empty().append('<option value="" selected>{!! __('general.general_payment') ?? 'دفعة عامة (بدون فاتورة محددة)' !!}</option>');
-                    
-                    if (store_id) {
-                        $.ajax({
-                            url: "{!! route('dashboard.store-suppliers.by-store') !!}",
-                            type: 'GET',
-                            data: { store_id: store_id },
-                            success: function(data) {
-                                $.each(data, function(key, supplier) {
-                                    let newOption = new Option(supplier.name + ' - ' + (supplier.mobile || ''), supplier.id, false, false);
-                                    supplierSelect.append(newOption);
-                                });
-                                supplierSelect.trigger('change.select2');
-                            }
-                        });
-
-                        $.ajax({
-                            url: "{!! route('dashboard.bank-accounts.by-store') !!}",
-                            type: 'GET',
-                            data: { store_id: store_id },
-                            success: function(data) {
-                                $.each(data, function(key, account) {
-                                    let entityName = (account.payment_entity && account.payment_entity.name) ? (account.payment_entity.name["{!! app()->getLocale() !!}"] || account.payment_entity.name.ar || account.payment_entity.name) : '';
-                                    let accountName = account.account_type === 'cash' ? entityName : entityName + ' - ' + account.account_number;
-                                    let newOption = new Option(accountName, account.id, false, false);
-                                    $(newOption).attr('data-balance', account.current_balance);
-                                    bankAccountSelect.append(newOption);
-                                });
-                                bankAccountSelect.trigger('change.select2');
-                            }
-                        });
-                    }
-                }
-            });
-
             // Fetch Invoices when Supplier changes in edit modal
             $('#store_supplier_id_edit').on('change', function(e) {
                 if (!e.isTrigger || e.type !== 'change') {
@@ -309,8 +282,9 @@
 
             function loadInvoicesForSupplierEdit(supplier_id, selected_invoice_id) {
                 let invoiceSelect = $('#store_supplier_invoice_id_edit');
-                invoiceSelect.empty().append('<option value="" selected>{!! __('general.general_payment') ?? 'دفعة عامة (بدون فاتورة محددة)' !!}</option>');
-                
+                invoiceSelect.empty().append('<option value="" data-remaining="0" selected>{!! __('general.general_payment') ?? 'دفعة عامة (بدون فاتورة محددة)' !!}</option>');
+                $('#invoice_remaining_info_edit').addClass('hidden');
+
                 if (supplier_id) {
                     $.ajax({
                         url: "{!! route('dashboard.store-supplier-invoices.by-supplier') !!}",
@@ -322,14 +296,56 @@
                                     let isSelected = (selected_invoice_id && inv.id == selected_invoice_id);
                                     let invText = '#' + inv.invoice_number + ' (المتبقي: ' + (inv.remaining_amount || 0) + ')';
                                     let newOption = new Option(invText, inv.id, isSelected, isSelected);
+                                    $(newOption).attr('data-remaining', inv.remaining_amount || 0);
                                     invoiceSelect.append(newOption);
                                 });
                                 invoiceSelect.val(selected_invoice_id || '').trigger('change.select2');
+                                updateEditInvoiceRemaining();
                             }
                         }
                     });
                 }
             }
+
+            // Invoice selection change
+            $('#store_supplier_invoice_id_edit').on('change', function() {
+                updateEditInvoiceRemaining();
+            });
+
+            function updateEditInvoiceRemaining() {
+                let opt = $('#store_supplier_invoice_id_edit').find('option:selected');
+                let remaining = parseFloat(opt.attr('data-remaining')) || 0;
+                let infoDiv = $('#invoice_remaining_info_edit');
+
+                // If editing and same invoice, add back original amount to remaining
+                let originalInvoiceId = $('#amount_edit').attr('data-original-invoice-id');
+                let originalAmount = parseFloat($('#amount_edit').attr('data-original-amount')) || 0;
+                if (originalInvoiceId && originalInvoiceId == opt.val()) {
+                    remaining += originalAmount;
+                }
+
+                if (opt.val() && remaining > 0) {
+                    infoDiv.find('.invoice-remaining-amount').text(remaining.toFixed(2));
+                    infoDiv.removeClass('hidden');
+                } else {
+                    infoDiv.addClass('hidden');
+                }
+                updateEditRemainingBalance();
+            }
+
+            // Click invoice pill to auto-fill remaining amount
+            $(document).on('click', '#invoice_remaining_info_edit', function() {
+                let opt = $('#store_supplier_invoice_id_edit').find('option:selected');
+                let remaining = parseFloat(opt.attr('data-remaining')) || 0;
+                let originalInvoiceId = $('#amount_edit').attr('data-original-invoice-id');
+                let originalAmount = parseFloat($('#amount_edit').attr('data-original-amount')) || 0;
+                if (originalInvoiceId && originalInvoiceId == opt.val()) {
+                    remaining += originalAmount;
+                }
+                if (remaining > 0) {
+                    $('#amount_edit').val(remaining.toFixed(2)).trigger('input');
+                }
+            });
 
             // Show balance on account change
             $('#store_bank_account_id_edit').on('change', function() {
@@ -352,36 +368,61 @@
                     updateEditRemainingBalance();
                 } else {
                     infoDiv.addClass('hidden');
+                    $('#remaining_balance_info_edit').addClass('hidden');
                 }
             }
 
             function updateEditRemainingBalance() {
                 let selectedOption = $('#store_bank_account_id_edit').find('option:selected');
                 let currentBalance = parseFloat(selectedOption.attr('data-balance')) || 0;
+                let selectedInvoiceOption = $('#store_supplier_invoice_id_edit').find('option:selected');
+                let invoiceRemaining = parseFloat(selectedInvoiceOption.attr('data-remaining')) || 0;
                 let paymentAmount = parseFloat($('#amount_edit').val()) || 0;
                 
                 let originalAmount = parseFloat($('#amount_edit').attr('data-original-amount')) || 0;
                 let originalBankAccountId = $('#amount_edit').attr('data-original-bank-account-id');
+                let originalInvoiceId = $('#amount_edit').attr('data-original-invoice-id');
                 
                 let trueAvailableBalance = currentBalance;
                 if (originalBankAccountId == $('#store_bank_account_id_edit').val()) {
                     trueAvailableBalance += originalAmount;
                 }
-                
-                let remaining = trueAvailableBalance - paymentAmount;
-                let infoDiv = $('#bank_account_balance_info_edit');
-                let remainingContainer = infoDiv.find('.remaining-balance-container');
-                let remainingSpan = infoDiv.find('.remaining-balance-amount');
-                let warningMsg = infoDiv.find('.exceeded-balance-warning');
 
-                remainingSpan.text(remaining.toFixed(2));
+                let trueInvoiceRemaining = invoiceRemaining;
+                if (originalInvoiceId && originalInvoiceId == selectedInvoiceOption.val()) {
+                    trueInvoiceRemaining += originalAmount;
+                }
                 
-                if (remaining < 0) {
-                    remainingContainer.removeClass('text-indigo-600 dark:text-indigo-400').addClass('text-rose-600 dark:text-rose-400');
-                    warningMsg.removeClass('hidden');
+                let remainingPill = $('#remaining_balance_info_edit');
+                let invoicePill = $('#invoice_remaining_info_edit');
+
+                // Bank Account Balance Pill
+                if (selectedOption.val() && paymentAmount > 0) {
+                    let remaining = trueAvailableBalance - paymentAmount;
+                    let remainingSpan = remainingPill.find('.remaining-balance-amount');
+                    remainingSpan.text(remaining.toFixed(2));
+                    remainingPill.removeClass('hidden');
+
+                    if (remaining < 0) {
+                        remainingPill.removeClass('bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800/60')
+                            .addClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-200/80 dark:border-rose-800/60 animate-pulse');
+                    } else {
+                        remainingPill.removeClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-200/80 dark:border-rose-800/60 animate-pulse')
+                            .addClass('bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800/60');
+                    }
                 } else {
-                    remainingContainer.removeClass('text-rose-600 dark:text-rose-400').addClass('text-indigo-600 dark:text-indigo-400');
-                    warningMsg.addClass('hidden');
+                    remainingPill.addClass('hidden');
+                }
+
+                // Invoice Remaining Check
+                if (selectedInvoiceOption.val() && trueInvoiceRemaining > 0) {
+                    if (paymentAmount > trueInvoiceRemaining) {
+                        invoicePill.removeClass('bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-200/80 dark:border-amber-800/60')
+                            .addClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-200/80 dark:border-rose-800/60 animate-pulse');
+                    } else {
+                        invoicePill.removeClass('bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400 border-rose-200/80 dark:border-rose-800/60 animate-pulse')
+                            .addClass('bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-200/80 dark:border-amber-800/60');
+                    }
                 }
             }
         });

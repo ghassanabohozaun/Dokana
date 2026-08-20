@@ -17,6 +17,7 @@ return [
     'salaries_count' => 'عدد الرواتب',
 
     // admin menu
+    'admin' => 'مدير النظام',
     'roles' => 'الصلاحيات',
     'admins' => 'المديرين',
     'users' => 'المستخدمين',

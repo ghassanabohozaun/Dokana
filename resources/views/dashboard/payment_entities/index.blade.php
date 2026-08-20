@@ -5,53 +5,59 @@
 @endsection
 
 @section('content')
-<div class="space-y-5">
-    <!-- Top Header & Action Bar -->
-    <div class="flex items-center justify-between gap-4">
-        <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500">
-            <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                <i class="fas fa-home text-xs"></i>
-                <span>{!! __('dashboard.home') !!}</span>
-            </a>
-            <span>/</span>
-            <span class="text-slate-700 dark:text-slate-200 font-bold">{!! __('payment_entities.payment_entities') !!}</span>
-        </nav>
-
-        <!-- Action Buttons -->
+<div class="space-y-6">
+    <!-- 1. Header & Actions Toolbar -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-            @can('payment_entities_create')
-            <button type="button" data-toggle="modal" data-target="#createPaymentEntityModal"
-                class="btn-primary-gradient text-xs">
-                <i class="fas fa-plus-circle text-xs"></i>
-                <span>{!! __('payment_entities.create_new_payment_entity') !!}</span>
-            </button>
-            @endcan
-        </div>
-    </div>
+            <!-- Breadcrumb Navigation -->
+            <nav class="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1">
+                <a href="{!! route('dashboard.index') !!}" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    <i class="fas fa-home text-xs"></i>
+                    <span>{!! __('dashboard.home') !!}</span>
+                </a>
+                <span>/</span>
+                <span class="text-slate-700 dark:text-slate-200 font-bold">{!! __('payment_entities.payment_entities') !!}</span>
+            </nav>
 
-    <!-- Search Filters Bar -->
-    @include('dashboard.payment_entities.partials._search')
-
-    <!-- Master Data Table Card -->
-    <div class="dash-card overflow-hidden">
-        <!-- Card Header -->
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/80">
+            <!-- Page Title & Counter Badge -->
             <div class="flex items-center gap-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-lg shadow-sm">
                     <i class="fas fa-landmark"></i>
                 </div>
                 <div>
-                    <h3 class="text-sm font-bold text-slate-800 dark:text-white">{!! __('payment_entities.payment_entities') !!}</h3>
+                    <div class="flex items-center gap-2.5">
+                        <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-white">
+                            {!! __('payment_entities.payment_entities') !!}
+                        </h1>
+                        <span id="payment_entitiesCountBadge" class="badge-pill badge-pill-info text-[11px]">
+                            {!! $entities->total() !!} {!! __('general.records') ?? 'سجل' !!}
+                        </span>
+                    </div>
                 </div>
-                <span id="payment_entitiesCountBadge" class="badge-pill badge-pill-info text-[10px]">{!! $entities->total() !!}</span>
             </div>
         </div>
 
-        <!-- Card Body Table Container -->
-        <div class="relative min-h-[150px]" id="table_data">
-            <div class="table-loader-overlay absolute inset-0 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xs flex items-center justify-center z-10 hidden" id="tableLoader">
-                <div class="animate-spin rounded-full h-8 w-8 border-2 border-indigo-600 border-t-transparent"></div>
-            </div>
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-2.5 self-start sm:self-center">
+            @if(($isSuperAdmin ?? false) && auth()->user()->can('payment_entities_create'))
+            <button type="button" data-toggle="modal" data-target="#createPaymentEntityModal"
+                class="btn-primary-gradient">
+                <i class="fas fa-plus text-xs"></i>
+                <span>{!! __('payment_entities.create_new_payment_entity') !!}</span>
+            </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- 2. Search Filters Bar -->
+    @include('dashboard.payment_entities.partials._search')
+
+    <!-- 3. Main Data Table Card -->
+    <div class="dash-card overflow-hidden relative">
+        <div class="table-loader-overlay hidden">
+            <span class="premium-loader"></span>
+        </div>
+        <div id="table_data">
             @include('dashboard.payment_entities.partials._table')
         </div>
     </div>
@@ -122,6 +128,11 @@
                         } else {
                             window.PremiumToast.error("{!! __('general.change_status_error_message') !!}");
                         }
+                    }
+
+                    // Trigger smooth table animation & re-fetch
+                    if (window.DokanaTable && typeof window.DokanaTable.fetchData === 'function') {
+                        window.DokanaTable.fetchData();
                     }
                 },
                 error: function(xhr) {

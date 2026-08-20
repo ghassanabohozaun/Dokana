@@ -38,7 +38,18 @@
                 <form @submit.prevent="saveSupplierInvoice()" novalidate class="space-y-4">
                     <!-- Invoice Number -->
                     <div>
-                        <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.invoice_number') }} <span class="text-red-500">*</span></label>
+                        <div class="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-300">
+                                {{ __('notebook.invoice_number') }} <span class="text-red-500">*</span>
+                            </label>
+                            <button type="button" 
+                                    @click="newSupplierInvoiceNumber = generateRandomInvoiceNumber()"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200/60 dark:border-blue-800/40 transition-colors"
+                                    title="توليد رقم عشوائي">
+                                <i class="ph-bold ph-magic-wand text-xs"></i>
+                                <span>رقم عشوائي</span>
+                            </button>
+                        </div>
                         <input x-model="newSupplierInvoiceNumber" 
                                @input="newSupplierInvoiceNumber = normalizeArabicNumbers(newSupplierInvoiceNumber)"
                                type="text" 

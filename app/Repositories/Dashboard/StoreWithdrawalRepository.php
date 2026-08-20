@@ -59,6 +59,6 @@ class StoreWithdrawalRepository
     public function delete($id)
     {
         $withdrawal = $this->find($id);
-        return $withdrawal->forceDelete();
+        return $withdrawal->delete();
     }
 }

@@ -37,10 +37,10 @@ class StoreTransactionsController extends Controller
         $customers = collect();
         $bankAccounts = collect();
         if (user()->role_id == 1 || user()->id == 1) {
-            $customers = StoreCustomer::active()->latest()->get();
-            $bankAccounts = StoreBankAccount::with('paymentEntity')->latest()->get();
+            $customers = StoreCustomer::with('store')->active()->latest()->get();
+            $bankAccounts = StoreBankAccount::with(['paymentEntity', 'store'])->latest()->get();
         } else {
-            $customers = StoreCustomer::active()->where('store_id', user()->store_id)->latest()->get();
+            $customers = StoreCustomer::with('store')->active()->where('store_id', user()->store_id)->latest()->get();
             $bankAccounts = StoreBankAccount::where('store_id', user()->store_id)->with('paymentEntity')->latest()->get();
         }
 
@@ -104,6 +104,11 @@ class StoreTransactionsController extends Controller
                     'status' => true,
                     'message' => __('general.delete_success_message')
                 ], 200);
+            } catch (\App\Exceptions\DeleteRestrictionException $e) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $e->getMessage()
+                ], 422);
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => false,

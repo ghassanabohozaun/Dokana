@@ -46,7 +46,7 @@
                             <label class="form-label-modern" for="transaction_type_create">
                                 {!! __('store_transactions.type') !!} <span class="text-rose-500">*</span>
                             </label>
-                            <select class="form-input-modern" id="transaction_type_create" name="type">
+                            <select class="form-input-modern select2" id="transaction_type_create" name="type">
                                 <option value="" selected>{!! __('store_transactions.choose_type') !!}</option>
                                 <option value="debt">{!! __('store_transactions.debt') !!} (دين عليه)</option>
                                 <option value="payment">{!! __('store_transactions.payment') !!} (سداد منه)</option>
