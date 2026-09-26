@@ -56,7 +56,14 @@ class StoreCustomerRepository
         } elseif ($sort_by === 'highest_payments') {
             $query->orderBy('total_payments', 'desc')->orderBy('id', 'desc');
         } elseif ($sort_by === 'oldest_debts') {
-            $query->orderByDesc('debt_age')->orderBy('id', 'desc');
+            $lastTxSubquery = \App\Models\StoreTransaction::select('transaction_date')
+                ->whereColumn('store_customer_id', 'store_customers.id')
+                ->latest('transaction_date')
+                ->limit(1);
+
+            $query->addSelect(['last_activity_date' => $lastTxSubquery])
+                ->orderByRaw('COALESCE(last_activity_date, store_customers.created_at) ASC')
+                ->orderBy('id', 'desc');
         } elseif ($sort_by === 'name_asc') {
             $query->orderBy('name', 'asc');
         } elseif ($sort_by === 'name_desc') {
