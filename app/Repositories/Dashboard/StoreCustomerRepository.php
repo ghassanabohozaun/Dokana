@@ -62,6 +62,8 @@ class StoreCustomerRepository
                 ->limit(1);
 
             $query->addSelect(['last_activity_date' => $lastTxSubquery])
+                ->where('balance', '>', 0)
+                ->where('is_walk_in', false)
                 ->orderByRaw('COALESCE(last_activity_date, store_customers.created_at) ASC')
                 ->orderBy('id', 'desc');
         } elseif ($sort_by === 'name_asc') {
