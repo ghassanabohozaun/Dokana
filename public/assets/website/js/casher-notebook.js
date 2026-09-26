@@ -49,6 +49,13 @@ function casherNotebook(passedConfig = {}) {
         newSupplierAddress: '',
         isSavingSupplier: false,
 
+        // Edit Customer Form State
+        editCustomerName: '',
+        editCustomerPhone: '',
+        editCustomerBypassDebtLimit: false,
+        editCustomerMaxDebtLimit: '',
+        isSavingCustomer: false,
+
         // Edit Supplier Form
         editSupplierId: null,
         editSupplierName: '',
@@ -124,6 +131,7 @@ function casherNotebook(passedConfig = {}) {
                 txBankAccountId: '',
                 editingTxId: null,
                 isSavingTransaction: false,
+                txTemporaryBypass: false,
 
                 // Universal Delete Confirmation Modal State
                 deleteType: 'transaction',
@@ -577,6 +585,8 @@ function casherNotebook(passedConfig = {}) {
             if(!this.activeCustomer) return;
             this.editCustomerName = this.activeCustomer.name;
             this.editCustomerPhone = this.activeCustomer.phone || '';
+            this.editCustomerBypassDebtLimit = Boolean(this.activeCustomer.bypass_debt_limit);
+            this.editCustomerMaxDebtLimit = (this.activeCustomer.max_debt_limit !== null && this.activeCustomer.max_debt_limit !== undefined) ? this.activeCustomer.max_debt_limit : '';
             this.isSavingCustomer = false;
             window.dispatchEvent(new CustomEvent('open-modal', { detail: { id: 'editCustomerModal' } }));
         },
@@ -595,7 +605,9 @@ function casherNotebook(passedConfig = {}) {
                     },
                     body: JSON.stringify({
                         name: this.editCustomerName,
-                        phone: this.editCustomerPhone
+                        phone: this.editCustomerPhone,
+                        bypass_debt_limit: this.editCustomerBypassDebtLimit,
+                        max_debt_limit: (this.editCustomerMaxDebtLimit !== '' && this.editCustomerMaxDebtLimit !== null) ? Number(this.editCustomerMaxDebtLimit) : null
                     })
                 });
                 const data = await res.json();
@@ -604,10 +616,14 @@ function casherNotebook(passedConfig = {}) {
                     Toast.show(config.translations.success, data.message, 'success');
                     this.activeCustomer.name = data.customer.name;
                     this.activeCustomer.phone = data.customer.phone;
+                    this.activeCustomer.bypass_debt_limit = Boolean(data.customer.bypass_debt_limit);
+                    this.activeCustomer.max_debt_limit = data.customer.max_debt_limit;
                     const index = this.customers.findIndex(c => c.id === this.activeCustomer.id);
                     if(index !== -1) {
                         this.customers[index].name = data.customer.name;
                         this.customers[index].phone = data.customer.phone;
+                        this.customers[index].bypass_debt_limit = Boolean(data.customer.bypass_debt_limit);
+                        this.customers[index].max_debt_limit = data.customer.max_debt_limit;
                     }
                 } else {
                     Toast.show(config.translations.warning, data.message || 'Error occurred', 'error');
@@ -748,6 +764,7 @@ function casherNotebook(passedConfig = {}) {
             this.txBankAccountId = '';
             this.editingTxId = null;
             this.isSavingTransaction = false;
+            this.txTemporaryBypass = false; // إعادة ضبط التجاوز المؤقت في كل مرة
             
             if (type === 'payment' || type === 'direct_sale') {
                 const selectEl = document.querySelector('select[x-model="txBankAccountId"]');
@@ -817,7 +834,8 @@ function casherNotebook(passedConfig = {}) {
                         transaction_date: this.txDate,
                         description: this.txDescription,
                         store_bank_account_id: (this.txType === 'payment' || this.txType === 'direct_sale') ? this.txBankAccountId : null,
-                        is_direct_sale: (this.txType === 'direct_sale')
+                        is_direct_sale: (this.txType === 'direct_sale'),
+                        temporary_bypass: this.txTemporaryBypass // تجاوز السقف مؤقتاً لهذه الحركة فقط
                     })
                 });
                 const data = await res.json();

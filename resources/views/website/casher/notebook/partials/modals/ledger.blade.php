@@ -35,6 +35,12 @@
                                     <template x-if="activeCustomer.status == 0">
                                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 border border-red-200 dark:border-red-800">{{ __('notebook.disabled') ?? 'معطل' }}</span>
                                     </template>
+                                    <template x-if="activeCustomer.bypass_debt_limit">
+                                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center gap-1 shadow-xs" title="{{ __('store_customers.bypass_debt_limit_desc') ?? 'تجاوز سقف الدين مفعل' }}">
+                                            <i class="ph-bold ph-lock-key-open text-xs"></i>
+                                            <span>{{ __('store_customers.bypass_debt_limit') ?? 'السقف مفتوح' }}</span>
+                                        </span>
+                                    </template>
                                 </h2>
                                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5 font-medium flex items-center gap-1" x-html="activeCustomer.phone ? '<i class=\'ph-fill ph-phone text-xs\'></i> ' + activeCustomer.phone : '-'"></p>
                             </div>
@@ -56,6 +62,19 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Notice if Bypass is active -->
+                        <template x-if="activeCustomer.bypass_debt_limit">
+                            <div class="mb-3 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300">
+                                <div class="flex items-center gap-2">
+                                    <i class="ph-bold ph-lock-key-open text-base text-amber-600 dark:text-amber-400 shrink-0"></i>
+                                    <span class="font-bold">سقف الدين مفتوح لهذا العميل (تجاوز السقف مفعل)</span>
+                                </div>
+                                <button type="button" @click="openEditCustomerModal()" class="text-amber-700 dark:text-amber-300 font-bold underline text-[11px] hover:text-amber-900 shrink-0">
+                                    تعديل
+                                </button>
+                            </div>
+                        </template>
 
                         <!-- Max Debt Limit Progress Bar -->
                         <template x-if="activeCustomer.max_debt_limit !== null && activeCustomer.max_debt_limit > 0">

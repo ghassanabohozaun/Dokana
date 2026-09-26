@@ -27,6 +27,7 @@ class StoreCustomerRequest extends FormRequest
             'bypass_debt_limit' => ['nullable', 'boolean'],
             'max_debt_limit' => ['nullable', 'numeric', 'min:0'],
             'opening_balance' => ['nullable', 'numeric', 'min:0'],
+            'status' => ['nullable', 'boolean'],
         ];
 
         if (user()->store_id == 1) {

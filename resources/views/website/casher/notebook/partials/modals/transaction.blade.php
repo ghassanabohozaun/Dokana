@@ -184,6 +184,51 @@
                             <label class="block text-sm font-bold mb-1.5 text-gray-700 dark:text-gray-300">{{ __('notebook.notes_optional') }}</label>
                             <textarea x-model="txDescription" rows="4" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3.5 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all font-medium text-gray-900 dark:text-white resize-none" placeholder="{{ __('notebook.example_notes') }}"></textarea>
                         </div>
+
+                        {{-- بانر تجاوز سقف الدين المؤقت --}}
+                        <template x-if="txType === 'debt' && activeCustomer && !activeCustomer.is_walk_in && !activeCustomer.bypass_debt_limit && activeCustomer.max_debt_limit !== null && activeCustomer.max_debt_limit > 0 && activeCustomer.balance >= activeCustomer.max_debt_limit">
+                            <div class="rounded-2xl border overflow-hidden transition-all duration-200"
+                                 :class="txTemporaryBypass
+                                     ? 'border-amber-300 dark:border-amber-700 bg-amber-50/60 dark:bg-amber-950/20'
+                                     : 'border-red-200 dark:border-red-800 bg-red-50/60 dark:bg-red-950/20'">
+
+                                {{-- رسالة التحذير --}}
+                                <div class="flex items-start gap-3 px-4 pt-4 pb-3">
+                                    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 transition-colors"
+                                         :class="txTemporaryBypass ? 'bg-amber-500 text-white' : 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'">
+                                        <i class="ph-bold text-lg" :class="txTemporaryBypass ? 'ph-lock-key-open' : 'ph-warning-circle'"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-bold transition-colors"
+                                           :class="txTemporaryBypass ? 'text-amber-800 dark:text-amber-300' : 'text-red-700 dark:text-red-400'">
+                                            {{ __('notebook.debt_limit_reached_title') ?? 'تجاوز سقف الدين المسموح!' }}
+                                        </p>
+                                        <p class="text-xs mt-0.5 transition-colors"
+                                           :class="txTemporaryBypass ? 'text-amber-700 dark:text-amber-400' : 'text-red-600/80 dark:text-red-500'">
+                                            <template x-if="!txTemporaryBypass">
+                                                <span>{{ __('notebook.debt_limit_reached_desc') ?? 'وصل العميل للحد الأقصى. فعّل التجاوز المؤقت لتسجيل هذا الدين.' }}</span>
+                                            </template>
+                                            <template x-if="txTemporaryBypass">
+                                                <span>{{ __('notebook.debt_limit_bypass_active') ?? 'التجاوز المؤقت مفعّل — سيعود السقف للعمل بعد تسجيل هذه الحركة.' }}</span>
+                                            </template>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {{-- توجل التجاوز المؤقت --}}
+                                <div class="flex items-center justify-between px-4 py-3 border-t transition-colors"
+                                     :class="txTemporaryBypass ? 'border-amber-200 dark:border-amber-800' : 'border-red-100 dark:border-red-900/40'">
+                                    <span class="text-xs font-bold transition-colors"
+                                          :class="txTemporaryBypass ? 'text-amber-800 dark:text-amber-300' : 'text-red-700 dark:text-red-400'">
+                                        {{ __('notebook.temporary_bypass_toggle') ?? 'تجاوز السقف مؤقتاً لهذه الحركة فقط' }}
+                                    </span>
+                                    <label class="relative inline-flex items-center cursor-pointer select-none shrink-0">
+                                        <input type="checkbox" x-model="txTemporaryBypass" class="sr-only peer">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amber-500 shadow-sm"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </template>
                         
                         <!-- Invisible submit button to allow form submission on enter -->
                         <button type="submit" class="hidden"></button>

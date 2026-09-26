@@ -1,5 +1,5 @@
 <div class="dash-card p-4 space-y-3">
-    <form class="js-filter-form space-y-3" data-container="#table_data" data-loader=".table-loader-overlay">
+    <form class="js-filter-form space-y-3" data-container="#table_data" data-loader=".table-loader-overlay" data-no-auto-search="true">
         
         <!-- Top Row: Search Input & Action Buttons -->
         <div class="flex flex-col sm:flex-row items-center gap-3">
@@ -9,7 +9,8 @@
                     <i class="fas fa-search text-xs"></i>
                 </div>
                 <input type="text" name="keyword" class="form-input-modern ps-9 text-xs w-full"
-                    placeholder="{!! __('store_customers.enter_name') ?? 'ابحث باسم العميل أو رقم الجوال...' !!}" autocomplete="off">
+                    placeholder="{!! __('store_customers.enter_name') ?? 'ابحث باسم العميل أو رقم الجوال...' !!}" autocomplete="off"
+                    data-no-auto-search="true">
             </div>
 
             <!-- Filter Actions -->
@@ -77,5 +78,5 @@
 </div>
 
 @push('scripts')
-    <script src="{!! asset('assets/dashbaord/js/filter-system.js') !!}"></script>
+    <script src="{!! asset('assets/dashbaord/js/filter-system.js') !!}?v={!! filemtime(public_path('assets/dashbaord/js/filter-system.js')) !!}"></script>
 @endpush

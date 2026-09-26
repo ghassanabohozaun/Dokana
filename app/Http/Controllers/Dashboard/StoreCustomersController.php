@@ -109,6 +109,9 @@ class StoreCustomersController extends Controller
         try {
             $data = $request->only(['id', 'name', 'phone', 'store_id', 'max_debt_limit']);
             $data['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
+            if ($request->has('status')) {
+                $data['status'] = $request->boolean('status') ? 1 : 0;
+            }
             $this->storeCustomerService->update($data);
             return response()->json([
                 'status' => true,

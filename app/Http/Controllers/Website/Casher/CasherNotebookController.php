@@ -242,12 +242,24 @@ class CasherNotebookController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
+            'bypass_debt_limit' => 'nullable|boolean',
+            'max_debt_limit' => 'nullable|numeric|min:0',
         ]);
 
-        $customer->update([
+        $updateData = [
             'name' => $request->name,
             'phone' => $request->phone,
-        ]);
+        ];
+
+        if ($request->has('bypass_debt_limit')) {
+            $updateData['bypass_debt_limit'] = $request->boolean('bypass_debt_limit');
+        }
+
+        if ($request->has('max_debt_limit')) {
+            $updateData['max_debt_limit'] = $request->filled('max_debt_limit') ? $request->max_debt_limit : null;
+        }
+
+        $customer->update($updateData);
 
         return response()->json(['customer' => $customer, 'message' => __('notebook.customer_updated') ?? 'تم تحديث بيانات الزبون']);
     }
@@ -434,6 +446,7 @@ class CasherNotebookController extends Controller
             'description' => 'nullable|string|max:255',
             'transaction_date' => 'required|date',
             'is_direct_sale' => 'nullable|boolean',
+            'temporary_bypass' => 'nullable|boolean', // تجاوز مؤقت لسقف الدين لهذه الحركة فقط
         ]);
 
         return DB::transaction(function() use ($request, $customer, $storeId) {
@@ -468,7 +481,7 @@ class CasherNotebookController extends Controller
             } else {
                 $description = $request->description ?: ($request->type === 'debt' ? __('notebook.debt') : __('notebook.payment'));
 
-                $tx = StoreTransaction::create([
+                $tx = new StoreTransaction([
                     'store_id' => $storeId,
                     'store_customer_id' => $customer->id,
                     'store_bank_account_id' => $request->type === 'payment' ? $request->store_bank_account_id : null,
@@ -478,6 +491,13 @@ class CasherNotebookController extends Controller
                     'description' => $description,
                     'created_by' => Auth::guard('casher')->id(),
                 ]);
+
+                // لو كان المستخدم طلب التجاوز المؤقت، نتجاوز فحص السقف لهذه الحركة فقط دون تغيير إعداد العميل الدائم
+                if ($request->boolean('temporary_bypass') && $request->type === 'debt') {
+                    $tx->skip_limit_check = true;
+                }
+
+                $tx->save();
             }
 
             $customer->refresh();

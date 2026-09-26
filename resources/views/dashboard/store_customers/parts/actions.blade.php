@@ -39,6 +39,7 @@
                 data-store_name="{!! optional($store_customer->store)->name !!}" 
                 data-bypass_debt_limit="{!! $store_customer->bypass_debt_limit ? 1 : 0 !!}"
                 data-max_debt_limit="{!! $store_customer->max_debt_limit !!}"
+                data-status="{!! $store_customer->status !!}"
                 data-is_walk_in="{!! $store_customer->is_walk_in ? 1 : 0 !!}"
                 title="{!! __('general.edit') !!}">
                 <i class="fas fa-edit text-xs"></i>

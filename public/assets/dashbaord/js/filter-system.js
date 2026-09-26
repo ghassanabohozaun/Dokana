@@ -348,6 +348,9 @@ $(document).ready(function() {
     }, 350);
 
     $(document).off('input.filterAutoSearch', '.js-filter-form input[name="keyword"]').on('input.filterAutoSearch', '.js-filter-form input[name="keyword"]', function() {
+        if ($(this).data('no-auto-search') === true || $(this).data('no-auto-search') === 'true' || $(this).hasClass('no-auto-search') || $(this).closest('.js-filter-form').data('no-auto-search') === true || $(this).closest('.js-filter-form').data('no-auto-search') === 'true') {
+            return;
+        }
         debouncedFilterSubmit($(this).closest('.js-filter-form'));
     });
 

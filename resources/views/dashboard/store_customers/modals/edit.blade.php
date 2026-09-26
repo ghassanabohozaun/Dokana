@@ -97,6 +97,27 @@
                         </label>
                     </div>
 
+                    <!-- Customer Status Toggle Card -->
+                    <div class="flex items-center justify-between p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/40" id="status_row_edit">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 text-sm">
+                                <i class="fas fa-power-off"></i>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-slate-800 dark:text-white block">
+                                    {!! __('general.status') !!}
+                                </span>
+                                <span class="text-[11px] font-semibold block transition-colors" id="status_text_edit">
+                                    {!! __('general.enable') !!}
+                                </span>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer select-none">
+                            <input type="hidden" name="status" value="0">
+                            <input type="checkbox" id="status_edit" name="status" value="1" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-500 shadow-sm"></div>
+                        </label>
+                    </div>
 
                 </div>
 
@@ -120,6 +141,24 @@
 @push('scripts')
     <script type="text/javascript">
         $(document).ready(function() {
+            function updateEditStatusText(active) {
+                if (active) {
+                    $('#status_text_edit')
+                        .text("{!! __('general.enable') !!}")
+                        .removeClass('text-rose-500 dark:text-rose-400')
+                        .addClass('text-emerald-600 dark:text-emerald-400');
+                } else {
+                    $('#status_text_edit')
+                        .text("{!! __('general.disabled') !!}")
+                        .removeClass('text-emerald-600 dark:text-emerald-400')
+                        .addClass('text-rose-500 dark:text-rose-400');
+                }
+            }
+
+            $('#status_edit').on('change', function() {
+                updateEditStatusText($(this).is(':checked'));
+            });
+
             // Show edit modal and populate data dynamically via event delegation
             $(document).on('click', '.editStoreCustomerBtn', function(e) {
                 e.preventDefault();
@@ -131,6 +170,7 @@
                 let store_customer_store_id = $btn.data('store_id');
                 let store_customer_bypass_debt_limit = ($btn.data('bypass_debt_limit') == 1 || $btn.data('bypass_debt_limit') == '1');
                 let store_customer_max_debt_limit = $btn.data('max_debt_limit');
+                let store_customer_status = ($btn.data('status') == 1 || $btn.data('status') == '1' || $btn.data('status') === undefined);
                 let store_customer_is_walk_in = ($btn.data('is_walk_in') == 1 || $btn.data('is_walk_in') == '1');
 
                 // Populate form fields
@@ -139,11 +179,15 @@
                 $('#phone_edit').val(store_customer_phone);
                 $('#max_debt_limit_edit').val(store_customer_max_debt_limit);
                 $('#bypass_debt_limit_edit').prop('checked', store_customer_bypass_debt_limit);
+                $('#status_edit').prop('checked', store_customer_status);
+                updateEditStatusText(store_customer_status);
 
                 if (store_customer_is_walk_in) {
                     $('#bypass_debt_limit_row_edit').hide();
+                    $('#status_row_edit').hide();
                 } else {
                     $('#bypass_debt_limit_row_edit').show();
+                    $('#status_row_edit').show();
                 }
 
                 // Populate Select2 for Store
