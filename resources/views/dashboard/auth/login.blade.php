@@ -195,14 +195,9 @@
 
                         <!-- Password Input -->
                         <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label for="password" class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    {!! __('auth.enter_you_password') !!} <span class="text-rose-500">*</span>
-                                </label>
-                                <a href="{!! route('dashboard.password.get.email') !!}" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
-                                    {!! __('auth.forget_password') !!}
-                                </a>
-                            </div>
+                            <label for="password" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                {!! __('auth.enter_you_password') !!} <span class="text-rose-500">*</span>
+                            </label>
                             <div class="relative group">
                                 <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-slate-400 group-focus-within:text-indigo-600 dark:group-focus-within:text-indigo-400 transition-colors">
                                     <i class="fas fa-lock text-xs"></i>
@@ -219,7 +214,7 @@
                             </div>
                         </div>
 
-                        <!-- Remember Me Checkbox -->
+                        <!-- Remember Me & Forgot Password -->
                         <div class="flex items-center justify-between pt-1">
                             <label class="inline-flex items-center gap-2 cursor-pointer select-none group">
                                 <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}
@@ -228,6 +223,10 @@
                                     {!! __('auth.remmber_me') !!}
                                 </span>
                             </label>
+
+                            <a href="{!! route('dashboard.password.get.email') !!}" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors">
+                                {!! __('auth.forget_password') !!}
+                            </a>
                         </div>
 
                         <!-- Submit Button -->

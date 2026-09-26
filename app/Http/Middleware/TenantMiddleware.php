@@ -17,31 +17,56 @@ class TenantMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        \Log::info('TenantMiddleware running', [
-            'url' => $request->url(),
-            'method' => $request->method(),
-            'is_casher' => Auth::guard('casher')->check(),
-            'session_id' => session()->getId(),
-        ]);
+        $tenantService = app(TenantService::class);
 
-        // Check if the user is authenticated via web or casher
-        if (Auth::guard('web')->check() || Auth::guard('casher')->check()) {
-            $user = Auth::guard('web')->user() ?? Auth::guard('casher')->user();
-            $tenantService = app(TenantService::class);
+        $isDashboard = $request->is('*/dashboard*') || $request->is('dashboard*');
+        $isCasher = $request->is('*/casher*') || $request->is('casher*');
 
-            // 1. Handle Super Admin (id=1 or role_id=1)
-            if ($user->id === 1 || $user->role_id === 1) {
-                $tenantService->setSuperAdmin(true);
+        if ($isDashboard) {
+            // Dashboard strictly resolves user from 'web' guard
+            if (Auth::guard('web')->check()) {
+                $user = Auth::guard('web')->user();
+                if ($user->id === 1 || $user->role_id === 1) {
+                    $tenantService->setSuperAdmin(true);
+                }
+                if ($user->store_id) {
+                    $tenantService->setTenant($user->store_id);
+                }
             }
-
-            // 2. Set the tenant ID if available
-            if ($user->store_id) {
-                $tenantService->setTenant($user->store_id);
+        } elseif ($isCasher) {
+            // Casher strictly resolves from 'casher' guard or cashier session
+            if (Auth::guard('casher')->check()) {
+                $user = Auth::guard('casher')->user();
+                if ($user->id === 1 || $user->role_id === 1) {
+                    $tenantService->setSuperAdmin(true);
+                }
+                if ($user->store_id) {
+                    $tenantService->setTenant($user->store_id);
+                }
+            } elseif (session()->has('cashier_store_id')) {
+                $tenantService->setTenant(session('cashier_store_id'));
             }
-        } elseif (session()->has('cashier_store_id')) {
-            // Set the tenant ID if the cashier is logged in via pin
-            $tenantService = app(TenantService::class);
-            $tenantService->setTenant(session('cashier_store_id'));
+        } else {
+            // General / other routes (fallback to web then casher)
+            if (Auth::guard('web')->check()) {
+                $user = Auth::guard('web')->user();
+                if ($user->id === 1 || $user->role_id === 1) {
+                    $tenantService->setSuperAdmin(true);
+                }
+                if ($user->store_id) {
+                    $tenantService->setTenant($user->store_id);
+                }
+            } elseif (Auth::guard('casher')->check()) {
+                $user = Auth::guard('casher')->user();
+                if ($user->id === 1 || $user->role_id === 1) {
+                    $tenantService->setSuperAdmin(true);
+                }
+                if ($user->store_id) {
+                    $tenantService->setTenant($user->store_id);
+                }
+            } elseif (session()->has('cashier_store_id')) {
+                $tenantService->setTenant(session('cashier_store_id'));
+            }
         }
 
         return $next($request);
