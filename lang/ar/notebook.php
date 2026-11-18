@@ -251,4 +251,13 @@ return [
     'debt_limit_reached_desc' => 'تجاوز العميل الحد الأقصى للدين. فعّل التجاوز المؤقت لتسجيل هذا الدين بشكل استثنائي.',
     'debt_limit_bypass_active' => 'التجاوز المؤقت مفعّل — سيبقى سقف الدين سارياً بعد تسجيل هذه الحركة.',
     'temporary_bypass_toggle' => 'تجاوز السقف مؤقتاً لهذه الحركة فقط',
+
+    // مشاركة كشف الحساب والواتساب
+    'share_whatsapp' => 'مشاركة عبر واتساب',
+    'download_pdf' => 'تنزيل كشف حساب PDF',
+    'download_pdf_statement' => 'تنزيل كشف الحساب (PDF)',
+    'whatsapp_greeting' => 'مرحباً أخي :name، تحياتنا لك من :store.',
+    'whatsapp_balance_info' => 'رصيدك الحالي: :amount :currency (:status).',
+    'whatsapp_statement_link' => 'يمكنك مراجعة وتحميل كشف الحساب التفصيلي من الرابط الآمن التالي:',
+    'whatsapp_thank_you' => 'نسعد دائماً بخدمتكم وتواصلكم معنا 🙏',
 ];

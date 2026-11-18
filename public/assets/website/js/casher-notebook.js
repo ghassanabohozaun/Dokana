@@ -122,6 +122,7 @@ function casherNotebook(passedConfig = {}) {
                 totalLedgerTransactions: 0,
                 ledgerPerPage: 20,
                 isLedgerLoading: false,
+                isSharingStatement: false,
                 
                 // Transaction form
                 txType: 'debt',
@@ -581,6 +582,27 @@ function casherNotebook(passedConfig = {}) {
             this.isSavingCustomer = false;
         },
         
+        async shareStatementWhatsApp(customer) {
+            if (!customer || this.isSharingStatement) return;
+            this.isSharingStatement = true;
+            try {
+                const res = await fetch(`${this.apiBase}/customers/${customer.id}/statement-share`);
+                const data = await res.json();
+                if (res.ok && data.whatsapp_url) {
+                    window.open(data.whatsapp_url, '_blank');
+                } else if (!data.has_phone) {
+                    Toast.show(config.translations.warning || 'تنبيه', 'لا يوجد رقم جوال مسجل لهذا العميل لإرسال واتساب.', 'warning');
+                } else {
+                    Toast.show(config.translations.warning || 'تنبيه', 'تعذر إنشاء رابط الواتساب.', 'warning');
+                }
+            } catch (e) {
+                console.error(e);
+                Toast.show(config.translations.warning || 'تنبيه', 'حدث خطأ أثناء الاتصال.', 'warning');
+            } finally {
+                this.isSharingStatement = false;
+            }
+        },
+
         openEditCustomerModal() {
             if(!this.activeCustomer) return;
             this.editCustomerName = this.activeCustomer.name;

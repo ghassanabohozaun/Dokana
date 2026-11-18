@@ -48,6 +48,8 @@ Route::group(
                     Route::post('customers', [CasherNotebookController::class, 'storeCustomer'])->name('customers.store');
                     Route::put('customers/{customer}', [CasherNotebookController::class, 'updateCustomer'])->name('customers.update');
                     Route::get('customers/{customer}/transactions', [CasherNotebookController::class, 'getLedger'])->name('customers.ledger');
+                    Route::get('customers/{customer}/statement-share', [CasherNotebookController::class, 'getStatementShareData'])->name('customers.statement-share');
+                    Route::get('customers/{customer}/statement-pdf', [CasherNotebookController::class, 'exportStatementPdf'])->name('customers.statement-pdf');
                     Route::post('customers/{customer}/transactions', [CasherNotebookController::class, 'storeTransaction'])->name('transactions.store');
                     Route::put('transactions/{transaction}', [CasherNotebookController::class, 'updateTransaction'])->name('transactions.update');
                     Route::delete('transactions/{transaction}', [CasherNotebookController::class, 'destroyTransaction'])->name('transactions.destroy');
@@ -74,6 +76,11 @@ Route::group(
         });
     }
 );
+
+// Public Cryptographically Signed Customer Statement Download (accessible via WhatsApp link without login)
+Route::get('/statement/download/{customer}', [CasherNotebookController::class, 'publicDownloadStatement'])
+    ->name('public.statement.download')
+    ->middleware('signed');
 
 // Protected Web Artisan Runner for Hostinger
 Route::get('/run-my-migrations-secretly', function () {

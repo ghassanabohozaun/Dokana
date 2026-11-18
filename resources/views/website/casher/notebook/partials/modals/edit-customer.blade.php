@@ -80,6 +80,34 @@
                                 </div>
                             </div>
                         </template>
+
+                        <!-- Customer Statement & WhatsApp Actions -->
+                        <template x-if="activeCustomer">
+                            <div class="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-2.5">
+                                <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    {{ __('store_customers.statement_title') ?? 'كشف الحساب والمشاركة' }}
+                                </label>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                    <!-- WhatsApp Share Button -->
+                                    <button type="button" 
+                                            @click="shareStatementWhatsApp(activeCustomer)"
+                                            :disabled="isSharingStatement"
+                                            class="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white py-3 px-4 rounded-xl font-bold transition-all shadow-sm shadow-emerald-500/20 text-xs disabled:opacity-50">
+                                        <i class="ph-bold ph-whatsapp-logo text-lg"></i>
+                                        <span x-text="isSharingStatement ? '{{ __('general.loading') ?? 'جاري التجهيز...' }}' : '{{ __('notebook.share_whatsapp') }}'"></span>
+                                    </button>
+
+                                    <!-- Direct PDF Download Button -->
+                                    <a :href="`${casherConfig.apiBase}/customers/${activeCustomer.id}/statement-pdf`"
+                                       target="_blank"
+                                       class="flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/40 py-3 px-4 rounded-xl font-bold transition-all text-xs active:scale-95"
+                                       title="{{ __('notebook.download_pdf') }}">
+                                        <i class="ph-bold ph-file-pdf text-lg"></i>
+                                        <span>{{ __('notebook.download_pdf_statement') ?? 'تنزيل كشف حساب PDF' }}</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
                         
                         <!-- Invisible submit button to allow form submission on enter -->
                         <button type="submit" class="hidden"></button>

@@ -681,4 +681,89 @@ class CasherNotebookController extends Controller
             return response()->json(['message' => 'حدث خطأ في معالجة الصوت: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+     * Export customer statement PDF directly from cashier.
+     */
+    public function exportStatementPdf(StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            abort(403, 'غير مصرح لك بعرض الدفتر.');
+        }
+
+        if ($customer->store_id !== $this->getStoreId()) {
+            abort(403, 'غير مصرح لك بالوصول لبيانات هذا العميل.');
+        }
+
+        return $storeCustomerService->exportPdf($customer->id);
+    }
+
+    /**
+     * Get WhatsApp share link and signed PDF download URL for cashier customer.
+     */
+    public function getStatementShareData(StoreCustomer $customer)
+    {
+        if (!$this->isAuthorized('notebook_read')) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        if ($customer->store_id !== $this->getStoreId()) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        // Generate signed temporary download URL valid for 30 days
+        $signedUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+            'public.statement.download',
+            now()->addDays(30),
+            ['customer' => $customer->id]
+        );
+
+        // Normalize phone number for WhatsApp deep link
+        $phone = $customer->phone ? preg_replace('/[^0-9]/', '', $customer->phone) : '';
+        if (str_starts_with($phone, '00')) {
+            $phone = substr($phone, 2);
+        }
+        if (str_starts_with($phone, '05')) {
+            // Standard regional formatting: replace leading 0 with 972
+            $phone = '972' . substr($phone, 1);
+        }
+
+        $store = $customer->store;
+        $storeName = optional($store)->name ?? 'دكانة';
+        $balance = $customer->calculated_balance;
+        $balanceFormatted = number_format(abs($balance), 2);
+        $currency = __('general.currency') ?? 'شيكل';
+        $statusText = $balance > 0 ? __('store_customers.status_debtor') : ($balance < 0 ? __('store_customers.status_creditor') : __('store_customers.status_cleared'));
+
+        $greeting = __('notebook.whatsapp_greeting', ['name' => $customer->name, 'store' => $storeName]);
+        $balanceInfo = __('notebook.whatsapp_balance_info', [
+            'amount' => $balanceFormatted,
+            'currency' => $currency,
+            'status' => $statusText,
+        ]);
+        $linkIntro = __('notebook.whatsapp_statement_link');
+        $thankYou = __('notebook.whatsapp_thank_you');
+
+        $message = "{$greeting}\n{$balanceInfo}\n{$linkIntro}\n{$signedUrl}\n{$thankYou}";
+
+        $whatsappUrl = !empty($phone)
+            ? 'https://api.whatsapp.com/send?phone=' . $phone . '&text=' . rawurlencode($message)
+            : '';
+
+        return response()->json([
+            'phone' => $phone,
+            'whatsapp_url' => $whatsappUrl,
+            'download_url' => $signedUrl,
+            'message' => $message,
+            'has_phone' => !empty($phone),
+        ]);
+    }
+
+    /**
+     * Public cryptographically signed endpoint for customers to download their PDF statement.
+     */
+    public function publicDownloadStatement(StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
+    {
+        return $storeCustomerService->exportPdf($customer->id);
+    }
 }

@@ -248,4 +248,13 @@ return [
     'debt_limit_reached_desc' => 'This customer has reached their maximum debt limit. Enable temporary bypass to record this debt as an exception.',
     'debt_limit_bypass_active' => 'Temporary bypass enabled — the debt limit will remain in effect after saving this transaction.',
     'temporary_bypass_toggle' => 'Temporarily bypass limit for this transaction only',
+
+    // Customer Statement Sharing & WhatsApp
+    'share_whatsapp' => 'Share via WhatsApp',
+    'download_pdf' => 'Download Statement PDF',
+    'download_pdf_statement' => 'Download Statement (PDF)',
+    'whatsapp_greeting' => 'Hello :name, greetings from :store.',
+    'whatsapp_balance_info' => 'Your current balance is: :amount :currency (:status).',
+    'whatsapp_statement_link' => 'You can review and download your detailed statement via the following secure link:',
+    'whatsapp_thank_you' => 'We are always glad to serve you 🙏',
 ];

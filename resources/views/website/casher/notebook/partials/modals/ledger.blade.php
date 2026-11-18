@@ -132,6 +132,7 @@
                             </div>
                         </template>
                         @endif
+
                         <template x-if="activeCustomer.status == 0">
                             <div class="mt-3 text-center text-xs font-bold text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-900/10 py-1.5 rounded-lg border border-red-100 dark:border-red-900/20">
                                 <i class="ph-fill ph-warning-circle"></i> {{ __('notebook.customer_disabled_msg') }}
