@@ -463,23 +463,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Previous Balance Row -->
-            <tr class="prev-balance-row">
-                <td class="text-center">-</td>
-                <td class="text-center">-</td>
-                <td class="text-center">
-                    <span class="pill pill-prev">{{ __('store_customers.previous_balance_badge') }}</span>
-                </td>
-                <td>{{ __('store_customers.previous_balance_row_desc', ['count' => count($transactions)]) }}</td>
-                <td class="text-center">-</td>
-                <td class="text-center">-</td>
-                <td class="text-center ltr font-bold" style="direction: ltr;">
-                    {{ number_format($previousBalance, 2) }}
-                </td>
-                <td class="text-center">-</td>
-            </tr>
-
-            <!-- Transactions Rows -->
+            <!-- Transactions Rows (Newest to Oldest) -->
             @forelse($transactions as $index => $transaction)
                 <tr>
                     <td class="text-center" style="color: #64748b;">{{ $index + 1 }}</td>
@@ -517,6 +501,24 @@
                     </td>
                 </tr>
             @endforelse
+
+            <!-- Previous Balance Row (At the bottom, before this period's transactions) -->
+            @if(count($transactions) > 0)
+                <tr class="prev-balance-row">
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">
+                        <span class="pill pill-prev">{{ __('store_customers.previous_balance_badge') }}</span>
+                    </td>
+                    <td>{{ __('store_customers.previous_balance_row_desc', ['count' => count($transactions)]) }}</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center">-</td>
+                    <td class="text-center ltr font-bold" style="direction: ltr;">
+                        {{ number_format($previousBalance, 2) }}
+                    </td>
+                    <td class="text-center">-</td>
+                </tr>
+            @endif
         </tbody>
         <tfoot>
             <tr style="background-color: #f1f5f9; font-weight: bold; border-top: 2px solid #cbd5e1;">

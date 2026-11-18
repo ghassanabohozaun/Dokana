@@ -101,35 +101,34 @@ class StoreCustomerService
             abort(404, __('store_customers.customer_not_found'));
         }
 
-        // Fetch last 200 transactions ordered chronologically
+        // Fetch last 200 transactions ordered newest to oldest
         $recentTransactions = \App\Models\StoreTransaction::where('store_customer_id', $customer->id)
             ->with(['createdBy'])
             ->orderBy('transaction_date', 'desc')
             ->orderBy('id', 'desc')
             ->take(200)
-            ->get()
-            ->reverse()
-            ->values();
+            ->get();
 
         // Calculate debts and payments for these 200 transactions
         $recentDebts = (float) $recentTransactions->where('type', 'debt')->sum('amount');
         $recentPayments = (float) $recentTransactions->where('type', 'payment')->sum('amount');
-        $recentNet = $recentDebts - $recentPayments;
 
-        // Current real balance & Previous balance before these 200 transactions
+        // Current real balance
         $currentBalance = (float) $customer->calculated_balance;
-        $previousBalance = $currentBalance - $recentNet;
 
-        // Calculate running balance for each transaction row
-        $runningBalance = $previousBalance;
+        // Calculate running balance for each row going backwards (from newest to oldest)
+        $backwardsRunning = $currentBalance;
         foreach ($recentTransactions as $tx) {
+            $tx->running_balance = $backwardsRunning;
             if ($tx->type === 'debt') {
-                $runningBalance += (float) $tx->amount;
+                $backwardsRunning -= (float) $tx->amount;
             } else {
-                $runningBalance -= (float) $tx->amount;
+                $backwardsRunning += (float) $tx->amount;
             }
-            $tx->running_balance = $runningBalance;
         }
+
+        // The remaining balance after subtracting the 200 transactions is the previous balance
+        $previousBalance = $backwardsRunning;
 
         // Store branding details
         $store = $customer->store;
