@@ -6,6 +6,11 @@
            title="{!! __('general.show') !!}">
             <i class="fas fa-eye text-xs"></i>
         </a>
+        <a href="{!! route('dashboard.store-customers.export-pdf', $store_customer->id) !!}" 
+           class="btn-icon-action text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40" 
+           title="{!! __('store_customers.export_pdf') !!}">
+            <i class="fas fa-file-pdf text-xs"></i>
+        </a>
     @endcan
 
     <!-- Add Transaction (Payment / Debt) -->

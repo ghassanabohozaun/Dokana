@@ -102,6 +102,13 @@ class StoreCustomersController extends Controller
         return view('dashboard.store_customers.show', compact('title', 'store_customer', 'transactions'));
     }
 
+    public function exportPdf(string $id)
+    {
+        Gate::authorize('store_customers_read');
+
+        return $this->storeCustomerService->exportPdf($id);
+    }
+
     public function update(StoreCustomerRequest $request, string $id)
     {
         Gate::authorize('store_customers_update');

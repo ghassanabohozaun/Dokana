@@ -21,11 +21,22 @@
             <span class="text-slate-700 dark:text-slate-200 font-bold">{!! $store_customer->name !!}</span>
         </nav>
 
-        <!-- Back Button -->
-        <a href="{!! route('dashboard.store-customers.index') !!}" class="btn-secondary-modern text-xs">
-            <i class="fas fa-arrow-right text-xs"></i>
-            <span>{!! __('general.back') !!}</span>
-        </a>
+        <!-- Actions Toolbar -->
+        <div class="flex items-center gap-2">
+            <!-- Export PDF Button -->
+            <a href="{!! route('dashboard.store-customers.export-pdf', $store_customer->id) !!}" 
+               class="inline-flex items-center gap-2 px-3 py-2 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 active:bg-rose-800 rounded-xl transition-all shadow-sm shadow-rose-500/20"
+               title="{!! __('store_customers.export_pdf') !!}">
+                <i class="fas fa-file-pdf text-sm"></i>
+                <span>{!! __('store_customers.export_pdf') !!}</span>
+            </a>
+
+            <!-- Back Button -->
+            <a href="{!! route('dashboard.store-customers.index') !!}" class="btn-secondary-modern text-xs">
+                <i class="fas fa-arrow-right text-xs"></i>
+                <span>{!! __('general.back') !!}</span>
+            </a>
+        </div>
     </div>
 
     <!-- 2. Profile Grid: Info & Financial Sidebars & Transactions Table -->
@@ -56,7 +67,7 @@
                         </h4>
                         <div class="flex items-center gap-1.5 mt-1 flex-wrap">
                             @if($store_customer->is_walk_in)
-                                <span class="badge-pill badge-pill-info text-[10px]">زبون مباشر</span>
+                                <span class="badge-pill badge-pill-info text-[10px]">{!! __('store_customers.walk_in_customer') !!}</span>
                             @endif
                             <span class="badge-pill {{ $store_customer->status ? 'badge-pill-success' : 'badge-pill-danger' }} text-[10px]">
                                 {{ $store_customer->status ? __('general.enable') : __('general.disabled') }}
@@ -128,11 +139,11 @@
                     </div>
                     <span class="text-[11px] font-bold mt-1 inline-block {{ $balance > 0 ? 'text-rose-600' : ($balance < 0 ? 'text-emerald-600' : 'text-slate-400') }}">
                         @if($balance > 0)
-                            <i class="fas fa-exclamation-circle text-[10px]"></i> مدين (مستحق عليه)
+                            <i class="fas fa-exclamation-circle text-[10px]"></i> {!! __('store_customers.debtor_balance') !!}
                         @elseif($balance < 0)
-                            <i class="fas fa-check-circle text-[10px]"></i> دائن (رصيد لصالحه)
+                            <i class="fas fa-check-circle text-[10px]"></i> {!! __('store_customers.creditor_balance') !!}
                         @else
-                            خالص الرصيد
+                            {!! __('store_customers.cleared_balance_label') !!}
                         @endif
                     </span>
                 </div>
@@ -180,12 +191,20 @@
                             <i class="fas fa-list-alt"></i>
                         </div>
                         <h3 class="text-xs font-bold text-slate-800 dark:text-white uppercase tracking-wider">
-                            كشف الحساب وسجل الحركات
+                            {!! __('store_customers.account_statement_and_transactions') !!}
                         </h3>
                     </div>
-                    <span class="badge-pill badge-pill-info text-[11px]">
-                        {{ $transactions->total() }} حركة
-                    </span>
+                    <div class="flex items-center gap-2">
+                        <a href="{!! route('dashboard.store-customers.export-pdf', $store_customer->id) !!}" 
+                           class="inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:hover:bg-rose-950/60 rounded-lg transition-colors"
+                           title="{!! __('store_customers.export_pdf') !!}">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>{!! __('store_customers.export_pdf_btn') !!}</span>
+                        </a>
+                        <span class="badge-pill badge-pill-info text-[11px]">
+                            {!! __('store_customers.transactions_count', ['count' => $transactions->total()]) !!}
+                        </span>
+                    </div>
                 </div>
 
                 <div id="transactions_table_container">

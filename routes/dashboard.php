@@ -93,6 +93,7 @@ Route::group(
             // ########################################## store customers routes  ##############################################################
             Route::group(['middleware' => 'can:store_customers_read'], function () {
                 Route::get('/store-customers/by-store', [StoreCustomersController::class, 'getByStore'])->name('store-customers.by-store');
+                Route::get('/store-customers/{id}/export-pdf', [StoreCustomersController::class, 'exportPdf'])->name('store-customers.export-pdf');
                 Route::resource('store-customers', StoreCustomersController::class);
                 Route::post('/store-customers/destroy', [StoreCustomersController::class, 'destroy'])->name('store-customers.destroy');
                 Route::post('/store-customers/status', [StoreCustomersController::class, 'changeStatus'])->name('store-customers.change.status');

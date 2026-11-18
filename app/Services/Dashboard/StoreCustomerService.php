@@ -92,4 +92,95 @@ class StoreCustomerService
         }
         return $storeCustomer;
     }
+
+    // export customer statement pdf
+    public function exportPdf($id)
+    {
+        $customer = $this->getOne($id);
+        if (!$customer) {
+            abort(404, __('store_customers.customer_not_found'));
+        }
+
+        // Fetch last 200 transactions ordered chronologically
+        $recentTransactions = \App\Models\StoreTransaction::where('store_customer_id', $customer->id)
+            ->with(['createdBy'])
+            ->orderBy('transaction_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->take(200)
+            ->get()
+            ->reverse()
+            ->values();
+
+        // Calculate debts and payments for these 200 transactions
+        $recentDebts = (float) $recentTransactions->where('type', 'debt')->sum('amount');
+        $recentPayments = (float) $recentTransactions->where('type', 'payment')->sum('amount');
+        $recentNet = $recentDebts - $recentPayments;
+
+        // Current real balance & Previous balance before these 200 transactions
+        $currentBalance = (float) $customer->calculated_balance;
+        $previousBalance = $currentBalance - $recentNet;
+
+        // Calculate running balance for each transaction row
+        $runningBalance = $previousBalance;
+        foreach ($recentTransactions as $tx) {
+            if ($tx->type === 'debt') {
+                $runningBalance += (float) $tx->amount;
+            } else {
+                $runningBalance -= (float) $tx->amount;
+            }
+            $tx->running_balance = $runningBalance;
+        }
+
+        // Store branding details
+        $store = $customer->store;
+        $storeLogo = null;
+        if ($store && !empty($store->logo)) {
+            if (file_exists(public_path('uploads/stores/' . $store->logo))) {
+                $storeLogo = public_path('uploads/stores/' . $store->logo);
+            } elseif (file_exists(public_path($store->logo))) {
+                $storeLogo = public_path($store->logo);
+            }
+        }
+        if (!$storeLogo && file_exists(public_path('assets/dashbaord/images/pdf-logo.png'))) {
+            $storeLogo = public_path('assets/dashbaord/images/pdf-logo.png');
+        }
+
+        $data = [
+            'customer' => $customer,
+            'store' => $store,
+            'storeLogo' => $storeLogo,
+            'transactions' => $recentTransactions,
+            'previousBalance' => $previousBalance,
+            'recentDebts' => $recentDebts,
+            'recentPayments' => $recentPayments,
+            'currentBalance' => $currentBalance,
+            'generatedAt' => now(),
+        ];
+
+        $pdf = \Mccarlosen\LaravelMpdf\Facades\LaravelMpdf::loadView(
+            'dashboard.store_customers.pdf.statement',
+            $data,
+            [],
+            [
+                'title' => __('store_customers.statement_title') . ' - ' . $customer->name,
+                'format' => 'A4',
+                'orientation' => 'P',
+                'margin_left' => 8,
+                'margin_right' => 8,
+                'margin_top' => 14,
+                'margin_bottom' => 12,
+            ]
+        );
+
+        $safeCustomerName = preg_replace('/[^\p{L}\p{N}_\-]+/u', '_', $customer->name);
+        $fileName =  $safeCustomerName . '-' . date('Y-m-d') . '.pdf';
+
+        $content = $pdf->output();
+
+        return response($content, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Content-Length' => strlen($content),
+        ]);
+    }
 }
