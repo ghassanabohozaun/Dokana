@@ -50,7 +50,17 @@ class StoreCustomer extends Model implements MustBelongToStore
 
     public function getCalculatedBalanceAttribute()
     {
-        return ($this->total_debts ?? 0) - ($this->total_payments ?? 0);
+        if (isset($this->attributes['total_debts']) || isset($this->attributes['total_payments'])) {
+            return (float) ($this->attributes['total_debts'] ?? 0) - (float) ($this->attributes['total_payments'] ?? 0);
+        }
+
+        // If withSum was not loaded, use the tracked balance column or calculate directly
+        if (isset($this->attributes['balance'])) {
+            return (float) $this->attributes['balance'];
+        }
+
+        return (float) $this->transactions()->where('type', 'debt')->sum('amount') 
+             - (float) $this->transactions()->where('type', 'payment')->sum('amount');
     }
 
 }

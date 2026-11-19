@@ -736,7 +736,11 @@ class CasherNotebookController extends Controller
 
         $store = $customerWithMetrics->store ?? $customer->store;
         $storeName = optional($store)->name ?? 'دكانة';
-        $balance = $customerWithMetrics->calculated_balance ?? $customer->balance ?? 0;
+
+        // Calculate accurate balance directly from transactions
+        $balance = (float) $customer->transactions()->where('type', 'debt')->sum('amount')
+                 - (float) $customer->transactions()->where('type', 'payment')->sum('amount');
+
         $balanceFormatted = number_format(abs($balance), 2);
         $currency = __('general.currency') ?? 'شيكل';
         $statusText = $balance > 0 ? __('store_customers.status_debtor') : ($balance < 0 ? __('store_customers.status_creditor') : __('store_customers.status_cleared'));
