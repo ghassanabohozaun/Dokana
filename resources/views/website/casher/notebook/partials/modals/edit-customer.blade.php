@@ -97,6 +97,7 @@
                                         <span x-text="isSharingStatement ? '{{ __('general.loading') ?? 'جاري التجهيز...' }}' : '{{ __('notebook.share_whatsapp') }}'"></span>
                                     </button>
 
+                                    
                                     <!-- Direct PDF Download Button -->
                                     <a :href="`${casherConfig.apiBase}/customers/${activeCustomer.id}/statement-pdf`"
                                        target="_blank"
