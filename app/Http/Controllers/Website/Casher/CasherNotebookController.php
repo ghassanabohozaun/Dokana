@@ -701,7 +701,7 @@ class CasherNotebookController extends Controller
     /**
      * Get WhatsApp share link and signed PDF download URL for cashier customer.
      */
-    public function getStatementShareData(StoreCustomer $customer)
+    public function getStatementShareData(StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
     {
         if (!$this->isAuthorized('notebook_read')) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -710,6 +710,9 @@ class CasherNotebookController extends Controller
         if ($customer->store_id !== $this->getStoreId()) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
+
+        // Fetch full customer metrics to accurately get calculated_balance (total_debts - total_payments)
+        $customerWithMetrics = $storeCustomerService->getOne($customer->id) ?: $customer;
 
         // Generate signed temporary download URL valid for 30 days
         $signedUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
@@ -731,9 +734,9 @@ class CasherNotebookController extends Controller
             $phone = '972' . substr($phone, 1);
         }
 
-        $store = $customer->store;
+        $store = $customerWithMetrics->store ?? $customer->store;
         $storeName = optional($store)->name ?? 'دكانة';
-        $balance = $customer->calculated_balance;
+        $balance = $customerWithMetrics->calculated_balance ?? $customer->balance ?? 0;
         $balanceFormatted = number_format(abs($balance), 2);
         $currency = __('general.currency') ?? 'شيكل';
         $statusText = $balance > 0 ? __('store_customers.status_debtor') : ($balance < 0 ? __('store_customers.status_creditor') : __('store_customers.status_cleared'));
