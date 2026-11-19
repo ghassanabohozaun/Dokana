@@ -94,8 +94,16 @@ class StoreCustomerService
     }
 
     // export customer statement pdf
-    public function exportPdf($id)
+    public function exportPdf($id, $locale = null)
     {
+        if ($locale && in_array($locale, ['ar', 'en'])) {
+            app()->setLocale($locale);
+        } elseif (request()->filled('locale') && in_array(request('locale'), ['ar', 'en'])) {
+            app()->setLocale(request('locale'));
+        } elseif (session()->has('locale')) {
+            app()->setLocale(session('locale'));
+        }
+
         $customer = $this->getOne($id);
         if (!$customer) {
             abort(404, __('store_customers.customer_not_found'));

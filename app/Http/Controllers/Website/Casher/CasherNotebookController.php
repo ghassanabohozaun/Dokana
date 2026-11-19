@@ -715,7 +715,10 @@ class CasherNotebookController extends Controller
         $signedUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
             'public.statement.download',
             now()->addDays(30),
-            ['customer' => $customer->id]
+            [
+                'customer' => $customer->id,
+                'locale' => app()->getLocale() ?: 'ar',
+            ]
         );
 
         // Normalize phone number for WhatsApp deep link
@@ -762,8 +765,9 @@ class CasherNotebookController extends Controller
     /**
      * Public cryptographically signed endpoint for customers to download their PDF statement.
      */
-    public function publicDownloadStatement(StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
+    public function publicDownloadStatement(Request $request, StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
     {
-        return $storeCustomerService->exportPdf($customer->id);
+        $locale = $request->query('locale') ?: 'ar';
+        return $storeCustomerService->exportPdf($customer->id, $locale);
     }
 }
