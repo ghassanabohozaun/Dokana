@@ -701,7 +701,7 @@ class CasherNotebookController extends Controller
     /**
      * Get WhatsApp share link and signed PDF download URL for cashier customer.
      */
-    public function getStatementShareData(StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
+    public function getStatementShareData(Request $request, StoreCustomer $customer, \App\Services\Dashboard\StoreCustomerService $storeCustomerService)
     {
         if (!$this->isAuthorized('notebook_read')) {
             return response()->json(['message' => 'Unauthorized'], 403);
@@ -725,13 +725,22 @@ class CasherNotebookController extends Controller
         );
 
         // Normalize phone number for WhatsApp deep link
+        $prefix = $request->query('prefix', '972');
+        if (!in_array($prefix, ['972', '970'])) {
+            $prefix = '972';
+        }
+
         $phone = $customer->phone ? preg_replace('/[^0-9]/', '', $customer->phone) : '';
         if (str_starts_with($phone, '00')) {
             $phone = substr($phone, 2);
         }
         if (str_starts_with($phone, '05')) {
-            // Standard regional formatting: replace leading 0 with 972
-            $phone = '972' . substr($phone, 1);
+            // Apply chosen regional formatting prefix (972 or 970)
+            $phone = $prefix . substr($phone, 1);
+        } elseif (str_starts_with($phone, '972') && $prefix === '970') {
+            $phone = '970' . substr($phone, 3);
+        } elseif (str_starts_with($phone, '970') && $prefix === '972') {
+            $phone = '972' . substr($phone, 3);
         }
 
         $store = $customerWithMetrics->store ?? $customer->store;

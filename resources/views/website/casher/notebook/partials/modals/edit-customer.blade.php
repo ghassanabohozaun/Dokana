@@ -87,23 +87,34 @@
                                 <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     {{ __('store_customers.statement_title') ?? 'كشف الحساب والمشاركة' }}
                                 </label>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                    <!-- WhatsApp Share Button -->
-                                    <button type="button" 
-                                            @click="shareStatementWhatsApp(activeCustomer)"
-                                            :disabled="isSharingStatement"
-                                            class="flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white py-3 px-4 rounded-xl font-bold transition-all shadow-sm shadow-emerald-500/20 text-xs disabled:opacity-50">
-                                        <i class="ph-bold ph-whatsapp-logo text-lg"></i>
-                                        <span x-text="isSharingStatement ? '{{ __('general.loading') ?? 'جاري التجهيز...' }}' : '{{ __('notebook.share_whatsapp') }}'"></span>
-                                    </button>
+                                <div class="space-y-2.5">
+                                    <!-- WhatsApp Dual Prefix Buttons -->
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <!-- WhatsApp 972 Button -->
+                                        <button type="button" 
+                                                @click="shareStatementWhatsApp(activeCustomer, '972')"
+                                                :disabled="Boolean(isSharingStatement)"
+                                                class="flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-white py-2.5 px-3 rounded-xl font-bold transition-all shadow-sm shadow-emerald-500/20 text-xs disabled:opacity-50">
+                                            <i class="ph-bold ph-whatsapp-logo text-base"></i>
+                                            <span x-text="isSharingStatement === '972' ? '{{ __('general.loading') ?? 'جاري التجهيز...' }}' : 'واتساب (972)'"></span>
+                                        </button>
 
-                                    
+                                        <!-- WhatsApp 970 Button -->
+                                        <button type="button" 
+                                                @click="shareStatementWhatsApp(activeCustomer, '970')"
+                                                :disabled="Boolean(isSharingStatement)"
+                                                class="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white py-2.5 px-3 rounded-xl font-bold transition-all shadow-sm shadow-emerald-600/20 text-xs disabled:opacity-50">
+                                            <i class="ph-bold ph-whatsapp-logo text-base"></i>
+                                            <span x-text="isSharingStatement === '970' ? '{{ __('general.loading') ?? 'جاري التجهيز...' }}' : 'واتساب (970)'"></span>
+                                        </button>
+                                    </div>
+
                                     <!-- Direct PDF Download Button -->
                                     <a :href="`${casherConfig.apiBase}/customers/${activeCustomer.id}/statement-pdf`"
                                        target="_blank"
-                                       class="flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/40 py-3 px-4 rounded-xl font-bold transition-all text-xs active:scale-95"
+                                       class="w-full flex items-center justify-center gap-2 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/40 py-2.5 px-4 rounded-xl font-bold transition-all text-xs active:scale-95"
                                        title="{{ __('notebook.download_pdf') }}">
-                                        <i class="ph-bold ph-file-pdf text-lg"></i>
+                                        <i class="ph-bold ph-file-pdf text-base"></i>
                                         <span>{{ __('notebook.download_pdf_statement') ?? 'تنزيل كشف حساب PDF' }}</span>
                                     </a>
                                 </div>

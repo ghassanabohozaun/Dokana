@@ -582,11 +582,11 @@ function casherNotebook(passedConfig = {}) {
             this.isSavingCustomer = false;
         },
         
-        async shareStatementWhatsApp(customer) {
+        async shareStatementWhatsApp(customer, prefix = '972') {
             if (!customer || this.isSharingStatement) return;
-            this.isSharingStatement = true;
+            this.isSharingStatement = prefix;
             try {
-                const res = await fetch(`${this.apiBase}/customers/${customer.id}/statement-share`);
+                const res = await fetch(`${this.apiBase}/customers/${customer.id}/statement-share?prefix=${prefix}`);
                 const data = await res.json();
                 if (res.ok && data.whatsapp_url) {
                     window.open(data.whatsapp_url, '_blank');
