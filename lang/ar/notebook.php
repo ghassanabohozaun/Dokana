@@ -256,7 +256,7 @@ return [
     'share_whatsapp' => 'مشاركة عبر واتساب',
     'download_pdf' => 'تنزيل كشف حساب PDF',
     'download_pdf_statement' => 'تنزيل كشف الحساب (PDF)',
-    'whatsapp_greeting' => 'مرحباً أخي :name، تحياتنا لك من :store.',
+    'whatsapp_greeting' => 'مرحباً :name، تحياتنا لك من :store.',
     'whatsapp_balance_info' => 'رصيدك الحالي: :amount :currency (:status).',
     'whatsapp_statement_link' => 'يمكنك مراجعة وتحميل كشف الحساب التفصيلي من الرابط الآمن التالي:',
     'whatsapp_thank_you' => 'نسعد دائماً بخدمتكم وتواصلكم معنا 🙏',
